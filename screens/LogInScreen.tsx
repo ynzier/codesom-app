@@ -1,31 +1,60 @@
 import React, { useState } from "react";
 import {
   Alert,
-  Button,
-  Modal,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
   TextInput,
-  Linking,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
+import AuthService from "../services/auth.service";
+import { Navigation } from "/hooks/navigation";
+import axios from "axios";
 
-export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
+type Props = {
+  navigation: Navigation;
 };
 
-const LoginScreen: React.FC<Props> = ({
-  navigation,
-  name,
-  baseEnthusiasmLevel = 0,
-}) => {
+const LoginScreen: React.FC<Props> = ({ navigation }) => {
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const _onLoginPressed = async () => {
+    setLoading(true);
+    await AuthService.signInApp(userName, password)
+      .then((res) => {
+        navigation.navigate("MainMenuScreen");
+      })
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        Alert.alert("แจ้งเตือน", resMessage, [
+          {
+            text: "ยืนยัน",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "destructive",
+          },
+        ]);
+      });
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+
   const miloTeamURL =
     "https://www.facebook.com/%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2-Milo-110957550650650";
   return (
     <View style={styles.container}>
+      <View style={{ flex: 1, zIndex: 2, position: "absolute" }}>
+        <ActivityIndicator animating={loading} size="large" />
+      </View>
       {/* Grey Box */}
       <View style={styles.boxStyle}>
         {/* Body */}
@@ -34,8 +63,10 @@ const LoginScreen: React.FC<Props> = ({
           <Text style={styles.inputTextHeader}>Username</Text>
           <TextInput
             style={styles.inputBox}
-            onChangeText={(text) => {}}
-            editable
+            onChangeText={(text) => {
+              setUserName(text);
+            }}
+            value={userName}
             maxLength={20}
             placeholder="ชื่อผู้ใช้งาน"
           />
@@ -44,8 +75,10 @@ const LoginScreen: React.FC<Props> = ({
           <Text style={styles.inputTextHeader}>Password</Text>
           <TextInput
             style={styles.inputBox}
-            onChangeText={(text) => {}}
-            editable
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
+            value={password}
             secureTextEntry
             maxLength={20}
             placeholder="รหัสผ่าน"
@@ -55,20 +88,14 @@ const LoginScreen: React.FC<Props> = ({
           activeOpacity={0.2}
           underlayColor="none"
           style={[styles.button, styles.buttonConfirm]}
-          onPress={() => {
-            navigation.navigate("LogInScreen");
-          }}
+          onPress={_onLoginPressed}
         >
           <Text style={styles.confirmTextStyle}>ยืนยัน</Text>
         </TouchableHighlight>
 
         {/* Footer */}
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <Pressable
-            onPress={() => {
-              Linking.openURL(miloTeamURL);
-            }}
-          >
+          <Pressable onPress={() => {}}>
             <Text style={styles.creditTextStyle}>Milo Team</Text>
           </Pressable>
         </View>
