@@ -9,24 +9,18 @@ const deviceStorage = {
       // save error
     }
   },
-  async getToken(): string {
-    try {
-      const jsonValue = await AsyncStorage.getItem("accessToken");
-      console.log(jsonValue);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      // read error
-    }
-
-    alert("Done.");
-  },
   async loadJWT(): string {
     try {
-      const jsonValue = await AsyncStorage.getItem("accessToken");
-
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      // read error
+      await AsyncStorage.getItem("accessToken", (error: any, result: any) => {
+        if (result) {
+          return JSON.stringify(result);
+        } else {
+          console.log("error1:", JSON.stringify(error));
+          return;
+        }
+      });
+    } catch (error) {
+      console.log("error2:", error);
     }
   },
   async deleteJWT() {

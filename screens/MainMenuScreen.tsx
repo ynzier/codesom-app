@@ -1,36 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, Text, StyleSheet, StatusBar } from "react-native";
-
+import { StyleSheet, StatusBar, Alert, FlatList, View } from "react-native";
+import { NativeBaseProvider, Box, Center, Flex } from "native-base";
+import EmployeeServices from "../services/employee.service";
 import deviceStorage from "../services/deviceStorage";
-import { Navigation } from "/hooks/navigation";
+import { Navigation } from "hooks/navigation";
 export type Props = {
   navigation: Navigation;
 };
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
+  const [empData, setempData] = useState([]);
   useEffect(async () => {
-    const test = await deviceStorage.loadJWT();
-    console.log(test);
+    await EmployeeServices.getAllEmployeeInBranch()
+      .then((res: array) => {
+        console.log(res.data);
+        setempData(res.data);
+      })
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        Alert.alert("แจ้งเตือน", resMessage, [
+          {
+            text: "ยืนยัน",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "destructive",
+          },
+        ]);
+      });
+
+    console.log("main screen");
     return () => {};
   }, []);
-
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <Text style={{ alignSelf: "center" }}>Main Menu Screen</Text>
-      <Text style={{ alignSelf: "center" }}>Current Token:</Text>
-      <Text
-        style={{ alignSelf: "center" }}
-        onPress={() => {
-          deviceStorage.deleteJWT();
-          const test = deviceStorage.loadJWT();
-          console.log(test);
-          navigation.navigate("LogInScreen");
-        }}
-      >
-        Back
-      </Text>
-    </SafeAreaView>
+    <>
+      <Box flex={1} bg="white" safeAreaTop width="100%" alignSelf="center">
+        <Center>
+          <Flex width="100%" direction="row">
+            <Flex width="200" background="red"></Flex>
+            <Flex width="100%" background="green"></Flex>
+          </Flex>
+        </Center>
+      </Box>
+    </>
   );
 };
 
@@ -40,6 +55,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "grey",
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
   },
 });
 
