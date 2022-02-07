@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Animated } from 'react-native';
-import { Input, Box } from 'native-base';
-import { Platform } from 'react-native';
+import React, { Component } from "react";
+import { Animated } from "react-native";
+import { Input, Box } from "native-base";
+import { Platform } from "react-native";
 
 export default class FloatingLabelInput extends Component<any, any> {
   private _animatedIsFocused: any;
@@ -12,7 +12,7 @@ export default class FloatingLabelInput extends Component<any, any> {
     };
 
     this._animatedIsFocused = new Animated.Value(
-      this.props.defaultValue === '' ? 0 : 1
+      this.props.defaultValue === "" ? 0 : 1
     );
   }
 
@@ -23,14 +23,14 @@ export default class FloatingLabelInput extends Component<any, any> {
     Animated.timing(this._animatedIsFocused, {
       duration: 200,
       useNativeDriver: false,
-      toValue: this.state.isFocused || this.props.defaultValue !== '' ? 1 : 0,
+      toValue: this.state.isFocused || this.props.defaultValue !== "" ? 1 : 0,
     }).start();
   }
 
   render() {
     const { label, ...props } = this.props;
     const lableContainerStyles = {
-      position: 'absolute',
+      position: "absolute",
       left: 16,
       top: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
@@ -42,16 +42,17 @@ export default class FloatingLabelInput extends Component<any, any> {
       backgroundColor: this.props.labelBGColor,
     } as any;
     const AndroidlabelStyle = {
-      fontWeight: '500',
+      fontWeight: "500",
       fontSize: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
         outputRange: [14, 12],
       }),
+      fontFamily: "Mitr-Medium",
 
       color: this.props.labelColor,
     } as any;
     const IOSlabelStyle = {
-      fontWeight: '500',
+      fontWeight: "500",
       fontSize: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
         outputRange: [14, 12],
@@ -59,8 +60,9 @@ export default class FloatingLabelInput extends Component<any, any> {
 
       marginTop: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [-3, 0],
+        outputRange: [-4, 0],
       }),
+      fontFamily: "Mitr-Medium",
       color: this.props.labelColor,
     } as any;
     return (
@@ -68,7 +70,7 @@ export default class FloatingLabelInput extends Component<any, any> {
         <Animated.View pointerEvents="none" style={lableContainerStyles}>
           <Animated.Text
             style={
-              Platform.OS === 'android' ? AndroidlabelStyle : IOSlabelStyle
+              Platform.OS === "android" ? AndroidlabelStyle : IOSlabelStyle
             }
           >
             {label}
@@ -79,6 +81,8 @@ export default class FloatingLabelInput extends Component<any, any> {
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           _hover={{ bg: this.props.labelBGColor }}
+          size="lg"
+          px="4"
         />
       </Box>
     );

@@ -3,8 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme } from "native-base";
-import LogInScreen from "./screens/LogInScreen";
-import SignIn from "./screens/Login";
+import Login from "./screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -19,6 +18,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const theme = extendTheme({
+  colors: { altred: "#97515F" },
   fontConfig: {
     Mitr: {
       100: {
@@ -59,7 +59,7 @@ const HomeTabs: React.FC<Props> = () => {
         tabBarActiveTintColor: "tomato",
         tabBarInactiveTintColor: "white",
         tabBarActiveBackgroundColor: "white",
-        tabBarLabelStyle: { fontFamily: "Mitr-Regular" },
+        tabBarLabelStyle: { fontFamily: "Mitr-Regular",fontSize: 14 },
         tabBarLabelPosition: "below-icon",
         tabBarStyle: {
           paddingLeft: 200,
@@ -69,6 +69,7 @@ const HomeTabs: React.FC<Props> = () => {
           borderTopWidth: 0,
           backgroundColor: "#ff9c00",
           elevation: 0,
+          height: 60
         },
       })}
     >
@@ -195,8 +196,7 @@ const App: React.FC<Props> = () => {
               headerShown: false,
             }}
           >
-            <Stack.Screen name="LogIn2Screen" component={LogInScreen} />
-            <Stack.Screen name="LogInScreen" component={LogInScreen} />
+            <Stack.Screen name="LogInScreen" component={Login} />
             <Stack.Screen name="HomeScreen" component={HomeTabs} />
           </Stack.Navigator>
         </NativeBaseProvider>

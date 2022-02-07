@@ -10,6 +10,7 @@ import {
   Image,
   useColorModeValue,
   IconButton,
+  KeyboardAvoidingView,
   Icon,
   Pressable,
   Center,
@@ -18,11 +19,11 @@ import {
   Stack,
   Box,
 } from "native-base";
+import { Alert } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
 
-import IconGoogle from "../components/IconGoogle";
-import IconFacebook from "../components/IconFacebook";
+import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -32,31 +33,47 @@ export function SignInForm({ props }: any) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = React.useState(false);
+
+  const _onLoginPressed = async () => {
+    await AuthService.signInApp(userName, password)
+      .then((res) => {
+        props.navigation.navigate("HomeScreen");
+      })
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        Alert.alert("แจ้งเตือน", resMessage, [
+          {
+            text: "ยืนยัน",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "destructive",
+          },
+        ]);
+      });
+  };
+
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-      }}
-      style={{ flex: 1 }}
+    <VStack
+      flex="1"
+      px="6"
+      py={{ base: "7", md: "12", xl: "0" }}
+      pb={{ xl: 4 }}
+      bg="#FFFDFA"
+      space="3"
+      justifyContent="space-between"
+      borderTopRightRadius={{ base: "2xl", md: "xl" }}
+      borderBottomRightRadius={{ base: "0", md: "xl" }}
+      borderTopLeftRadius={{ base: "2xl", md: "0" }}
     >
-      <VStack
-        flex="1"
-        px="6"
-        py="9"
-        _light={{ bg: "white" }}
-        _dark={{ bg: "coolGray.800" }}
-        space="3"
-        justifyContent="space-between"
-        borderTopRightRadius={{ base: "2xl", md: "xl" }}
-        borderBottomRightRadius={{ base: "0", md: "xl" }}
-        borderTopLeftRadius={{ base: "2xl", md: "0" }}
-      >
-        <VStack space="7">
-          <Hidden till="md">
-            <Text fontSize="lg" fontWeight="normal">
-              เข้าสู่ระบบ
-            </Text>
-          </Hidden>
+      <Center pt={{ xl: "40" }}>
+        <VStack space="7" alignItems="center" justifyContent="center">
+          <Text fontSize="lg" fontWeight="normal">
+            เข้าสู่ระบบ
+          </Text>
           <VStack>
             <VStack space="3">
               <VStack space={{ base: "7", md: "4" }}>
@@ -64,28 +81,23 @@ export function SignInForm({ props }: any) {
                   isRequired
                   label="ชื่อผู้ใช้งาน"
                   labelColor="#9ca3af"
-                  labelBGColor={useColorModeValue("#fff", "#1f2937")}
-                  borderRadius="4"
+                  labelBGColor="#FFFDFA"
+                  borderRadius="8"
                   defaultValue={userName}
                   onChangeText={(txt: any) => setUserName(txt)}
                   _text={{
                     fontSize: "sm",
                     fontWeight: "medium",
                   }}
-                  _dark={{
-                    borderColor: "coolGray.700",
-                  }}
-                  _light={{
-                    borderColor: "coolGray.300",
-                  }}
+                  borderColor="coolGray.300"
                 />
                 <FloatingLabelInput
                   isRequired
                   type={showPass ? "" : "password"}
-                  label="Password"
-                  borderRadius="4"
+                  label="รหัสผ่าน"
+                  borderRadius="8"
                   labelColor="#9ca3af"
-                  labelBGColor={useColorModeValue("#fff", "#1f2937")}
+                  labelBGColor="#FFFDFA"
                   defaultValue={password}
                   onChangeText={(txt: any) => setPassword(txt)}
                   InputRightElement={
@@ -100,7 +112,7 @@ export function SignInForm({ props }: any) {
                         />
                       }
                       onPress={() => {
-                        setShowPass(true);
+                        setShowPass(!showPass);
                       }}
                     />
                   }
@@ -123,12 +135,12 @@ export function SignInForm({ props }: any) {
                 borderRadius="4"
                 _text={{
                   fontWeight: "medium",
+                  color: "white",
                 }}
-                _light={{
-                  bg: "#FF9C00",
-                }}
+                bg="altred"
+                _pressed={{ bg: "#922339" }}
                 onPress={() => {
-                  props.navigation.navigate("OTP");
+                  _onLoginPressed();
                 }}
               >
                 SIGN IN
@@ -142,7 +154,7 @@ export function SignInForm({ props }: any) {
                 justifyContent="center"
               >
                 <Divider
-                  w="50%"
+                  w="70%"
                   _light={{ bg: "coolGray.200" }}
                   _dark={{ bg: "coolGray.700" }}
                 ></Divider>
@@ -150,24 +162,24 @@ export function SignInForm({ props }: any) {
             </VStack>
           </VStack>
         </VStack>
-        <HStack
-          mb="4"
-          space="2"
-          safeAreaBottom
-          alignItems="center"
-          justifyContent="center"
-          mt={{ base: "auto" }}
+      </Center>
+      <HStack
+        mb="4"
+        space="2"
+        safeAreaBottom
+        alignItems="center"
+        justifyContent="center"
+        mt={{ base: "auto" }}
+      >
+        <Text
+          _light={{ color: "coolGray.800" }}
+          _dark={{ color: "coolGray.400" }}
         >
-          <Text
-            _light={{ color: "coolGray.800" }}
-            _dark={{ color: "coolGray.400" }}
-          >
-            Milo Team
-          </Text>
-          {/* Opening Link Tag navigateTo:"SignUp" */}
-        </HStack>
-      </VStack>
-    </KeyboardAwareScrollView>
+          Milo Team
+        </Text>
+        {/* Opening Link Tag navigateTo:"SignUp" */}
+      </HStack>
+    </VStack>
   );
 }
 export default function SignIn(props: any) {
@@ -176,30 +188,39 @@ export default function SignIn(props: any) {
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle="dark-content"
+        barStyle="light-content"
       />
-      <Box safeAreaTop bg="#FFB848" />
-      <Center my="auto" bg="#FFB848" flex="1">
-        <Stack
-          flexDirection={{ base: "column", md: "row" }}
-          w="100%"
-          maxW={{ md: "800px" }}
-          flex="0"
+      <Box safeAreaTop bg="rgba(249, 220, 194, 0.5)" />
+      <Center my="auto" bg="rgba(249, 220, 194, 0.5)" flex="1">
+        <KeyboardAvoidingView
+          h={{
+            base: "400px",
+            lg: "auto",
+          }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <Center
-            flex="1"
-            bg="#ff9c00"
-            borderTopLeftRadius={{ base: "0", md: "xl" }}
-            borderBottomLeftRadius={{ base: "0", md: "xl" }}
+          <Stack
+            flexDirection={{ base: "column", md: "row" }}
+            w="100%"
+            maxW={{ md: "800px", xl: "1200px" }}
+            h={{ md: "400px", xl: "600px" }}
+            flex="0"
           >
-            <Image
-              alt="NativeBase Startup+ "
-              resizeMode={"contain"}
-              source={require("../components/logo.png")}
-            />
-          </Center>
-          <SignInForm props={props} />
-        </Stack>
+            <Center
+              flex="1"
+              bg="#9D7463"
+              borderTopLeftRadius={{ base: "0", md: "xl" }}
+              borderBottomLeftRadius={{ base: "0", md: "xl" }}
+            >
+              <Image
+                alt="Codesom "
+                resizeMode={"contain"}
+                source={require("../components/logo.png")}
+              />
+            </Center>
+            <SignInForm props={props} />
+          </Stack>
+        </KeyboardAvoidingView>
       </Center>
     </>
   );

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, StatusBar, Alert, FlatList, View } from "react-native";
-import { NativeBaseProvider, Box, Center, Flex } from "native-base";
+import { Alert } from "react-native";
+import {
+  StatusBar,
+  NativeBaseProvider,
+  Box,
+  Center,
+  Flex,
+  Stack,
+  Text,
+  HStack,
+  VStack,
+} from "native-base";
 import EmployeeServices from "../services/employee.service";
 import deviceStorage from "../services/deviceStorage";
 import { Navigation } from "hooks/navigation";
@@ -37,30 +47,35 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   }, []);
   return (
     <>
-      <Box flex={1} bg="white" safeAreaTop width="100%" alignSelf="center">
-        <Center>
-          <Flex width="100%" direction="row">
-            <Flex width="200" background="red"></Flex>
-            <Flex width="100%" background="green"></Flex>
-          </Flex>
-        </Center>
-      </Box>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <Box safeAreaTop bg="coolGray.400" />
+      <Center flex="1" bg="#F00">
+        <HStack w="100%" flex="1" bg="#FFCC00">
+          <HStack w="100%" flex="3" bg="#FF9CAA"></HStack>
+          <HStack w="100%" flex="1" bg="#FFAA99">
+            <VStack
+              w="100%"
+              flex="1"
+              bg="#FF9CC0"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text fontSize="48">จำนวน</Text>
+              <Box flex="4" w="100%" h="100%" bg="#FFF" justifyContent="center">
+                <Text fontSize="xl">ไอติมเบนยา</Text>
+                <Text fontSize="xl">asd</Text>
+                <Text fontSize="xl">asd</Text>
+              </Box>
+            </VStack>
+          </HStack>
+        </HStack>
+      </Center>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "grey",
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-});
 
 export default MainMenuScreen;
