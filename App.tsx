@@ -51,25 +51,30 @@ const theme = extendTheme({
   },
 });
 
-const HomeTabs: React.FC<Props> = () => {
+const HomeTabs: React.FC<Props> = ({ props }: any) => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({ focused, route }) => ({
         headerShown: false,
         tabBarActiveTintColor: "tomato",
         tabBarInactiveTintColor: "white",
         tabBarActiveBackgroundColor: "white",
-        tabBarLabelStyle: { fontFamily: "Mitr-Regular",fontSize: 14 },
+        tabBarInactiveBackgroundColor: "#FFCB9B",
+        tabBarLabelStyle: {
+          fontFamily: "Mitr-Regular",
+          fontSize: 14,
+          marginBottom: 10,
+        },
         tabBarLabelPosition: "below-icon",
         tabBarStyle: {
-          paddingLeft: 200,
-          paddingRight: 200,
           paddingTop: 0,
           marginTop: 0,
           borderTopWidth: 0,
           backgroundColor: "#ff9c00",
-          elevation: 0,
-          height: 60
+          height: 80,
+        },
+        tabBarItemStyle: {
+          elevation: 5,
         },
       })}
     >
