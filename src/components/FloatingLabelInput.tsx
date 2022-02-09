@@ -60,7 +60,7 @@ export default class FloatingLabelInput extends Component<any, any> {
 
       marginTop: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [-4, 0],
+        outputRange: [-2, 0],
       }),
       fontFamily: "Mitr-Medium",
       color: this.props.labelColor,

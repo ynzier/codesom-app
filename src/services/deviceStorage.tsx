@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const deviceStorage = {
-  async setToken(value: string): void {
+  async setToken(value: string): Promise<void> {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem("accessToken", jsonValue);
@@ -9,7 +9,7 @@ const deviceStorage = {
       // save error
     }
   },
-  async loadJWT(): string {
+  async loadJWT(): Promise<string | void> {
     try {
       await AsyncStorage.getItem("accessToken", (error: any, result: any) => {
         if (result) {

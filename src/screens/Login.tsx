@@ -4,29 +4,22 @@ import {
   HStack,
   VStack,
   Text,
-  Link,
-  Checkbox,
   Divider,
   Image,
-  useColorModeValue,
   IconButton,
   KeyboardAvoidingView,
   Icon,
-  Pressable,
   Center,
-  Hidden,
   StatusBar,
   Stack,
   Box,
 } from "native-base";
-import { Alert } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import { Alert, Platform } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 
 import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export function SignInForm({ props }: any) {
   // add next router here
@@ -140,7 +133,7 @@ export function SignInForm({ props }: any) {
                 bg="altred"
                 _pressed={{ bg: "#922339" }}
                 onPress={() => {
-                  _onLoginPressed();
+                  void _onLoginPressed();
                 }}
               >
                 SIGN IN

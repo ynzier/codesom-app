@@ -1,52 +1,65 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { useState, useEffect } from "react";
-import { Alert } from "react-native";
+import { Alert, Dimensions } from "react-native";
 import {
   StatusBar,
-  NativeBaseProvider,
   Box,
   Center,
-  Flex,
-  Stack,
-  Text,
   HStack,
-  KeyboardAvoidingView,
-  FlatList,
   VStack,
-  Skeleton,
-  Avatar,
-  Spacer,
-  ScrollView,
+  FlatList,
+  Text,
+  View,
 } from "native-base";
 import EmployeeServices from "../services/employee.service";
-import deviceStorage from "../services/deviceStorage";
-import { Navigation } from "hooks/navigation";
+import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
-export type Props = {
+import axios, { AxiosError } from "axios";
+
+interface Props {
   navigation: Navigation;
-};
+}
+
+let { WIDTH } = Dimensions.get("window");
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const [empData, setempData] = useState([]);
-  useEffect(async () => {
-    await EmployeeServices.getAllEmployeeInBranch()
-      .then((res: array) => {
-        console.log(res.data);
-        setempData(res.data);
-      })
-      .catch((error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        Alert.alert("แจ้งเตือน", resMessage, [
-          {
-            text: "ยืนยัน",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "destructive",
-          },
-        ]);
-      });
+
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e: any) => {
+        e.preventDefault();
+        return;
+      }),
+    [navigation]
+  );
+
+  useEffect(() => {
+    async () => {
+      await EmployeeServices.getAllEmployeeInBranch()
+        .then((res) => {
+          console.log(res.data);
+          setempData(res.data);
+        })
+        .catch((error: AxiosError) => {
+          const resMessage: string =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          Alert.alert("แจ้งเตือน", resMessage, [
+            {
+              text: "ยืนยัน",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "destructive",
+            },
+          ]);
+        });
+    };
 
     console.log("main screen");
     return () => {};
@@ -54,9 +67,15 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   type mockData = {
     prId: string;
     prName: string;
-    prPrice: number;
-    prCount: number;
-  };
+    prPrice: string;
+    prCount: string;
+  }[];
+  interface IDataArray {
+    prId: string;
+    prName: string;
+    prPrice: string;
+    prCount: string;
+  }
   const mockData: mockData = [
     { prId: "1", prName: "ไอติมเบนยา", prPrice: "200.00", prCount: "1" },
     { prId: "2", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
@@ -87,7 +106,17 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
         <HStack w="100%" flex="1">
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             <HStack w="100%" flex="1" bg="#F00"></HStack>
-            <HStack w="100%" flex="3"></HStack>
+            <HStack w="100%" flex="3">
+              <FlatList
+                data={mockData}
+                flex="1"
+                numColumns={3}
+                overScrollMode="never"
+                ItemSeparatorComponent={() => <View w="16" bg="#FF99CC" />}
+                renderItem={({ item }) => <Text>{item.prName}</Text>}
+                keyExtractor={(item) => item.prId}
+              />
+            </HStack>
           </VStack>
 
           {/*Sidebar Component */}

@@ -1,23 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
-  Center,
-  Flex,
-  Stack,
   Text,
   HStack,
   FlatList,
   Pressable,
+  Button,
   VStack,
   Skeleton,
-  Spacer,
   Input,
+  Icon,
 } from "native-base";
+import { Platform } from "react-native";
+import IconCart from "./IconCart";
 
 type Props = { mockData: any };
-
+interface IDataArray {
+  prId: string;
+  prName: string;
+  prPrice: string;
+  prCount: string;
+}
 const Sidebar = (props: Props) => {
   const [data, setData] = useState(props.mockData);
+  const [sumAll, setSumAll] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState("0");
+  const [totalVat, setTotalVat] = useState("0");
+  const [total, setTotal] = useState("0");
+  useEffect(() => {
+    const sum: number = data
+      .map(
+        (item: { prPrice: string; prCount: string }) =>
+          parseFloat(item.prPrice) * parseInt(item.prCount)
+      )
+      .reduce((prev: any, curr: any) => prev + curr, 0)
+      .toFixed(2);
+    setSumAll(sum);
+    const discount = 0.0;
+    setTotalDiscount(discount.toFixed(2));
+    const vat = (sum - discount) * 0.07;
+    setTotalVat(vat.toFixed(2));
+    setTotal((sum - discount + vat).toFixed(2));
+
+    return () => {};
+  }, [data]);
 
   return (
     <HStack w="100%" flex="1">
@@ -41,7 +67,13 @@ const Sidebar = (props: Props) => {
             data={data}
             flex="1"
             overScrollMode="never"
-            renderItem={({ item, index }) => (
+            renderItem={({
+              item,
+              index,
+            }: {
+              item: IDataArray;
+              index: number;
+            }) => (
               <Box
                 borderWidth="1"
                 borderRadius="24"
@@ -52,8 +84,8 @@ const Sidebar = (props: Props) => {
                 mx="4"
                 my="1"
               >
-                <HStack space={3} justifyContent="space-between">
-                  <Skeleton flex="3" rounded="full" />
+                <HStack space={3} justifyContent="center">
+                  <Skeleton mt="1" flex={{ md: 3, xl: 2 }} rounded="full" />
                   <VStack w="100%" flex="6" mr="0">
                     <Text
                       fontFamily="mono"
@@ -90,15 +122,15 @@ const Sidebar = (props: Props) => {
                       flex="2"
                       h="80%"
                       borderLeftRadius="lg"
-                      borderTopWidth="2"
-                      borderLeftWidth="2"
-                      borderBottomWidth="2"
+                      borderTopWidth="1"
+                      borderLeftWidth="1"
+                      borderBottomWidth="1"
                       alignItems="center"
                       justifyContent="center"
                     >
                       <Pressable
                         onPress={() => {
-                          if (item.prCount - 1 > 0) {
+                          if (parseInt(item.prCount) - 1 > 0) {
                             let temp = parseInt(item.prCount);
                             temp = temp - 1;
                             setData(
@@ -119,7 +151,7 @@ const Sidebar = (props: Props) => {
                     <Box
                       h="100%"
                       flex="5"
-                      borderWidth="1"
+                      borderWidth="2"
                       borderRadius="8"
                       alignSelf="center"
                       justifyContent="center"
@@ -150,13 +182,12 @@ const Sidebar = (props: Props) => {
                       />
                     </Box>
                     <Box
-                      bg="#F00"
                       flex="2"
                       h="80%"
                       borderRightRadius="lg"
-                      borderRightWidth="2"
-                      borderTopWidth="2"
-                      borderBottomWidth="2"
+                      borderRightWidth="1"
+                      borderTopWidth="1"
+                      borderBottomWidth="1"
                       alignItems="center"
                       justifyContent="center"
                     >
@@ -185,8 +216,60 @@ const Sidebar = (props: Props) => {
             keyExtractor={(item) => item.prId}
           />
         </Box>
-        <Box flex="2" w="100%" h="100%" bg="#FFF"></Box>
-        <Box flex="1" w="100%" h="100%" bg="#FFF"></Box>
+        <Box
+          flex="2"
+          w={{ md: "90%", xl: "80%" }}
+          h="100%"
+          bg="#FFF"
+          justifyContent="center"
+        >
+          <VStack>
+            <HStack>
+              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
+                ราคารวม
+              </Text>
+              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
+                {sumAll} บาท
+              </Text>
+            </HStack>
+            <HStack>
+              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
+                ส่วนลด
+              </Text>
+              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
+                {totalDiscount} บาท
+              </Text>
+            </HStack>
+            <HStack>
+              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
+                ภาษี 7%
+              </Text>
+              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
+                {totalVat} บาท
+              </Text>
+            </HStack>
+            <HStack>
+              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
+                ราคาสุทธิ
+              </Text>
+              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
+                {total} บาท
+              </Text>
+            </HStack>
+          </VStack>
+        </Box>
+        <Box flex="1" w="100%" h="100%" bg="#FFF">
+          <Button
+            borderRadius="xl"
+            variant="outline"
+            borderColor="#FF9C00"
+            mx="4"
+            _text={{ fontSize: 20, color: "#FF9C00" }}
+            startIcon={<Icon as={IconCart} name="email" size={5} />}
+          >
+            จ่ายตัง
+          </Button>
+        </Box>
       </VStack>
     </HStack>
   );

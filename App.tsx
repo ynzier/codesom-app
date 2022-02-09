@@ -3,15 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme } from "native-base";
-import Login from "./screens/Login";
+import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import MainMenuScreen from "./screens/MainMenuScreen";
-import SecondScreen from "./screens/SecondScreen";
+import MainMenuScreen from "./src/screens/MainMenuScreen";
+import SecondScreen from "./src/screens/SecondScreen";
 import AppLoading from "expo-app-loading";
-import useFonts from "./hooks/useFonts";
-import deviceStorage from "./services/deviceStorage";
+import useFonts from "./src/hooks/useFonts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
@@ -29,7 +28,6 @@ const theme = extendTheme({
       },
       300: {
         normal: "Mitr-Light",
-        italic: "Roboto-LightItalic",
       },
       400: {
         normal: "Mitr-Regular",
@@ -50,11 +48,13 @@ const theme = extendTheme({
     mono: "Mitr",
   },
 });
-
-const HomeTabs: React.FC<Props> = ({ props }: any) => {
+interface Props {
+  props: any;
+}
+const HomeTabs: React.FC<Props> = ({ props }) => {
   return (
     <Tab.Navigator
-      screenOptions={({ focused, route }) => ({
+      screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: "tomato",
         tabBarInactiveTintColor: "white",
@@ -77,6 +77,7 @@ const HomeTabs: React.FC<Props> = ({ props }: any) => {
           elevation: 5,
         },
       })}
+      backBehavior="none"
     >
       <Tab.Screen
         name="MainMenuScreen"
@@ -166,15 +167,17 @@ const App: React.FC<Props> = () => {
     await useFonts();
   };
 
-  useEffect(async () => {
-    await AsyncStorage.getItem("accessToken", (error: any, result: any) => {
-      if (result) {
-        setAccessToken(result);
-      } else {
-        console.log("error1:", JSON.stringify(error));
-        return;
-      }
-    });
+  useEffect(() => {
+    async () => {
+      await AsyncStorage.getItem("accessToken", (error: any, result: any) => {
+        if (result) {
+          setAccessToken(result);
+        } else {
+          console.log("error1:", JSON.stringify(error));
+          return;
+        }
+      });
+    };
 
     return () => {};
   }, [accessToken]);
