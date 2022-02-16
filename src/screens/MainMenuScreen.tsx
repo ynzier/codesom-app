@@ -65,31 +65,61 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     return () => {};
   }, []);
   type mockData = {
+    key: number;
     prId: string;
     prName: string;
     prPrice: string;
     prCount: string;
   }[];
-  interface IDataArray {
-    prId: string;
-    prName: string;
-    prPrice: string;
-    prCount: string;
-  }
   const mockData: mockData = [
-    { prId: "1", prName: "ไอติมเบนยา", prPrice: "200.00", prCount: "1" },
-    { prId: "2", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "22", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "23", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "245", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "21", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "26", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "29", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    { prId: "27", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
     {
-      prId: "3",
-      prName: "น้ำส้มเบนยาาาาาาาา",
+      key: 1,
+      prId: "1",
+      prName: "ไอติมเบนยา",
       prPrice: "200.00",
+      prCount: "1",
+    },
+    { key: 2, prId: "2", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
+    {
+      key: 3,
+      prId: "22",
+      prName: "เบนยาปั่น",
+      prPrice: "210.00",
+      prCount: "1",
+    },
+    {
+      key: 4,
+      prId: "23",
+      prName: "เบนยาปั่น",
+      prPrice: "210.00",
+      prCount: "1",
+    },
+    {
+      key: 5,
+      prId: "245",
+      prName: "เบนยาปั่น",
+      prPrice: "210.00",
+      prCount: "1",
+    },
+    {
+      key: 6,
+      prId: "21",
+      prName: "เบนยาปั่น",
+      prPrice: "210.00",
+      prCount: "1",
+    },
+    {
+      key: 7,
+      prId: "26",
+      prName: "เบนยาปั่น",
+      prPrice: "210.00",
+      prCount: "1",
+    },
+    {
+      key: 8,
+      prId: "29",
+      prName: "เบนยาปั่น",
+      prPrice: "210.00",
       prCount: "1",
     },
   ];

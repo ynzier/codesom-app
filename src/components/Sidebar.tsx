@@ -3,19 +3,20 @@ import {
   Box,
   Text,
   HStack,
-  FlatList,
   Pressable,
   Button,
   VStack,
-  Skeleton,
   Input,
   Icon,
 } from "native-base";
-import { Platform } from "react-native";
+import { SwipeListView } from "react-native-swipe-list-view";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "./IconCart";
+import Feather from "react-native-vector-icons/Feather";
 
 type Props = { mockData: any };
 interface IDataArray {
+  key: number;
   prId: string;
   prName: string;
   prPrice: string;
@@ -44,9 +45,40 @@ const Sidebar = (props: Props) => {
 
     return () => {};
   }, [data]);
-
+  const closeRow = (
+    rowMap: {
+      [x: string]: { closeRow: () => void } | { closeRow: () => void };
+    },
+    rowKey: number
+  ) => {
+    if (rowMap[rowKey]) {
+      rowMap[rowKey].closeRow();
+    }
+  };
+  const deleteRow = (
+    rowMap: { [x: string]: { closeRow: () => void } },
+    rowKey: number
+  ) => {
+    closeRow(rowMap, rowKey);
+    const newData = [...data];
+    const prevIndex = data.findIndex(
+      (item: { key: any }) => item.key === rowKey
+    );
+    newData.splice(prevIndex, 1);
+    setData(newData);
+  };
+  const renderHiddenItem = (data: { index: number }, rowMap: any) => (
+    <View style={styles.rowBack}>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => deleteRow(rowMap, data.index)}
+      >
+        <Feather name="trash-2" color="#000" size={32} />
+      </TouchableOpacity>
+    </View>
+  );
   return (
-    <HStack w="100%" flex="1">
+    <HStack w="100%" flex="1" bg="#FFF0D9">
       <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
         <Box
           flex="1"
@@ -62,11 +94,14 @@ const Sidebar = (props: Props) => {
           </Text>
         </Box>
         {/** Cart Item */}
-        <Box flex="6" w="100%" h="100%" bg="#FFF">
-          <FlatList
+        <Box flex="6" w="100%" h="100%" bg="#FFF0D9">
+          <SwipeListView
             data={data}
-            flex="1"
-            overScrollMode="never"
+            rightOpenValue={-60}
+            previewRowKey={"0"}
+            renderHiddenItem={renderHiddenItem}
+            previewOpenValue={-60}
+            previewOpenDelay={3000}
             renderItem={({
               item,
               index,
@@ -75,17 +110,15 @@ const Sidebar = (props: Props) => {
               index: number;
             }) => (
               <Box
-                borderWidth="1"
-                borderRadius="24"
-                borderColor="coolGray.200"
-                pl="3"
-                pr="4"
+                borderWidth="0"
+                borderRadius="18"
+                bg="#97515F"
+                px="5"
                 py="2"
                 mx="4"
                 my="1"
               >
                 <HStack space={3} justifyContent="center">
-                  <Skeleton mt="1" flex={{ md: 3, xl: 2 }} rounded="full" />
                   <VStack w="100%" flex="6" mr="0">
                     <Text
                       fontFamily="mono"
@@ -94,7 +127,7 @@ const Sidebar = (props: Props) => {
                         md: "lg",
                         xl: "xl",
                       }}
-                      color="coolGray.800"
+                      color="#FFF"
                       numberOfLines={1}
                     >
                       {item.prName}
@@ -102,29 +135,26 @@ const Sidebar = (props: Props) => {
                     <Text
                       fontFamily="mono"
                       fontWeight={400}
-                      color="coolGray.600"
+                      color="#FFF"
                       numberOfLines={1}
                     >
                       {item.prPrice} บาท/รายการ
                     </Text>
                   </VStack>
                   <Box
-                    flex="6"
-                    h="12"
-                    borderRightRadius="lg"
-                    borderLeftRadius="xl"
+                    flex="5"
+                    h="10"
+                    mt="1"
                     justifyContent="center"
+                    borderWidth={1}
+                    borderRadius="24px"
+                    borderColor="#FFFDFA"
                     alignItems="center"
                     flexDirection="row"
                   >
                     <Box
-                      bg="#FFF"
-                      flex="2"
-                      h="80%"
-                      borderLeftRadius="lg"
-                      borderTopWidth="1"
-                      borderLeftWidth="1"
-                      borderBottomWidth="1"
+                      h="100%"
+                      flex="1"
                       alignItems="center"
                       justifyContent="center"
                     >
@@ -145,14 +175,15 @@ const Sidebar = (props: Props) => {
                           }
                         }}
                       >
-                        <Text>-</Text>
+                        <Text color="#FFF">-</Text>
                       </Pressable>
                     </Box>
                     <Box
                       h="100%"
-                      flex="5"
-                      borderWidth="2"
-                      borderRadius="8"
+                      flex="2"
+                      borderLeftWidth={1}
+                      borderRightWidth={1}
+                      borderColor="#FFFDFA"
                       alignSelf="center"
                       justifyContent="center"
                     >
@@ -162,6 +193,7 @@ const Sidebar = (props: Props) => {
                         }
                         fontSize="14"
                         textAlign="center"
+                        color="#FFF"
                         alignSelf="center"
                         borderWidth="0"
                         value={item.prCount}
@@ -182,12 +214,8 @@ const Sidebar = (props: Props) => {
                       />
                     </Box>
                     <Box
-                      flex="2"
-                      h="80%"
-                      borderRightRadius="lg"
-                      borderRightWidth="1"
-                      borderTopWidth="1"
-                      borderBottomWidth="1"
+                      flex="1"
+                      h="100%"
                       alignItems="center"
                       justifyContent="center"
                     >
@@ -206,21 +234,21 @@ const Sidebar = (props: Props) => {
                           );
                         }}
                       >
-                        <Text>+</Text>
+                        <Text color="#FFF">+</Text>
                       </Pressable>
                     </Box>
                   </Box>
                 </HStack>
               </Box>
             )}
-            keyExtractor={(item) => item.prId}
+            keyExtractor={(item, index) => "key" + index}
           />
         </Box>
         <Box
           flex="2"
           w={{ md: "90%", xl: "80%" }}
           h="100%"
-          bg="#FFF"
+          bg="#FFF0D9"
           justifyContent="center"
         >
           <VStack>
@@ -258,21 +286,55 @@ const Sidebar = (props: Props) => {
             </HStack>
           </VStack>
         </Box>
-        <Box flex="1" w="100%" h="100%" bg="#FFF">
+        <Box flex="1" w="100%" h="100%" bg="#FFF0D9">
           <Button
             borderRadius="xl"
-            variant="outline"
-            borderColor="#FF9C00"
+            variant="solid"
+            colorScheme="emerald"
             mx="4"
-            _text={{ fontSize: 20, color: "#FF9C00" }}
-            startIcon={<Icon as={IconCart} name="email" size={5} />}
+            size="md"
+            _text={{ fontSize: 20, color: "#FFF" }}
+            startIcon={<Icon as={IconCart} color="white" size={5} />}
           >
-            จ่ายตัง
+            ชำระเงิน
           </Button>
         </Box>
       </VStack>
     </HStack>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    flex: 1,
+  },
+  backTextWhite: {
+    color: "#FFF",
+  },
+  rowBack: {
+    alignItems: "center",
+    backgroundColor: "#FFF0D9",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 15,
+  },
+  backRightBtn: {
+    alignItems: "center",
+    bottom: 0,
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    width: 75,
+  },
+  backRightBtnLeft: {
+    backgroundColor: "blue",
+    right: 75,
+  },
+  backRightBtnRight: {
+    backgroundColor: "#FFF0D9",
+    right: 0,
+  },
+});
 
 export default Sidebar;
