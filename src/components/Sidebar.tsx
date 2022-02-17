@@ -7,10 +7,17 @@ import {
   Button,
   VStack,
   Input,
+  FlatList,
   Icon,
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import IconCart from "./IconCart";
 import Feather from "react-native-vector-icons/Feather";
 
@@ -23,13 +30,14 @@ interface IDataArray {
   prCount: string;
 }
 const Sidebar = (props: Props) => {
-  const [data, setData] = useState(props.mockData);
+  const [mockData, setMockData] = useState(props.mockData);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
+
   useEffect(() => {
-    const sum: number = data
+    const sum: number = mockData
       .map(
         (item: { prPrice: string; prCount: string }) =>
           parseFloat(item.prPrice) * parseInt(item.prCount)
@@ -44,34 +52,170 @@ const Sidebar = (props: Props) => {
     setTotal((sum - discount + vat).toFixed(2));
 
     return () => {};
-  }, [data]);
+  }, [mockData]);
+
   const closeRow = (
-    rowMap: {
-      [x: string]: { closeRow: () => void } | { closeRow: () => void };
-    },
-    rowKey: number
+    rowMap: { [x: string]: { closeRow: () => void } },
+    rowKey: string | number
   ) => {
     if (rowMap[rowKey]) {
       rowMap[rowKey].closeRow();
     }
   };
-  const deleteRow = (
-    rowMap: { [x: string]: { closeRow: () => void } },
-    rowKey: number
-  ) => {
+
+  const deleteRow = (rowMap: any, rowKey: any) => {
     closeRow(rowMap, rowKey);
-    const newData = [...data];
-    const prevIndex = data.findIndex(
+    const newData = [...mockData];
+    const prevIndex = mockData.findIndex(
       (item: { key: any }) => item.key === rowKey
     );
     newData.splice(prevIndex, 1);
-    setData(newData);
+    setMockData(newData);
   };
-  const renderHiddenItem = (data: { index: number }, rowMap: any) => (
+
+  const renderItem = (data: {
+    item: { key: number; prName: string; prPrice: string; prCount: string };
+    index: string | number;
+  }) => (
+    <Box
+      borderWidth="0"
+      borderRadius="18"
+      bg="#97515F"
+      px="5"
+      py="2"
+      mx="4"
+      my="1"
+    >
+      <HStack space={3} justifyContent="center">
+        <VStack w="100%" flex="6" mr="0">
+          <Text
+            fontFamily="mono"
+            fontWeight={600}
+            fontSize={{
+              md: "lg",
+              xl: "xl",
+            }}
+            color="#FFF"
+            numberOfLines={1}
+          >
+            {data.item.prName}
+          </Text>
+          <Text
+            fontFamily="mono"
+            fontWeight={400}
+            color="#FFF"
+            numberOfLines={1}
+          >
+            {data.item.prPrice} บาท/รายการ
+          </Text>
+        </VStack>
+        <Box
+          flex="5"
+          h="10"
+          mt="1"
+          justifyContent="center"
+          borderWidth={1}
+          borderRadius="24px"
+          borderColor="#FFFDFA"
+          alignItems="center"
+          flexDirection="row"
+        >
+          <Box h="100%" flex="1" alignItems="center" justifyContent="center">
+            <Pressable
+              style={{
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                if (parseInt(data.item.prCount) - 1 > 0) {
+                  let temp = parseInt(data.item.prCount);
+                  temp = temp - 1;
+
+                  setMockData(
+                    Object.values({
+                      ...mockData,
+                      [data.index]: {
+                        ...mockData[data.index],
+                        prCount: temp.toString(),
+                      },
+                    })
+                  );
+                }
+              }}
+            >
+              <Text color="#FFF">-</Text>
+            </Pressable>
+          </Box>
+          <Box
+            h="100%"
+            flex="2"
+            borderLeftWidth={1}
+            borderRightWidth={1}
+            borderColor="#FFFDFA"
+            alignSelf="center"
+            justifyContent="center"
+          >
+            <Input
+              keyboardType={Platform.OS === "ios" ? "phone-pad" : "numeric"}
+              fontSize="14"
+              textAlign="center"
+              color="#FFF"
+              alignSelf="center"
+              borderWidth="0"
+              value={data.item.prCount}
+              onChangeText={(text) => {
+                const onlyDigits = text.replace(/\D/g, "");
+                const prCount = onlyDigits;
+
+                setMockData(
+                  Object.values({
+                    ...mockData,
+                    [data.index]: {
+                      ...mockData[data.index],
+                      prCount: prCount.toString(),
+                    },
+                  })
+                );
+              }}
+            />
+          </Box>
+          <Box flex="1" h="100%" alignItems="center" justifyContent="center">
+            <Pressable
+              style={{
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                let temp = parseInt(data.item.prCount);
+                temp = temp + 1;
+                setMockData(
+                  Object.values({
+                    ...mockData,
+                    [data.index]: {
+                      ...mockData[data.index],
+                      prCount: temp.toString(),
+                    },
+                  })
+                );
+              }}
+            >
+              <Text color="#FFF">+</Text>
+            </Pressable>
+          </Box>
+        </Box>
+      </HStack>
+    </Box>
+  );
+
+  const renderHiddenItem = (data: { item: { key: any } }, rowMap: any) => (
     <View style={styles.rowBack}>
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnRight]}
-        onPress={() => deleteRow(rowMap, data.index)}
+        onPress={() => deleteRow(rowMap, data.item.key)}
       >
         <Feather name="trash-2" color="#000" size={32} />
       </TouchableOpacity>
@@ -90,158 +234,20 @@ const Sidebar = (props: Props) => {
         >
           <Text fontSize="48">รายการ</Text>
           <Text fontSize="48" marginLeft="10">
-            {data.length}
+            {mockData.length}
           </Text>
         </Box>
         {/** Cart Item */}
         <Box flex="6" w="100%" h="100%" bg="#FFF0D9">
           <SwipeListView
-            data={data}
+            data={mockData}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
             rightOpenValue={-60}
             previewRowKey={"0"}
-            renderHiddenItem={renderHiddenItem}
-            previewOpenValue={-60}
+            previewOpenValue={-40}
             previewOpenDelay={3000}
-            renderItem={({
-              item,
-              index,
-            }: {
-              item: IDataArray;
-              index: number;
-            }) => (
-              <Box
-                borderWidth="0"
-                borderRadius="18"
-                bg="#97515F"
-                px="5"
-                py="2"
-                mx="4"
-                my="1"
-              >
-                <HStack space={3} justifyContent="center">
-                  <VStack w="100%" flex="6" mr="0">
-                    <Text
-                      fontFamily="mono"
-                      fontWeight={600}
-                      fontSize={{
-                        md: "lg",
-                        xl: "xl",
-                      }}
-                      color="#FFF"
-                      numberOfLines={1}
-                    >
-                      {item.prName}
-                    </Text>
-                    <Text
-                      fontFamily="mono"
-                      fontWeight={400}
-                      color="#FFF"
-                      numberOfLines={1}
-                    >
-                      {item.prPrice} บาท/รายการ
-                    </Text>
-                  </VStack>
-                  <Box
-                    flex="5"
-                    h="10"
-                    mt="1"
-                    justifyContent="center"
-                    borderWidth={1}
-                    borderRadius="24px"
-                    borderColor="#FFFDFA"
-                    alignItems="center"
-                    flexDirection="row"
-                  >
-                    <Box
-                      h="100%"
-                      flex="1"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Pressable
-                        onPress={() => {
-                          if (parseInt(item.prCount) - 1 > 0) {
-                            let temp = parseInt(item.prCount);
-                            temp = temp - 1;
-                            setData(
-                              Object.values({
-                                ...data,
-                                [index]: {
-                                  ...data[index],
-                                  prCount: temp.toString(),
-                                },
-                              })
-                            );
-                          }
-                        }}
-                      >
-                        <Text color="#FFF">-</Text>
-                      </Pressable>
-                    </Box>
-                    <Box
-                      h="100%"
-                      flex="2"
-                      borderLeftWidth={1}
-                      borderRightWidth={1}
-                      borderColor="#FFFDFA"
-                      alignSelf="center"
-                      justifyContent="center"
-                    >
-                      <Input
-                        keyboardType={
-                          Platform.OS === "ios" ? "phone-pad" : "numeric"
-                        }
-                        fontSize="14"
-                        textAlign="center"
-                        color="#FFF"
-                        alignSelf="center"
-                        borderWidth="0"
-                        value={item.prCount}
-                        onChangeText={(text) => {
-                          const onlyDigits = text.replace(/\D/g, "");
-                          item.prCount = onlyDigits;
-
-                          setData(
-                            Object.values({
-                              ...data,
-                              [index]: {
-                                ...data[index],
-                                prCount: item.prCount,
-                              },
-                            })
-                          );
-                        }}
-                      />
-                    </Box>
-                    <Box
-                      flex="1"
-                      h="100%"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Pressable
-                        onPress={() => {
-                          let temp = parseInt(item.prCount);
-                          temp = temp + 1;
-                          setData(
-                            Object.values({
-                              ...data,
-                              [index]: {
-                                ...data[index],
-                                prCount: temp.toString(),
-                              },
-                            })
-                          );
-                        }}
-                      >
-                        <Text color="#FFF">+</Text>
-                      </Pressable>
-                    </Box>
-                  </Box>
-                </HStack>
-              </Box>
-            )}
-            keyExtractor={(item, index) => "key" + index}
+            keyExtractor={(item) => item.key}
           />
         </Box>
         <Box
@@ -308,13 +314,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flex: 1,
   },
-  backTextWhite: {
-    color: "#FFF",
-  },
   rowBack: {
     alignItems: "center",
-    backgroundColor: "#FFF0D9",
     flex: 1,
+    marginLeft: 24,
+    marginTop: 4,
+    marginBottom: 4,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingLeft: 15,
@@ -325,15 +330,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "absolute",
     top: 0,
-    width: 75,
-  },
-  backRightBtnLeft: {
-    backgroundColor: "blue",
-    right: 75,
+    width: "100%",
+    backgroundColor: "red",
   },
   backRightBtnRight: {
-    backgroundColor: "#FFF0D9",
-    right: 0,
+    alignItems: "flex-end",
+    backgroundColor: "red",
+    borderRadius: 24,
+    right: 16,
+    paddingRight: 16,
   },
 });
 
