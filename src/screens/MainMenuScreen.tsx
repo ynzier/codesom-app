@@ -19,6 +19,7 @@ import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
 import { AxiosError } from "axios";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MeneuList from "../components/MeneuList";
 
 interface Props {
   navigation: Navigation;
@@ -141,57 +142,58 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
               justifyContent="center"
               alignItems="center"
             >
-              <Text
-                color="white"
-                ml="8"
-                flex="1"
-                fontSize={24}
-                fontFamily="body"
-                fontWeight={600}
-              >
-                Codesom
-              </Text>
-              <Text
-                color="white"
-                fontSize={24}
-                fontFamily="body"
-                fontWeight={600}
-              >
-                เซ็นทรัลปิ่นเกล้า
-              </Text>
-              <Skeleton
-                mx="4"
-                borderWidth={1}
-                borderColor="white"
-                endColor="warmGray.50"
-                size="12"
-                rounded="full"
-              />
-              <MaterialIcons
-                name="notifications"
-                color="white"
-                size={48}
-                style={{ transform: [{ rotate: "10deg" }], marginRight: 24 }}
-              />
-              <Badge // bg="red.400"
-                colorScheme="danger"
-                rounded="full"
-                mb={4}
-                ml="-12"
-                mr={8}
-                zIndex={1}
-                variant="solid"
-                _text={{
-                  fontSize: 12,
-                }}
-                borderWidth="2"
-                borderColor="white"
-              >
-                2
-              </Badge>
+              <HStack w="95%" justifyContent="center" alignItems="center">
+                <Text
+                  color="white"
+                  flex="1"
+                  fontSize={24}
+                  fontFamily="body"
+                  fontWeight={600}
+                >
+                  Codesom
+                </Text>
+                <Text
+                  color="white"
+                  fontSize={24}
+                  fontFamily="body"
+                  fontWeight={600}
+                >
+                  เซ็นทรัลปิ่นเกล้า
+                </Text>
+                <Skeleton
+                  mx="4"
+                  borderWidth={1}
+                  borderColor="white"
+                  endColor="warmGray.50"
+                  size="12"
+                  rounded="full"
+                />
+                <MaterialIcons
+                  name="notifications"
+                  color="white"
+                  size={48}
+                  style={{ transform: [{ rotate: "10deg" }] }}
+                />
+                <Badge // bg="red.400"
+                  colorScheme="danger"
+                  rounded="full"
+                  mb={4}
+                  ml="-12"
+                  mr={8}
+                  zIndex={1}
+                  variant="solid"
+                  _text={{
+                    fontSize: 12,
+                  }}
+                  borderWidth="2"
+                  borderColor="white"
+                >
+                  2
+                </Badge>
+              </HStack>
             </HStack>
-            <VStack w="100%" flex="10">
-              <HStack w="100%" flex="1" alignItems="center" px="4">
+            <VStack w="100%" flex="10" alignItems="center">
+              <HStack w="100%" flex="1" alignItems="center" ml="5%">
                 <ScrollView
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
@@ -216,7 +218,16 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                   ))}
                 </ScrollView>
               </HStack>
-              <HStack flex="10" w="100%" bg="emerald.500"></HStack>
+              <VStack
+                alignSelf="center"
+                flex="10"
+                borderWidth={1}
+                w="95%"
+                borderRadius={5}
+                mb={{ md: "10%", xl: "6%" }}
+              >
+                <MeneuList />
+              </VStack>
             </VStack>
           </VStack>
 
