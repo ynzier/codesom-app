@@ -20,7 +20,6 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
-
 export function SignInForm({ props }: any) {
   // add next router here
   const [userName, setUserName] = useState("");
@@ -51,19 +50,28 @@ export function SignInForm({ props }: any) {
 
   return (
     <VStack
-      flex="1"
-      px="6"
-      py={{ base: "7", md: "12", xl: "0" }}
-      pb={{ xl: 4 }}
+      shadow={2}
+      flex={{ md: 1, xl: 0.5 }}
+      ml={{ md: 20, xl: 0 }}
+      mr={{ xl: 40 }}
+      borderRadius={10}
+      justifyContent="center"
       bg="#FFFDFA"
-      space="3"
-      justifyContent="space-between"
-      borderTopRightRadius={{ base: "2xl", md: "xl" }}
-      borderBottomRightRadius={{ base: "0", md: "xl" }}
-      borderTopLeftRadius={{ base: "2xl", md: "0" }}
     >
-      <Center pt={{ xl: "40" }}>
-        <VStack space="7" alignItems="center" justifyContent="center">
+      <Center>
+        <VStack
+          space="4"
+          alignItems="center"
+          justifyContent="center"
+          py={{ md: 8, xl: 0 }}
+        >
+          <Image
+            w={{ md: 100, xl: 150 }}
+            h={{ md: 100, xl: 150 }}
+            alt="Codesom "
+            resizeMode={"contain"}
+            source={require("../assets/logo-black.png")}
+          />
           <Text fontSize="lg" fontWeight="normal">
             เข้าสู่ระบบ
           </Text>
@@ -123,20 +131,22 @@ export function SignInForm({ props }: any) {
               </VStack>
               {/* Opening Link Tag navigateTo:"OTP" (react/Router) */}
               <Button
+                alignSelf="center"
                 mt="5"
-                size="md"
+                w="70%"
+                h="50px"
                 borderRadius="4"
                 _text={{
-                  fontWeight: "medium",
+                  fontSize: 18,
+                  fontWeight: "400",
                   color: "white",
                 }}
-                bg="altred"
-                _pressed={{ bg: "#922339" }}
+                colorScheme="altred"
                 onPress={() => {
                   void _onLoginPressed();
                 }}
               >
-                SIGN IN
+                เข้าสู่ระบบ
               </Button>
               {/* Closing Link Tag */}
               <HStack
@@ -155,23 +165,23 @@ export function SignInForm({ props }: any) {
             </VStack>
           </VStack>
         </VStack>
-      </Center>
-      <HStack
-        mb="4"
-        space="2"
-        safeAreaBottom
-        alignItems="center"
-        justifyContent="center"
-        mt={{ base: "auto" }}
-      >
-        <Text
-          _light={{ color: "coolGray.800" }}
-          _dark={{ color: "coolGray.400" }}
+        <HStack
+          mb="4"
+          space="2"
+          safeAreaBottom
+          alignItems="center"
+          justifyContent="center"
+          mt={{ base: "auto" }}
         >
-          Milo Team
-        </Text>
-        {/* Opening Link Tag navigateTo:"SignUp" */}
-      </HStack>
+          <Text
+            _light={{ color: "coolGray.800" }}
+            _dark={{ color: "coolGray.400" }}
+          >
+            Milo Team
+          </Text>
+          {/* Opening Link Tag navigateTo:"SignUp" */}
+        </HStack>
+      </Center>
     </VStack>
   );
 }
@@ -183,8 +193,8 @@ export default function SignIn(props: any) {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <Box safeAreaTop bg="rgba(249, 220, 194, 0.5)" />
-      <Center my="auto" bg="rgba(249, 220, 194, 0.5)" flex="1">
+      <Box safeAreaTop bg="cream" />
+      <Center my="auto" bg="cream" flex="1">
         <KeyboardAvoidingView
           h={{
             base: "400px",
@@ -195,20 +205,17 @@ export default function SignIn(props: any) {
           <Stack
             flexDirection={{ base: "column", md: "row" }}
             w="100%"
-            maxW={{ md: "800px", xl: "1200px" }}
-            h={{ md: "400px", xl: "600px" }}
+            h={{ md: "500px", xl: "600px" }}
             flex="0"
+            px="40"
           >
-            <Center
-              flex="1"
-              bg="#9D7463"
-              borderTopLeftRadius={{ base: "0", md: "xl" }}
-              borderBottomLeftRadius={{ base: "0", md: "xl" }}
-            >
+            <Center flex="1">
               <Image
+                w="80%"
+                h="80%"
                 alt="Codesom "
                 resizeMode={"contain"}
-                source={require("../components/logo.png")}
+                source={require("../assets/logo-white.png")}
               />
             </Center>
             <SignInForm props={props} />

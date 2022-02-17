@@ -7,28 +7,16 @@ import {
   Button,
   VStack,
   Input,
-  FlatList,
   Icon,
+  Divider,
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
-import {
-  Platform,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "./IconCart";
 import Feather from "react-native-vector-icons/Feather";
 
 type Props = { mockData: any };
-interface IDataArray {
-  key: number;
-  prId: string;
-  prName: string;
-  prPrice: string;
-  prCount: string;
-}
+
 const Sidebar = (props: Props) => {
   const [mockData, setMockData] = useState(props.mockData);
   const [sumAll, setSumAll] = useState(0);
@@ -80,7 +68,7 @@ const Sidebar = (props: Props) => {
     <Box
       borderWidth="0"
       borderRadius="18"
-      bg="#97515F"
+      bg="altred.500"
       px="5"
       py="2"
       mx="4"
@@ -238,6 +226,7 @@ const Sidebar = (props: Props) => {
           </Text>
         </Box>
         {/** Cart Item */}
+        <Divider thickness="1" mb={4} width="90%" bg="black" />
         <Box flex="6" w="100%" h="100%" bg="#FFF0D9">
           <SwipeListView
             data={mockData}
@@ -257,6 +246,7 @@ const Sidebar = (props: Props) => {
           bg="#FFF0D9"
           justifyContent="center"
         >
+          <Divider thickness="1" mb={2} width="100%" bg="black" />
           <VStack>
             <HStack>
               <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
@@ -292,15 +282,15 @@ const Sidebar = (props: Props) => {
             </HStack>
           </VStack>
         </Box>
-        <Box flex="1" w="100%" h="100%" bg="#FFF0D9">
+        <Box flex="1" w="100%" h="100%" bg="#FFF0D9" px="4" alignItems="center">
           <Button
             borderRadius="xl"
-            variant="solid"
-            colorScheme="emerald"
+            colorScheme="greenalt"
             mx="4"
-            size="md"
-            _text={{ fontSize: 20, color: "#FFF" }}
-            startIcon={<Icon as={IconCart} color="white" size={5} />}
+            w="100%"
+            h="75%"
+            _text={{ fontSize: 20, color: "white" }}
+            startIcon={<Icon as={IconCart} size={5} />}
           >
             ชำระเงิน
           </Button>
@@ -310,10 +300,6 @@ const Sidebar = (props: Props) => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    flex: 1,
-  },
   rowBack: {
     alignItems: "center",
     flex: 1,

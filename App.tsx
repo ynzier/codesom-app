@@ -6,18 +6,17 @@ import { NativeBaseProvider, extendTheme } from "native-base";
 import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
 import MainMenuScreen from "./src/screens/MainMenuScreen";
 import SecondScreen from "./src/screens/SecondScreen";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWindowDimensions } from "react-native";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const theme = extendTheme({
-  colors: { altred: "#97515F" },
   fontConfig: {
     Mitr: {
       100: {
@@ -40,6 +39,45 @@ const theme = extendTheme({
       },
     },
   },
+  colors: {
+    cream: "#F9DCC2",
+    browntheme: {
+      50: "#ffebe6",
+      100: "#e6d1cc",
+      200: "#d0b6af",
+      300: "#bb9b90",
+      400: "#a68172",
+      500: "#8d6559",
+      600: "#6f4b44",
+      700: "#50332f",
+      800: "#321c1b",
+      900: "#190100",
+    },
+    altred: {
+      50: "#ffeaf4",
+      100: "#e9cbd6",
+      200: "#d5abb8",
+      300: "#c28a9a",
+      400: "#af6a79",
+      500: "#95505e",
+      600: "#753d4d",
+      700: "#552c39",
+      800: "#351924",
+      900: "#1a040d",
+    },
+    greenalt: {
+      50: "#e0fdea",
+      100: "#bcf2cf",
+      200: "#94e8b5",
+      300: "#6cde9d",
+      400: "#44d486",
+      500: "#2bbb71",
+      600: "#1e9150",
+      700: "#126832",
+      800: "#043f18",
+      900: "#001702",
+    },
+  },
 
   // Make sure values below matches any of the keys in `fontConfig`
   fonts: {
@@ -52,14 +90,14 @@ interface Props {
   props: any;
 }
 const HomeTabs: React.FC<Props> = ({ props }) => {
+  const window = useWindowDimensions();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: "tomato",
-        tabBarInactiveTintColor: "white",
-        tabBarActiveBackgroundColor: "white",
-        tabBarInactiveBackgroundColor: "#FFCB9B",
+        tabBarActiveTintColor: "#9D7463",
+        tabBarInactiveTintColor: "#CFCFCF",
         tabBarLabelStyle: {
           fontFamily: "Mitr-Regular",
           fontSize: 14,
@@ -70,11 +108,13 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           paddingTop: 0,
           marginTop: 0,
           borderTopWidth: 0,
-          backgroundColor: "#ff9c00",
+          backgroundColor: "white",
           height: 80,
-        },
-        tabBarItemStyle: {
-          elevation: 5,
+          width: "auto",
+          paddingHorizontal: window.width < 1280 ? "10%" : "20%",
+          marginRight: window.width < 1280 ? "25%" : "20%",
+          position: "absolute",
+          elevation: 0,
         },
       })}
       backBehavior="none"
@@ -103,7 +143,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
         name="CategorieScreen"
         component={MainMenuScreen}
         options={{
-          tabBarLabel: "หมวดหมู่",
+          tabBarLabel: "ประเภท",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="category" color={color} size={size} />
           ),

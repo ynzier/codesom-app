@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { useState, useEffect } from "react";
-import { Alert, Dimensions } from "react-native";
+import { Alert } from "react-native";
 import {
   StatusBar,
   Box,
@@ -13,18 +8,22 @@ import {
   VStack,
   FlatList,
   Text,
+  Skeleton,
   View,
+  Badge,
+  Button,
+  ScrollView,
 } from "native-base";
 import EmployeeServices from "../services/employee.service";
 import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface Props {
   navigation: Navigation;
 }
 
-let { WIDTH } = Dimensions.get("window");
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const [empData, setempData] = useState([]);
 
@@ -64,14 +63,14 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     console.log("main screen");
     return () => {};
   }, []);
-  type mockData = {
+
+  const mockData: {
     key: number;
     prId: string;
     prName: string;
     prPrice: string;
     prCount: string;
-  }[];
-  const mockData: mockData = [
+  }[] = [
     {
       key: 1,
       prId: "1",
@@ -135,18 +134,90 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       <Center flex="1" bg="#FFF">
         <HStack w="100%" flex="1">
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
-            <HStack w="100%" flex="1" bg="#F00"></HStack>
-            <HStack w="100%" flex="3">
-              <FlatList
-                data={mockData}
+            <HStack
+              w="100%"
+              flex="1"
+              bg="browntheme.500"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text
+                color="white"
+                ml="8"
                 flex="1"
-                numColumns={3}
-                overScrollMode="never"
-                ItemSeparatorComponent={() => <View w="16" bg="#FF99CC" />}
-                renderItem={({ item }) => <Text>{item.prName}</Text>}
-                keyExtractor={(item) => item.prId}
+                fontSize={24}
+                fontFamily="body"
+                fontWeight={600}
+              >
+                Codesom
+              </Text>
+              <Text
+                color="white"
+                fontSize={24}
+                fontFamily="body"
+                fontWeight={600}
+              >
+                เซ็นทรัลปิ่นเกล้า
+              </Text>
+              <Skeleton
+                mx="4"
+                borderWidth={1}
+                borderColor="white"
+                endColor="warmGray.50"
+                size="12"
+                rounded="full"
               />
+              <MaterialIcons
+                name="notifications"
+                color="white"
+                size={48}
+                style={{ transform: [{ rotate: "10deg" }], marginRight: 24 }}
+              />
+              <Badge // bg="red.400"
+                colorScheme="danger"
+                rounded="full"
+                mb={4}
+                ml="-12"
+                mr={8}
+                zIndex={1}
+                variant="solid"
+                _text={{
+                  fontSize: 12,
+                }}
+                borderWidth="2"
+                borderColor="white"
+              >
+                2
+              </Badge>
             </HStack>
+            <VStack w="100%" flex="10">
+              <HStack w="100%" flex="1" alignItems="center" px="4">
+                <ScrollView
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                >
+                  {[
+                    "สินค้าขายดี",
+                    "โปรโมชั่น",
+                    "น้ำส้ม",
+                    "เกล็ดหิมะ",
+                    "ไอติม",
+                  ].map((item, i) => (
+                    <Box mr="4" w="216" key={i}>
+                      <Button
+                        h="50"
+                        borderRadius="xl"
+                        colorScheme="browntheme"
+                        size="lg"
+                      >
+                        {item}
+                      </Button>
+                    </Box>
+                  ))}
+                </ScrollView>
+              </HStack>
+              <HStack flex="10" w="100%" bg="emerald.500"></HStack>
+            </VStack>
           </VStack>
 
           {/*Sidebar Component */}
