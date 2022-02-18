@@ -223,6 +223,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 w="95%"
                 borderRadius={5}
                 mb={{ md: "10%", xl: "6%" }}
+                pr={2}
               >
                 <ProductList />
               </VStack>

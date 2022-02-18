@@ -29,26 +29,28 @@ const ProductList = (_props: Props) => {
         numColumns={3}
         data={productArray}
         keyExtractor={(item: any) => item.prId}
-        renderItem={(item: any, i: React.Key | null | undefined) => {
+        renderItem={(item: any, _i: React.Key | null | undefined) => {
           const data = item.item;
           return (
             <Box
               h={{ md: 140, xl: 260 }}
-              w={{ md: 200, xl: 440 }}
+              w={{ md: 180, xl: 440 }}
               flexDirection="row"
-              ml={{ md: 3, xl: 4 }}
+              ml={{ md: 6, xl: 6 }}
               mr={{ md: 16, xl: 4 }}
               mt={{ md: 4, xl: 2 }}
+              mb={{ md: 4, xl: 2 }}
               justifyContent="center"
               alignItems="center"
             >
               <Avatar
+                bg="#FFFDFA"
                 shadow={8}
                 alignSelf="center"
                 zIndex={2}
                 position="absolute"
                 left={0}
-                size={{ md: 140, xl: 260 }}
+                size={{ md: 140, xl: 240 }}
                 source={{
                   uri:
                     data.image && data.image.imgObj
@@ -57,23 +59,23 @@ const ProductList = (_props: Props) => {
                 }}
               />
               <Box
-                h={{ md: 100, xl: 160 }}
-                w={{ md: 210, xl: 220 }}
-                ml={{ md: 110, xl: 220 }}
-                pl={{ md: 4 }}
+                h={{ md: 110, xl: 170 }}
+                w={{ md: 170, xl: 250 }}
+                ml={{ md: 160, xl: 200 }}
+                pl={{ md: 10, xl: 8 }}
                 borderRadius={16}
                 borderWidth={1}
                 flexDirection="row"
               >
                 <VStack
-                  left={{ md: 20, xl: "20%" }}
-                  w="50%"
+                  pl={{ md: 18, xl: 8 }}
+                  pr={{ md: 2, xl: 4 }}
                   justifyContent="center"
                   fontSize={16}
                 >
                   <Text
                     fontWeight={400}
-                    fontSize={{ md: 12, xl: 16 }}
+                    fontSize={{ md: 12, xl: 18 }}
                     flexWrap="wrap"
                   >
                     {data.prName}
@@ -81,18 +83,18 @@ const ProductList = (_props: Props) => {
 
                   <Text
                     fontWeight={200}
-                    fontSize={{ md: 12, xl: 16 }}
+                    fontSize={{ md: 12, xl: 18 }}
                     flexWrap="wrap"
                   >
                     {data.prPrice} บาท/ถ้วย
                   </Text>
                   <Text
                     fontWeight={200}
-                    fontSize={{ md: 12, xl: 16 }}
+                    fontSize={{ md: 12, xl: 18 }}
                     flexWrap="wrap"
                     color="#ABBBC2"
                   >
-                    สินค้าคงเหลือ ? ถ้วย
+                    คงเหลือ 200 ถ้วย
                   </Text>
                 </VStack>
               </Box>
