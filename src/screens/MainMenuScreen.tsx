@@ -19,7 +19,7 @@ import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
 import { AxiosError } from "axios";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MeneuList from "../components/MeneuList";
+import ProductList from "../components/ProductList";
 
 interface Props {
   navigation: Navigation;
@@ -41,7 +41,6 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     async () => {
       await EmployeeServices.getAllEmployeeInBranch()
         .then((res) => {
-          console.log(res.data);
           setempData(res.data);
         })
         .catch((error: AxiosError) => {
@@ -219,14 +218,13 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 </ScrollView>
               </HStack>
               <VStack
-                alignSelf="center"
                 flex="10"
                 borderWidth={1}
                 w="95%"
                 borderRadius={5}
                 mb={{ md: "10%", xl: "6%" }}
               >
-                <MeneuList />
+                <ProductList />
               </VStack>
             </VStack>
           </VStack>

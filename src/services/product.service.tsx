@@ -1,14 +1,15 @@
 import http from "../../http-common";
-const prefix = "/employee";
+const prefix = "/product";
 import authHeader from "./auth-header";
 
-const getAllEmployeeInBranch = async () => {
+const getAllProducts = async () => {
   const xToken = await authHeader();
-  return http.get(prefix + "/getAllEmployeeInBranch", {
+  console.log(xToken);
+  return http.get(prefix + "/getAllProducts", {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
 
 export default {
-  getAllEmployeeInBranch,
+  getAllProducts,
 };
