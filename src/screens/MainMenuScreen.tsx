@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert } from "react-native";
+import { Alert, Animated } from "react-native";
 import {
   StatusBar,
   Box,
@@ -13,6 +13,7 @@ import {
   Badge,
   Button,
   ScrollView,
+  Pressable,
 } from "native-base";
 import EmployeeServices from "../services/employee.service";
 import { Navigation } from "../hooks/navigation";
@@ -20,6 +21,7 @@ import Sidebar from "../components/Sidebar";
 import { AxiosError } from "axios";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ProductList from "../components/ProductList";
+import { color } from "native-base/lib/typescript/theme/styled-system";
 
 interface Props {
   navigation: Navigation;
@@ -191,8 +193,18 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 </Badge>
               </HStack>
             </HStack>
-            <VStack w="100%" flex="10" alignItems="center">
-              <HStack w="100%" flex="1" alignItems="center" ml="5%">
+            <VStack
+              borderWidth={1}
+              w="95%"
+              borderRadius={5}
+              flex="10"
+              alignSelf="center"
+              alignItems="center"
+              mt="4"
+              mb={{ md: "10%", xl: "6%" }}
+              justifyContent="center"
+            >
+              <HStack flex="1" alignItems="center">
                 <ScrollView
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
@@ -203,28 +215,35 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                     "น้ำส้ม",
                     "เกล็ดหิมะ",
                     "ไอติม",
-                  ].map((item, i) => (
-                    <Box mr="4" w="216" key={i}>
-                      <Button
-                        h="50"
-                        borderRadius="xl"
-                        colorScheme="browntheme"
-                        size="lg"
+                  ].map((item, i) => {
+                    const borderColor = "#000";
+                    return (
+                      <Box
+                        key={i}
+                        borderBottomWidth="3"
+                        borderColor={borderColor}
+                        alignItems="center"
+                        p="3"
                       >
-                        {item}
-                      </Button>
-                    </Box>
-                  ))}
+                        <Pressable
+                          onPress={() => {
+                            console.log(i);
+                          }}
+                        >
+                          <Animated.Text
+                            style={{
+                              color: "#000",
+                            }}
+                          >
+                            {item}
+                          </Animated.Text>
+                        </Pressable>
+                      </Box>
+                    );
+                  })}
                 </ScrollView>
               </HStack>
-              <VStack
-                flex="10"
-                borderWidth={1}
-                w="95%"
-                borderRadius={5}
-                mb={{ md: "10%", xl: "6%" }}
-                pr={2}
-              >
+              <VStack flex="10" pr={2}>
                 <ProductList />
               </VStack>
             </VStack>
