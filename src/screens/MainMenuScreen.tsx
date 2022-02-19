@@ -28,8 +28,7 @@ interface Props {
 }
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
-  const [empData, setempData] = useState([]);
-
+  const [tabIndex, setTabIndex] = useState<number>(0);
   useEffect(
     () =>
       navigation.addListener("beforeRemove", (e: any) => {
@@ -40,28 +39,6 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   );
 
   useEffect(() => {
-    async () => {
-      await EmployeeServices.getAllEmployeeInBranch()
-        .then((res) => {
-          setempData(res.data);
-        })
-        .catch((error: AxiosError) => {
-          const resMessage: string =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          Alert.alert("แจ้งเตือน", resMessage, [
-            {
-              text: "ยืนยัน",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "destructive",
-            },
-          ]);
-        });
-    };
-
     console.log("main screen");
     return () => {};
   }, []);
@@ -208,43 +185,52 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 <ScrollView
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
+                  ml="2"
+                  borderBottomWidth={1}
+                  mr="2"
+                  borderColor="#B4B4B4"
                 >
-                  {[
-                    "สินค้าขายดี",
-                    "โปรโมชั่น",
-                    "น้ำส้ม",
-                    "เกล็ดหิมะ",
-                    "ไอติม",
-                  ].map((item, i) => {
-                    const borderColor = "#000";
-                    return (
-                      <Box
-                        key={i}
-                        borderBottomWidth="3"
-                        borderColor={borderColor}
-                        alignItems="center"
-                        p="3"
-                      >
-                        <Pressable
-                          onPress={() => {
-                            console.log(i);
-                          }}
+                  {["สินค้าขายดี", "โปรโมชั่น", "น้ำส้ม", "เกล็ดหิมะ"].map(
+                    (item, i) => {
+                      const borderColor = tabIndex == i ? "#9D7463" : "#B4B4B4";
+                      const fontWeight = tabIndex == i ? "#9D7463" : "#B4B4B4";
+                      return (
+                        <Box
+                          key={i}
+                          alignItems="center"
+                          p="4"
+                          zIndex={2}
+                          width="40"
+                          borderBottomWidth={tabIndex == i ? 3 : 0}
+                          borderBottomColor={borderColor}
                         >
-                          <Animated.Text
-                            style={{
-                              color: "#000",
+                          <Pressable
+                            onPress={() => {
+                              console.log(i);
+                              setTabIndex(i);
                             }}
                           >
-                            {item}
-                          </Animated.Text>
-                        </Pressable>
-                      </Box>
-                    );
-                  })}
+                            <Animated.Text
+                              style={{
+                                color: "#000",
+                                fontSize: 18,
+                                fontFamily:
+                                  tabIndex == i
+                                    ? "Mitr-Medium"
+                                    : "Mitr-Regular",
+                              }}
+                            >
+                              {item}
+                            </Animated.Text>
+                          </Pressable>
+                        </Box>
+                      );
+                    }
+                  )}
                 </ScrollView>
               </HStack>
-              <VStack flex="10" pr={2}>
-                <ProductList />
+              <VStack w="100%" flex="10">
+                <ProductList index={tabIndex} />
               </VStack>
             </VStack>
           </VStack>
