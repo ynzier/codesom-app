@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Animated } from "react-native";
 import {
   StatusBar,
   Box,
@@ -9,14 +8,13 @@ import {
   Text,
   Skeleton,
   Badge,
-  ScrollView,
-  Pressable,
 } from "native-base";
 import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ProductList from "../components/ProductList";
 import MainMenuTab from "../components/MainMenuTab";
+import branchService from "../services/branch.service";
 
 interface Props {
   navigation: Navigation;
@@ -24,12 +22,20 @@ interface Props {
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const [tabIndex, setTabIndex] = useState<number>(-1);
+  const [branchData, setBranchData] = useState([]);
   useEffect(() => {
     navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault();
       return;
     });
   }, [navigation]);
+
+  useEffect(() => {
+    branchService
+      .getCurrentBranch()
+      .then((res) => setBranchData(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
   const mockData: {
     key: number;
@@ -124,7 +130,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                   fontFamily="body"
                   fontWeight={600}
                 >
-                  เซ็นทรัลปิ่นเกล้า
+                  {branchData.brId} {branchData.brName}
                 </Text>
                 <Skeleton
                   mx="4"

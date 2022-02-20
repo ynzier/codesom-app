@@ -29,7 +29,7 @@ const deviceStorage = {
         console.log("log out");
       });
     } catch (error) {
-      console.log("AsyncStorage Error: " + error.message);
+      console.log("AsyncStorage Error: " + error);
     }
   },
 };

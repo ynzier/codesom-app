@@ -16,20 +16,19 @@ const MainMenuTab = ({
 }) => {
   const [productType, setProductType] = useState<productType[]>([]);
   useEffect(() => {
-    if (!productType) {
-      ProductService.getAllProductTypes()
-        .then((res) => {
-          if (res) {
-            const recData = res.data;
-            setProductType(recData);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    ProductService.getAllProductTypes()
+      .then((res) => {
+        if (res) {
+          const recData = res.data;
+          setProductType(recData);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     return () => {};
-  }, [productType, tabIndex]);
+  }, []);
   return (
     <ScrollView
       showsHorizontalScrollIndicator={false}
