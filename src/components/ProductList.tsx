@@ -34,6 +34,7 @@ const ProductList = (props: Props) => {
       .then((res) => {
         if (res) {
           const recData = res.data;
+          console.log(res.data[0]);
           setProductArray(recData);
         }
       })
@@ -45,7 +46,7 @@ const ProductList = (props: Props) => {
   }, []);
   useEffect(() => {
     const getFilter = (value: number) => {
-      if (value && value != 0) {
+      if (value && value != -1) {
         const filterTable = productArray.filter(
           (productArray) => productArray.prType == value
         );

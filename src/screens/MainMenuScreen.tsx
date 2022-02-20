@@ -1,47 +1,56 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Animated } from "react-native";
+import { Animated } from "react-native";
 import {
   StatusBar,
   Box,
   Center,
   HStack,
   VStack,
-  FlatList,
   Text,
   Skeleton,
-  View,
   Badge,
-  Button,
   ScrollView,
   Pressable,
 } from "native-base";
-import EmployeeServices from "../services/employee.service";
+import ProductService from "../services/product.service";
 import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
-import { AxiosError } from "axios";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ProductList from "../components/ProductList";
-import { color } from "native-base/lib/typescript/theme/styled-system";
 
 interface Props {
   navigation: Navigation;
 }
-
+interface productType {
+  typeId: number;
+  typeName: string;
+}
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
-  const [tabIndex, setTabIndex] = useState<number>(0);
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e: any) => {
-        e.preventDefault();
-        return;
-      }),
-    [navigation]
-  );
+  const [tabIndex, setTabIndex] = useState<number>(-1);
+  const [productType, setProductType] = useState<productType[]>([]);
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (e: any) => {
+      e.preventDefault();
+      return;
+    });
+  }, [navigation]);
 
   useEffect(() => {
-    console.log("main screen");
+    if (!productType) {
+      ProductService.getAllProductTypes()
+        .then((res) => {
+          if (res) {
+            const recData = res.data;
+            console.log(res.data);
+            setProductType(recData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     return () => {};
-  }, []);
+  }, [productType]);
 
   const mockData: {
     key: number;
@@ -190,24 +199,50 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                   mr="2"
                   borderColor="#B4B4B4"
                 >
-                  {["สินค้าขายดี", "โปรโมชั่น", "น้ำส้ม", "เกล็ดหิมะ"].map(
-                    (item, i) => {
-                      const borderColor = tabIndex == i ? "#9D7463" : "#B4B4B4";
-                      const fontWeight = tabIndex == i ? "#9D7463" : "#B4B4B4";
+                  <Box
+                    alignItems="center"
+                    p="4"
+                    zIndex={2}
+                    width="40"
+                    borderBottomWidth={tabIndex == -1 ? 3 : 0}
+                    borderBottomColor={tabIndex == -1 ? "#9D7463" : "#B4B4B4"}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        setTabIndex(-1);
+                      }}
+                    >
+                      <Animated.Text
+                        style={{
+                          color: "#000",
+                          fontSize: 18,
+                          fontFamily:
+                            tabIndex == -1 ? "Mitr-Medium" : "Mitr-Regular",
+                        }}
+                      >
+                        สินค้าขายดี
+                      </Animated.Text>
+                    </Pressable>
+                  </Box>
+                  {productType &&
+                    productType.map((item: productType) => {
+                      const borderColor =
+                        tabIndex == item.typeId ? "#9D7463" : "#B4B4B4";
+                      console.log(item);
                       return (
                         <Box
-                          key={i}
+                          key={item.typeId}
                           alignItems="center"
                           p="4"
                           zIndex={2}
                           width="40"
-                          borderBottomWidth={tabIndex == i ? 3 : 0}
+                          borderBottomWidth={tabIndex == item.typeId ? 3 : 0}
                           borderBottomColor={borderColor}
                         >
                           <Pressable
                             onPress={() => {
-                              console.log(i);
-                              setTabIndex(i);
+                              console.log(item.typeId);
+                              setTabIndex(item.typeId);
                             }}
                           >
                             <Animated.Text
@@ -215,18 +250,17 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                                 color: "#000",
                                 fontSize: 18,
                                 fontFamily:
-                                  tabIndex == i
+                                  tabIndex == item.typeId
                                     ? "Mitr-Medium"
                                     : "Mitr-Regular",
                               }}
                             >
-                              {item}
+                              {item.typeName}
                             </Animated.Text>
                           </Pressable>
                         </Box>
                       );
-                    }
-                  )}
+                    })}
                 </ScrollView>
               </HStack>
               <VStack w="100%" flex="10">
