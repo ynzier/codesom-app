@@ -12,45 +12,24 @@ import {
   ScrollView,
   Pressable,
 } from "native-base";
-import ProductService from "../services/product.service";
 import { Navigation } from "../hooks/navigation";
 import Sidebar from "../components/Sidebar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ProductList from "../components/ProductList";
+import MainMenuTab from "../components/MainMenuTab";
 
 interface Props {
   navigation: Navigation;
 }
-interface productType {
-  typeId: number;
-  typeName: string;
-}
+
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const [tabIndex, setTabIndex] = useState<number>(-1);
-  const [productType, setProductType] = useState<productType[]>([]);
   useEffect(() => {
     navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault();
       return;
     });
   }, [navigation]);
-
-  useEffect(() => {
-    if (!productType) {
-      ProductService.getAllProductTypes()
-        .then((res) => {
-          if (res) {
-            const recData = res.data;
-            console.log(res.data);
-            setProductType(recData);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    return () => {};
-  }, [productType]);
 
   const mockData: {
     key: number;
@@ -191,80 +170,10 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
               justifyContent="center"
             >
               <HStack flex="1" alignItems="center">
-                <ScrollView
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                  ml="2"
-                  borderBottomWidth={1}
-                  mr="2"
-                  borderColor="#B4B4B4"
-                >
-                  <Box
-                    alignItems="center"
-                    p="4"
-                    zIndex={2}
-                    width="40"
-                    borderBottomWidth={tabIndex == -1 ? 3 : 0}
-                    borderBottomColor={tabIndex == -1 ? "#9D7463" : "#B4B4B4"}
-                  >
-                    <Pressable
-                      onPress={() => {
-                        setTabIndex(-1);
-                      }}
-                    >
-                      <Animated.Text
-                        style={{
-                          color: "#000",
-                          fontSize: 18,
-                          fontFamily:
-                            tabIndex == -1 ? "Mitr-Medium" : "Mitr-Regular",
-                        }}
-                      >
-                        สินค้าขายดี
-                      </Animated.Text>
-                    </Pressable>
-                  </Box>
-                  {productType &&
-                    productType.map((item: productType) => {
-                      const borderColor =
-                        tabIndex == item.typeId ? "#9D7463" : "#B4B4B4";
-                      console.log(item);
-                      return (
-                        <Box
-                          key={item.typeId}
-                          alignItems="center"
-                          p="4"
-                          zIndex={2}
-                          width="40"
-                          borderBottomWidth={tabIndex == item.typeId ? 3 : 0}
-                          borderBottomColor={borderColor}
-                        >
-                          <Pressable
-                            onPress={() => {
-                              console.log(item.typeId);
-                              setTabIndex(item.typeId);
-                            }}
-                          >
-                            <Animated.Text
-                              style={{
-                                color: "#000",
-                                fontSize: 18,
-                                fontFamily:
-                                  tabIndex == item.typeId
-                                    ? "Mitr-Medium"
-                                    : "Mitr-Regular",
-                              }}
-                            >
-                              {item.typeName}
-                            </Animated.Text>
-                          </Pressable>
-                        </Box>
-                      );
-                    })}
-                </ScrollView>
+                <MainMenuTab tabIndex={tabIndex} setTabIndex={setTabIndex} />
               </HStack>
               <VStack w="100%" flex="10">
-                <ProductList index={tabIndex} />
+                <ProductList tabIndex={tabIndex} />
               </VStack>
             </VStack>
           </VStack>
