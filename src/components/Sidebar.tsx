@@ -14,16 +14,19 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "./IconCart";
 import Feather from "react-native-vector-icons/Feather";
+import AlertToast from "../components/AlertToast";
 
 type Props = {
   cartData: any;
   setCartData: (value: any) => void;
 };
+
 const Sidebar = (props: Props) => {
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
+  const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
     if (props.cartData) {
@@ -229,17 +232,23 @@ const Sidebar = (props: Props) => {
         </Box>
         {/** Cart Item */}
         <Divider thickness="1" mb={4} width="90%" bg="black" />
-        <Box flex="6" w="100%" h="100%" bg="#FFF0D9">
-          <SwipeListView
-            data={props.cartData}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            rightOpenValue={-60}
-            previewRowKey={"0"}
-            previewOpenValue={-40}
-            previewOpenDelay={3000}
-            keyExtractor={(item) => item.key}
-          />
+        <Box flex="6" w="100%" h="100%" justifyContent="center">
+          {props.cartData[0] == null ? (
+            <Text alignSelf="center" fontSize={20} color="#837B7F">
+              ไม่มีรายการสินค้า
+            </Text>
+          ) : (
+            <SwipeListView
+              data={props.cartData}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              rightOpenValue={-60}
+              previewRowKey={"0"}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              keyExtractor={(item) => item.key}
+            />
+          )}
         </Box>
         <Box
           flex="2"
@@ -293,6 +302,7 @@ const Sidebar = (props: Props) => {
             h="75%"
             _text={{ fontSize: 20, color: "white" }}
             startIcon={<Icon as={IconCart} size={5} />}
+            onPress={() => AlertToast()}
           >
             ชำระเงิน
           </Button>

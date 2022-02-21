@@ -6,7 +6,6 @@ import {
   HStack,
   VStack,
   Text,
-  Skeleton,
   Badge,
   Avatar,
 } from "native-base";
@@ -59,65 +58,6 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       .catch((err) => console.log(err));
   }, []);
   const [cartData, setCartData] = useState<ICartArray[]>([]);
-  const mockData: {
-    key: number;
-    prId: string;
-    prName: string;
-    prPrice: string;
-    prCount: string;
-  }[] = [
-    {
-      key: 1,
-      prId: "1",
-      prName: "ไอติมเบนยา",
-      prPrice: "200.00",
-      prCount: "1",
-    },
-    { key: 2, prId: "2", prName: "เบนยาปั่น", prPrice: "210.00", prCount: "1" },
-    {
-      key: 3,
-      prId: "22",
-      prName: "เบนยาปั่น",
-      prPrice: "210.00",
-      prCount: "1",
-    },
-    {
-      key: 4,
-      prId: "23",
-      prName: "เบนยาปั่น",
-      prPrice: "210.00",
-      prCount: "1",
-    },
-    {
-      key: 5,
-      prId: "245",
-      prName: "เบนยาปั่น",
-      prPrice: "210.00",
-      prCount: "1",
-    },
-    {
-      key: 6,
-      prId: "21",
-      prName: "เบนยาปั่น",
-      prPrice: "210.00",
-      prCount: "1",
-    },
-    {
-      key: 7,
-      prId: "26",
-      prName: "เบนยาปั่น",
-      prPrice: "210.00",
-      prCount: "1",
-    },
-    {
-      key: 8,
-      prId: "29",
-      prName: "เบนยาปั่น",
-      prPrice: "210.00",
-      prCount: "1",
-    },
-  ];
-
   return (
     <>
       <StatusBar

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import {
   Button,
   HStack,
@@ -13,6 +14,7 @@ import {
   StatusBar,
   Stack,
   Box,
+  Spinner,
 } from "native-base";
 import { Alert, Platform } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -21,31 +23,33 @@ import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
 export function SignInForm({ props }: any) {
-  // add next router here
+  const { promiseInProgress } = usePromiseTracker();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = React.useState(false);
 
-  const _onLoginPressed = async () => {
-    await AuthService.signInApp(userName, password)
-      .then((res) => {
-        props.navigation.navigate("HomeScreen");
-      })
-      .catch((error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        Alert.alert("แจ้งเตือน", resMessage, [
-          {
-            text: "ยืนยัน",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "destructive",
-          },
-        ]);
-      });
+  const _onLoginPressed = () => {
+    void trackPromise(
+      AuthService.signInApp(userName, password)
+        .then((_res) => {
+          props.navigation.navigate("HomeScreen");
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          Alert.alert("แจ้งเตือน", resMessage, [
+            {
+              text: "ยืนยัน",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "destructive",
+            },
+          ]);
+        })
+    );
   };
 
   return (
@@ -129,12 +133,12 @@ export function SignInForm({ props }: any) {
                   }}
                 />
               </VStack>
-              {/* Opening Link Tag navigateTo:"OTP" (react/Router) */}
               <Button
                 alignSelf="center"
                 mt="5"
                 w="70%"
                 h="50px"
+                disabled={promiseInProgress}
                 borderRadius="4"
                 _text={{
                   fontSize: 18,
@@ -146,7 +150,11 @@ export function SignInForm({ props }: any) {
                   void _onLoginPressed();
                 }}
               >
-                เข้าสู่ระบบ
+                {promiseInProgress ? (
+                  <Spinner size="lg" color="cream" />
+                ) : (
+                  "เข้าสู่ระบบ"
+                )}
               </Button>
               {/* Closing Link Tag */}
               <HStack

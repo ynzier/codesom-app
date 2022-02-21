@@ -15,7 +15,7 @@ const MainMenuTab = ({
   setTabIndex: (tabIndex: number) => void;
 }) => {
   const [productType, setProductType] = useState<productType[]>([]);
-  useEffect(() => {
+  const fetchProductType = () => {
     ProductService.getAllProductTypes()
       .then((res) => {
         if (res) {
@@ -26,8 +26,12 @@ const MainMenuTab = ({
       .catch((err) => {
         console.log(err);
       });
-
-    return () => {};
+  };
+  useEffect(() => {
+    fetchProductType();
+    return () => {
+      setProductType([]);
+    };
   }, []);
   return (
     <ScrollView
