@@ -15,32 +15,34 @@ import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "./IconCart";
 import Feather from "react-native-vector-icons/Feather";
 
-type Props = { mockData: any };
-
+type Props = {
+  cartData: any;
+  setCartData: (value: any) => void;
+};
 const Sidebar = (props: Props) => {
-  const [mockData, setMockData] = useState(props.mockData);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
 
   useEffect(() => {
-    const sum: number = mockData
-      .map(
-        (item: { prPrice: string; prCount: string }) =>
-          parseFloat(item.prPrice) * parseInt(item.prCount)
-      )
-      .reduce((prev: any, curr: any) => prev + curr, 0)
-      .toFixed(2);
-    setSumAll(sum);
-    const discount = 0.0;
-    setTotalDiscount(discount.toFixed(2));
-    const vat = (sum - discount) * 0.07;
-    setTotalVat(vat.toFixed(2));
-    setTotal((sum - discount + vat).toFixed(2));
-
+    if (props.cartData) {
+      const sum: number = props.cartData
+        .map(
+          (item: { prPrice: string; prCount: string }) =>
+            parseFloat(item.prPrice) * parseInt(item.prCount)
+        )
+        .reduce((prev: any, curr: any) => prev + curr, 0)
+        .toFixed(2);
+      setSumAll(sum);
+      const discount = 0.0;
+      setTotalDiscount(discount.toFixed(2));
+      const vat = (sum - discount) * 0.07;
+      setTotalVat(vat.toFixed(2));
+      setTotal((sum - discount + vat).toFixed(2));
+    }
     return () => {};
-  }, [mockData]);
+  }, [props.cartData]);
 
   const closeRow = (
     rowMap: { [x: string]: { closeRow: () => void } },
@@ -53,12 +55,12 @@ const Sidebar = (props: Props) => {
 
   const deleteRow = (rowMap: any, rowKey: any) => {
     closeRow(rowMap, rowKey);
-    const newData = [...mockData];
-    const prevIndex = mockData.findIndex(
+    const newData = [...props.cartData];
+    const prevIndex = props.cartData.findIndex(
       (item: { key: any }) => item.key === rowKey
     );
     newData.splice(prevIndex, 1);
-    setMockData(newData);
+    props.setCartData(newData);
   };
 
   const renderItem = (data: {
@@ -121,11 +123,11 @@ const Sidebar = (props: Props) => {
                   let temp = parseInt(data.item.prCount);
                   temp = temp - 1;
 
-                  setMockData(
+                  props.setCartData(
                     Object.values({
-                      ...mockData,
+                      ...props.cartData,
                       [data.index]: {
-                        ...mockData[data.index],
+                        ...props.cartData[data.index],
                         prCount: temp.toString(),
                       },
                     })
@@ -157,11 +159,11 @@ const Sidebar = (props: Props) => {
                 const onlyDigits = text.replace(/\D/g, "");
                 const prCount = onlyDigits;
 
-                setMockData(
+                props.setCartData(
                   Object.values({
-                    ...mockData,
+                    ...props.cartData,
                     [data.index]: {
-                      ...mockData[data.index],
+                      ...props.cartData[data.index],
                       prCount: prCount.toString(),
                     },
                   })
@@ -180,11 +182,11 @@ const Sidebar = (props: Props) => {
               onPress={() => {
                 let temp = parseInt(data.item.prCount);
                 temp = temp + 1;
-                setMockData(
+                props.setCartData(
                   Object.values({
-                    ...mockData,
+                    ...props.cartData,
                     [data.index]: {
-                      ...mockData[data.index],
+                      ...props.cartData[data.index],
                       prCount: temp.toString(),
                     },
                   })
@@ -222,14 +224,14 @@ const Sidebar = (props: Props) => {
         >
           <Text fontSize="48">รายการ</Text>
           <Text fontSize="48" marginLeft="10">
-            {mockData.length}
+            {props.cartData.length}
           </Text>
         </Box>
         {/** Cart Item */}
         <Divider thickness="1" mb={4} width="90%" bg="black" />
         <Box flex="6" w="100%" h="100%" bg="#FFF0D9">
           <SwipeListView
-            data={mockData}
+            data={props.cartData}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-60}
