@@ -18,7 +18,7 @@ import {
 } from "native-base";
 import { Alert, Platform } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
-
+import AlertToast from "../components/AlertToast";
 import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
@@ -41,13 +41,7 @@ export function SignInForm({ props }: any) {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          Alert.alert("แจ้งเตือน", resMessage, [
-            {
-              text: "ยืนยัน",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "destructive",
-            },
-          ]);
+          AlertToast(resMessage, "alert");
         })
     );
   };

@@ -302,7 +302,9 @@ const Sidebar = (props: Props) => {
             h="75%"
             _text={{ fontSize: 20, color: "white" }}
             startIcon={<Icon as={IconCart} size={5} />}
-            onPress={() => AlertToast()}
+            onPress={() =>
+              AlertToast("Hi, Nice to see you ( ´ ∀ ` )ﾉ", "success")
+            }
           >
             ชำระเงิน
           </Button>
