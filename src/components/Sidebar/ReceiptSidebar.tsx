@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -7,26 +7,64 @@ import {
   Button,
   VStack,
   Icon,
+  Toast,
   Divider,
   FlatList,
 } from "native-base";
 import { StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
 import AlertToast from "../AlertToast";
 import CheckOutModal from "../CheckOutModal";
 
-type Props = {
-  cartData: any;
-  setCartData: (value: any) => void;
-};
-
-const ReceiptSidebar = (props: Props) => {
+const ReceiptSidebar = () => {
+  const [isQR, setIsQR] = useState(false);
+  const [isCash, setIsCash] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
+  const [cartData, setCartData] = useState<any[]>();
+  useEffect(() => {
+    if (cartData) {
+      const sum: number = cartData
+        .map(
+          (item: { prPrice: string; prCount: string }) =>
+            parseFloat(item.prPrice) * parseInt(item.prCount)
+        )
+        .reduce((prev: any, curr: any) => prev + curr, 0)
+        .toFixed(2);
+      setSumAll(sum);
+      const discount = 0.0;
+      setTotalDiscount(discount.toFixed(2));
+      const vat = (sum - discount) * 0.07;
+      setTotalVat(vat.toFixed(2));
+      setTotal((sum - discount + vat).toFixed(2));
+    }
+    return () => {};
+  }, [cartData]);
+  useEffect(() => {
+    let isSubscribed = true;
+    AsyncStorage.getItem("cartData")
+      .then((data: any) => {
+        if (isSubscribed) {
+          const tempCart: any = JSON.parse(data);
+          setCartData(tempCart);
+        }
+      })
+      .catch((e) => {
+        if (isSubscribed) {
+          console.log(e);
+        }
+      });
+
+    return () => {
+      Toast.closeAll();
+      isSubscribed = false;
+    };
+  }, []);
 
   return (
     <>
@@ -66,44 +104,19 @@ const ReceiptSidebar = (props: Props) => {
             <Divider thickness="1" mb={4} bg="black" />
             <VStack flex="5" px="4">
               <HStack flex="1" mb="2">
-                <Text flex="5" fontSize={16}>
+                <Text flex="5" fontSize={14}>
                   รายการ
                 </Text>
-                <Text flex="2" textAlign="right" fontSize={16}>
+                <Text flex="2" textAlign="right" fontSize={14}>
                   จำนวน
                 </Text>
-                <Text flex="3" ml="2" textAlign="right" fontSize={16}>
+                <Text flex="3" ml="2" textAlign="right" fontSize={14}>
                   บาท/หน่วย
                 </Text>
               </HStack>
               <VStack flex="8">
                 <FlatList
-                  data={[
-                    {
-                      key: 1,
-                      prName: "ไอติมเบนยา",
-                      prCount: 8,
-                      prPrice: 200.0,
-                    },
-                    {
-                      key: 2,
-                      prName: "ขนมไมโล",
-                      prCount: 1,
-                      prPrice: 100.0,
-                    },
-                    {
-                      key: 3,
-                      prName: "น้ำกะทิเบนยา",
-                      prCount: 3,
-                      prPrice: 32.02,
-                    },
-                    {
-                      key: 4,
-                      prName: "น้ำส้มเกล็ดหิมะ",
-                      prCount: 4,
-                      prPrice: 39.0,
-                    },
-                  ]}
+                  data={cartData}
                   keyExtractor={(item: any) => item.key}
                   renderItem={(data: {
                     item: {
@@ -113,19 +126,21 @@ const ReceiptSidebar = (props: Props) => {
                       prCount: number;
                     };
                     index: string | number;
-                  }) => (
-                    <Box mb="2" w="100%" flexDirection="row">
-                      <Text flex="5" fontSize={16} noOfLines={2}>
-                        • {data.item.prName}
-                      </Text>
-                      <Text textAlign="right" flex="2" fontSize={16}>
-                        {data.item.prCount}
-                      </Text>
-                      <Text flex="3" ml="2" textAlign="right" fontSize={16}>
-                        {data.item.prPrice.toFixed(2)}
-                      </Text>
-                    </Box>
-                  )}
+                  }) => {
+                    return (
+                      <Box mb="2" w="100%" flexDirection="row">
+                        <Text flex="5" fontSize={14} noOfLines={2}>
+                          • {data.item.prName}
+                        </Text>
+                        <Text textAlign="right" flex="2" fontSize={14}>
+                          {data.item.prCount}
+                        </Text>
+                        <Text flex="3" ml="2" textAlign="right" fontSize={14}>
+                          {data.item.prPrice.toFixed(2)}
+                        </Text>
+                      </Box>
+                    );
+                  }}
                 />
               </VStack>
             </VStack>
@@ -137,27 +152,27 @@ const ReceiptSidebar = (props: Props) => {
               bg="gray.300"
             />
             <VStack flex="2" px="4">
-              <HStack>
-                <Text flex="1" textAlign="left" fontSize="18px">
+              <HStack flex="1">
+                <Text flex="1" textAlign="left" fontSize="16">
                   ราคารวม
                 </Text>
-                <Text flex="2" textAlign="right" fontSize="18px">
+                <Text flex="2" textAlign="right" fontSize="16">
                   {sumAll || 0} บาท
                 </Text>
               </HStack>
-              <HStack>
-                <Text flex="1" textAlign="left" fontSize="18px">
+              <HStack flex="1">
+                <Text flex="1" textAlign="left" fontSize="16">
                   ส่วนลด
                 </Text>
-                <Text flex="2" textAlign="right" fontSize="18px">
+                <Text flex="2" textAlign="right" fontSize="16">
                   {totalDiscount || 0} บาท
                 </Text>
               </HStack>
-              <HStack>
-                <Text flex="1" textAlign="left" fontSize="18px">
+              <HStack flex="1">
+                <Text flex="1" textAlign="left" fontSize="16">
                   ภาษี 7%
                 </Text>
-                <Text flex="2" textAlign="right" fontSize="18px">
+                <Text flex="2" textAlign="right" fontSize="16">
                   {totalVat || 0} บาท
                 </Text>
               </HStack>
@@ -171,10 +186,10 @@ const ReceiptSidebar = (props: Props) => {
               bg="gray.300"
             />
             <HStack flex="1" px="4">
-              <Text flex="1" textAlign="left" fontSize="20" fontWeight={600}>
+              <Text flex="1" textAlign="left" fontSize="16" fontWeight={600}>
                 ราคาสุทธิ
               </Text>
-              <Text flex="2" textAlign="right" fontSize="20" fontWeight={600}>
+              <Text flex="2" textAlign="right" fontSize="16" fontWeight={600}>
                 {total || 0} บาท
               </Text>
             </HStack>
@@ -187,7 +202,7 @@ const ReceiptSidebar = (props: Props) => {
             />
             <VStack flex="2.2" mb="4">
               <HStack flex="1" px="4" mb="2">
-                <Text fontSize="18px" fontWeight={600}>
+                <Text fontSize="16" fontWeight={600}>
                   เลือกวิธีการชำระเงิน
                 </Text>
               </HStack>
@@ -197,22 +212,66 @@ const ReceiptSidebar = (props: Props) => {
                   h="70px"
                   borderRadius={100}
                   borderWidth={1}
+                  borderColor="light.200"
                   justifyContent="center"
                   alignItems="center"
+                  bg={isCash ? "emerald.500" : "#FFFDFA"}
+                  _pressed={{
+                    bg: "emerald.600",
+                  }}
+                  onPress={() => {
+                    setIsCash(true);
+                    setIsQR(false);
+                  }}
                 >
-                  <Ionicons name="cash-outline" size={24} color="black" />
-                  <Text>เงินสด</Text>
+                  {({ isPressed }) => (
+                    <>
+                      <Text
+                        fontSize={12}
+                        color={isPressed || isCash ? "#fffdfa" : "black"}
+                      >
+                        เงินสด
+                      </Text>
+                      <Ionicons
+                        name="cash-outline"
+                        size={24}
+                        color={isPressed || isCash ? "#fffdfa" : "black"}
+                      />
+                    </>
+                  )}
                 </Pressable>
                 <Pressable
                   w="70px"
                   h="70px"
+                  bg={isQR ? "emerald.500" : "#FFFDFA"}
                   borderRadius={100}
                   borderWidth={1}
+                  borderColor="light.200"
                   justifyContent="center"
                   alignItems="center"
+                  _pressed={{
+                    bg: "emerald.600",
+                  }}
+                  onPress={() => {
+                    setIsCash(false);
+                    setIsQR(true);
+                  }}
                 >
-                  <Ionicons name="qr-code-outline" size={24} color="black" />
-                  <Text>เงินสด</Text>
+                  {({ isPressed }) => (
+                    <>
+                      <Text
+                        fontSize={12}
+                        color={isPressed || isQR ? "#fffdfa" : "black"}
+                      >
+                        QR Code
+                      </Text>
+                      <Ionicons
+                        name="qr-code-outline"
+                        size={24}
+                        color={isPressed || isQR ? "#fffdfa" : "black"}
+                      />
+                    </>
+                  )}
                 </Pressable>
               </HStack>
             </VStack>
@@ -246,33 +305,5 @@ const ReceiptSidebar = (props: Props) => {
     </>
   );
 };
-const styles = StyleSheet.create({
-  rowBack: {
-    alignItems: "center",
-    flex: 1,
-    marginLeft: 24,
-    marginTop: 4,
-    marginBottom: 4,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingLeft: 15,
-  },
-  backRightBtn: {
-    alignItems: "center",
-    bottom: 0,
-    justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    width: "100%",
-    backgroundColor: "red",
-  },
-  backRightBtnRight: {
-    alignItems: "flex-end",
-    backgroundColor: "red",
-    borderRadius: 24,
-    right: 16,
-    paddingRight: 16,
-  },
-});
 
 export default ReceiptSidebar;

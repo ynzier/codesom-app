@@ -3,15 +3,22 @@ import deviceStorage from "./deviceStorage";
 interface AccessToken {
   accessToken: string;
 }
-const signInApp = (userName: string, password: string) => {
-  return http
-    .post<AccessToken>("/auth/signinApp", {
-      brUserName: userName.toLowerCase(),
-      brPassword: password,
-    })
-    .then((response) => {
-      void deviceStorage.setToken(response.data.accessToken);
-    });
+const signInApp = async (userName: string, password: string) => {
+  const promise = new Promise((resolve, _reject) => {
+    setTimeout(() => {
+      resolve(
+        http
+          .post<AccessToken>("/auth/signinApp", {
+            brUserName: userName.toLowerCase(),
+            brPassword: password,
+          })
+          .then((response) => {
+            void deviceStorage.setToken(response.data.accessToken);
+          })
+      );
+    }, 2000);
+  });
+  return promise;
 };
 
 const logoutApp = () => {

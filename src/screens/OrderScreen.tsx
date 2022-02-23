@@ -49,10 +49,18 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
   useEffect(() => {
+    let isSubscribed = true;
     branchService
       .getCurrentBranch()
-      .then((res) => setBranchData(res.data))
+      .then((res) => {
+        if (isSubscribed) {
+          setBranchData(res.data);
+        }
+      })
       .catch((err) => console.log(err));
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
   return (
     <>
@@ -148,12 +156,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
           </VStack>
 
           {/*Sidebar Component */}
-          <ReceiptSidebar
-            cartData={undefined}
-            setCartData={function (value: any): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
+          <ReceiptSidebar />
           {/*Sidebar Component */}
         </HStack>
       </Center>

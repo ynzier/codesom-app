@@ -16,7 +16,7 @@ import {
   Box,
   Spinner,
 } from "native-base";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import AlertToast from "../components/AlertToast";
 import AuthService from "../services/auth.service";

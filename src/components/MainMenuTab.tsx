@@ -15,12 +15,14 @@ const MainMenuTab = ({
   setTabIndex: (tabIndex: number) => void;
 }) => {
   const [productType, setProductType] = useState<productType[]>([]);
-  const fetchProductType = () => {
+  const fetchProductType = (isSubscribed: boolean) => {
     ProductService.getAllProductTypes()
       .then((res) => {
-        if (res) {
-          const recData = res.data;
-          setProductType(recData);
+        if (isSubscribed) {
+          if (res) {
+            const recData = res.data;
+            setProductType(recData);
+          }
         }
       })
       .catch((err) => {
@@ -28,9 +30,10 @@ const MainMenuTab = ({
       });
   };
   useEffect(() => {
-    fetchProductType();
+    let isSubscribed = true;
+    fetchProductType(isSubscribed);
     return () => {
-      setProductType([]);
+      isSubscribed = false;
     };
   }, []);
   return (

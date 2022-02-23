@@ -53,10 +53,14 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
+    let isSubscribed = true;
     branchService
       .getCurrentBranch()
-      .then((res) => setBranchData(res.data))
+      .then((res) => (isSubscribed ? setBranchData(res.data) : null))
       .catch((err) => console.log(err));
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
   const [cartData, setCartData] = useState<ICartArray[]>([]);
   return (

@@ -17,6 +17,7 @@ import {
 import SelectPicker from "react-native-form-select-picker";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AlertToast from "./AlertToast";
 
 function Delivery(props: {
   isDelivery: any;
@@ -119,6 +120,8 @@ const CheckOutModal = ({
         avoidKeyboard
         isOpen={showModal}
         onClose={() => {
+          setIsDelivery(false);
+          setIsTakeAway(false);
           setShowModal(false);
         }}
         size="lg"
@@ -196,8 +199,11 @@ const CheckOutModal = ({
             </VStack>
             <Divider my="4" />
             <Button
+              isDisabled={!isDelivery && !isTakeAway}
               colorScheme="success"
+              _disabled={{ backgroundColor: "gray.400" }}
               onPress={() => {
+                AlertToast("บันทึกรายการสำเร็จ!", "success");
                 setShowModal(false);
                 navigation.navigate("OrderScreen");
               }}

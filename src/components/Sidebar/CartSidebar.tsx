@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import {
   Box,
   Text,
@@ -9,13 +10,15 @@ import {
   Input,
   Icon,
   Divider,
+  Spinner,
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "../IconCart";
 import Feather from "react-native-vector-icons/Feather";
-import AlertToast from "../AlertToast";
 import CheckOutModal from "../CheckOutModal";
+import AlertToast from "../AlertToast";
 
 type Props = {
   cartData: any;
@@ -28,8 +31,6 @@ const CartSidebar = (props: Props) => {
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
-  const [isOpen, setIsOpen] = React.useState(false);
-
   useEffect(() => {
     if (props.cartData) {
       const sum: number = props.cartData
@@ -216,6 +217,16 @@ const CartSidebar = (props: Props) => {
       </TouchableOpacity>
     </View>
   );
+  const CartLoader = () => {
+    const { promiseInProgress } = usePromiseTracker({ area: "setCart" });
+    return promiseInProgress ? (
+      <Spinner size="lg" color="cream" />
+    ) : (
+      <Text color="white" fontSize={20}>
+        ชำระเงิน
+      </Text>
+    );
+  };
   return (
     <>
       <CheckOutModal showModal={showModal} setShowModal={setShowModal} />
@@ -351,14 +362,31 @@ const CartSidebar = (props: Props) => {
               mx="4"
               w="100%"
               h="75%"
-              _text={{ fontSize: 20, color: "white" }}
               startIcon={<Icon as={IconCart} size={5} />}
-              onPress={() => {
-                AlertToast("Hi, Nice to see you ( ´ ∀ ` )ﾉ", "success");
-                setShowModal(true);
+              onPress={async () => {
+                const cart: any[] = props.cartData;
+                if (props.cartData == "")
+                  return AlertToast("กรุณาเลือกสินค้าก่อนทำรายการ", "warning");
+                try {
+                  await trackPromise(
+                    new Promise((resolve, _reject) => {
+                      setTimeout(() => {
+                        resolve(
+                          AsyncStorage.setItem(
+                            "cartData",
+                            JSON.stringify(cart)
+                          ).then(() => setShowModal(true))
+                        );
+                      }, 500);
+                    }),
+                    "setCart"
+                  );
+                } catch (e) {
+                  console.log(e);
+                }
               }}
             >
-              ชำระเงิน
+              <CartLoader />
             </Button>
           </Box>
         </VStack>

@@ -5,6 +5,7 @@ import {
   HStack,
   Text,
   Toast,
+  WarningIcon,
   WarningTwoIcon,
 } from "native-base";
 
@@ -13,16 +14,24 @@ const AlertToast = (
   status?: string | undefined
 ) => {
   let icon: any;
+  let fontcolor: string;
   let color: string;
 
   switch (status) {
     case "success":
-      icon = <CheckIcon size="5" mt="0.5" color="tertiary.600" />;
+      fontcolor = "light.800";
+      icon = <CheckIcon size="5" mt="0.5" color={fontcolor} />;
       color = "tertiary.300";
       break;
     case "alert":
-      icon = <WarningTwoIcon size="5" mt="0.5" color="rose.600" />;
-      color = "rose.100";
+      fontcolor = "light.100";
+      icon = <WarningTwoIcon size="5" mt="0.5" color={fontcolor} />;
+      color = "#E53455";
+      break;
+    case "warning":
+      fontcolor = "light.100";
+      icon = <WarningIcon size="5" mt="0.5" color={fontcolor} />;
+      color = "#AE5302";
       break;
   }
 
@@ -39,9 +48,14 @@ const AlertToast = (
           mb={5}
           mr={12}
         >
-          <HStack space={4} w="100%" pr="8" alignItems='center'>
+          <HStack space={4} w="100%" pr="8" alignItems="center">
             {icon}
-            <Text noOfLines={5} fontWeight="light" fontSize="md">
+            <Text
+              noOfLines={5}
+              fontWeight="light"
+              color={fontcolor}
+              fontSize="md"
+            >
               {description}
             </Text>
           </HStack>

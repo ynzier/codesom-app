@@ -16,7 +16,6 @@ export default class BouncingPreloader extends Component {
   };
   componentDidMount() {
     this._isMounted = true;
-    console.log("test");
 
     if (this._isMounted) {
       this.changeIndex();
