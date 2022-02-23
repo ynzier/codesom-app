@@ -15,6 +15,7 @@ import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "./IconCart";
 import Feather from "react-native-vector-icons/Feather";
 import AlertToast from "../components/AlertToast";
+import CheckOutModal from "./CheckOutModal";
 
 type Props = {
   cartData: any;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const Sidebar = (props: Props) => {
+  const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
@@ -215,102 +217,153 @@ const Sidebar = (props: Props) => {
     </View>
   );
   return (
-    <HStack w="100%" flex="1" bg="#FFF0D9">
-      <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
-        <Box
-          flex="1"
-          margin="0"
-          w="100%"
-          flexDirection="row"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Text fontSize="48">รายการ</Text>
-          <Text fontSize="48" marginLeft="10">
-            {props.cartData.length}
-          </Text>
-        </Box>
-        {/** Cart Item */}
-        <Divider thickness="1" mb={4} width="90%" bg="black" />
-        <Box flex="6" w="100%" h="100%" justifyContent="center">
-          {props.cartData[0] == null ? (
-            <Text alignSelf="center" fontSize={20} color="#837B7F">
-              ไม่มีรายการสินค้า
-            </Text>
-          ) : (
-            <SwipeListView
-              data={props.cartData}
-              renderItem={renderItem}
-              renderHiddenItem={renderHiddenItem}
-              rightOpenValue={-60}
-              previewRowKey={"0"}
-              previewOpenValue={-40}
-              previewOpenDelay={3000}
-              keyExtractor={(item) => item.key}
-            />
-          )}
-        </Box>
-        <Box
-          flex="2"
-          w={{ md: "90%", xl: "80%" }}
-          h="100%"
-          bg="#FFF0D9"
-          justifyContent="center"
-        >
-          <Divider thickness="1" mb={2} width="100%" bg="black" />
-          <VStack>
-            <HStack>
-              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
-                ราคารวม
-              </Text>
-              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
-                {sumAll} บาท
-              </Text>
-            </HStack>
-            <HStack>
-              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
-                ส่วนลด
-              </Text>
-              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
-                {totalDiscount} บาท
-              </Text>
-            </HStack>
-            <HStack>
-              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
-                ภาษี 7%
-              </Text>
-              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
-                {totalVat} บาท
-              </Text>
-            </HStack>
-            <HStack>
-              <Text flex="1" textAlign="left" fontSize="18px" fontWeight={600}>
-                ราคาสุทธิ
-              </Text>
-              <Text flex="2" textAlign="right" fontSize="18px" fontWeight={600}>
-                {total} บาท
-              </Text>
-            </HStack>
-          </VStack>
-        </Box>
-        <Box flex="1" w="100%" h="100%" bg="#FFF0D9" px="4" alignItems="center">
-          <Button
-            borderRadius="xl"
-            colorScheme="greenalt"
-            mx="4"
+    <>
+      <CheckOutModal showModal={showModal} setShowModal={setShowModal} />
+      <HStack w="100%" flex="1" bg="#FFF0D9">
+        <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
+          <Box
+            flex="1"
+            margin="0"
             w="100%"
-            h="75%"
-            _text={{ fontSize: 20, color: "white" }}
-            startIcon={<Icon as={IconCart} size={5} />}
-            onPress={() =>
-              AlertToast("Hi, Nice to see you ( ´ ∀ ` )ﾉ", "success")
-            }
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
           >
-            ชำระเงิน
-          </Button>
-        </Box>
-      </VStack>
-    </HStack>
+            <Text fontSize="48">รายการ</Text>
+            <Text fontSize="48" marginLeft="10">
+              {props.cartData.length}
+            </Text>
+          </Box>
+          {/** Cart Item */}
+          <Divider thickness="1" mb={4} width="90%" bg="black" />
+          <Box flex="6" w="100%" h="100%" justifyContent="center">
+            {props.cartData[0] == null ? (
+              <Text alignSelf="center" fontSize={20} color="#837B7F">
+                ไม่มีรายการสินค้า
+              </Text>
+            ) : (
+              <SwipeListView
+                data={props.cartData}
+                renderItem={renderItem}
+                renderHiddenItem={renderHiddenItem}
+                rightOpenValue={-60}
+                previewRowKey={"0"}
+                previewOpenValue={-40}
+                previewOpenDelay={3000}
+                keyExtractor={(item) => item.key}
+              />
+            )}
+          </Box>
+          <Box
+            flex="2"
+            w={{ md: "90%", xl: "80%" }}
+            h="100%"
+            bg="#FFF0D9"
+            justifyContent="center"
+          >
+            <Divider thickness="1" mb={2} width="100%" bg="black" />
+            <VStack>
+              <HStack>
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  ราคารวม
+                </Text>
+                <Text
+                  flex="2"
+                  textAlign="right"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  {sumAll} บาท
+                </Text>
+              </HStack>
+              <HStack>
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  ส่วนลด
+                </Text>
+                <Text
+                  flex="2"
+                  textAlign="right"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  {totalDiscount} บาท
+                </Text>
+              </HStack>
+              <HStack>
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  ภาษี 7%
+                </Text>
+                <Text
+                  flex="2"
+                  textAlign="right"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  {totalVat} บาท
+                </Text>
+              </HStack>
+              <HStack>
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  ราคาสุทธิ
+                </Text>
+                <Text
+                  flex="2"
+                  textAlign="right"
+                  fontSize="18px"
+                  fontWeight={600}
+                >
+                  {total} บาท
+                </Text>
+              </HStack>
+            </VStack>
+          </Box>
+          <Box
+            flex="1"
+            w="100%"
+            h="100%"
+            bg="#FFF0D9"
+            px="4"
+            alignItems="center"
+          >
+            <Button
+              borderRadius="xl"
+              colorScheme="greenalt"
+              mx="4"
+              w="100%"
+              h="75%"
+              _text={{ fontSize: 20, color: "white" }}
+              startIcon={<Icon as={IconCart} size={5} />}
+              onPress={() => {
+                AlertToast("Hi, Nice to see you ( ´ ∀ ` )ﾉ", "success");
+                setShowModal(true);
+              }}
+            >
+              ชำระเงิน
+            </Button>
+          </Box>
+        </VStack>
+      </HStack>
+    </>
   );
 };
 const styles = StyleSheet.create({

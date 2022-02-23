@@ -65,7 +65,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <Box safeAreaTop bg="coolGray.400" />
+      <Box safeAreaTop bg="coolGray.500" />
       <Center flex="1" bg="#FFF">
         <HStack w="100%" flex="1">
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
