@@ -13,11 +13,11 @@ import {
   FormControl,
   Input,
   NativeBaseProvider,
+  Collapse,
 } from "native-base";
 import SelectPicker from "react-native-form-select-picker";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AlertToast from "./AlertToast";
 
 function Delivery(props: {
   isDelivery: any;
@@ -156,7 +156,7 @@ const CheckOutModal = ({
                   ></TakeAway>
                 </Box>
               </HStack>
-              {isDelivery && (
+              <Collapse isOpen={isDelivery}>
                 <NativeBaseProvider>
                   <HStack mt="3" space="3">
                     <FormControl flex="1" w="100%">
@@ -195,7 +195,7 @@ const CheckOutModal = ({
                     </FormControl>
                   </HStack>
                 </NativeBaseProvider>
-              )}
+              </Collapse>
             </VStack>
             <Divider my="4" />
             <Button
@@ -203,7 +203,6 @@ const CheckOutModal = ({
               colorScheme="success"
               _disabled={{ backgroundColor: "gray.400" }}
               onPress={() => {
-                AlertToast("บันทึกรายการสำเร็จ!", "success");
                 setShowModal(false);
                 navigation.navigate("OrderScreen");
               }}

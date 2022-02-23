@@ -11,11 +11,9 @@ import {
   Divider,
   FlatList,
 } from "native-base";
-import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
-import AlertToast from "../AlertToast";
 import CheckOutModal from "../CheckOutModal";
 
 const ReceiptSidebar = () => {
@@ -293,7 +291,6 @@ const ReceiptSidebar = () => {
               _text={{ fontSize: 20, color: "white" }}
               startIcon={<Icon as={IconCart} size={5} />}
               onPress={() => {
-                AlertToast("Hi, Nice to see you ( ´ ∀ ` )ﾉ", "success");
                 setShowModal(true);
               }}
             >
