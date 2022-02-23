@@ -1,21 +1,18 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   Button,
   Modal,
   VStack,
   HStack,
   Text,
-  Radio,
   Center,
-  Icon,
   Box,
   Pressable,
   Divider,
   FormControl,
   Input,
   NativeBaseProvider,
-  CheckIcon,
-  Select,
 } from "native-base";
 import SelectPicker from "react-native-form-select-picker";
 import { useState } from "react";
@@ -38,6 +35,7 @@ function Delivery(props: {
       justifyContent="center"
       borderWidth={1}
       borderRadius={8}
+      borderColor="gray.400"
       flexDirection="column-reverse"
       onPress={() => {
         props.setIsTakeAway(false);
@@ -77,6 +75,7 @@ function TakeAway(props: {
       justifyContent="center"
       borderWidth={1}
       borderRadius={8}
+      borderColor="gray.400"
       flexDirection="column-reverse"
       onPress={() => {
         props.setIsDelivery(false);
@@ -98,7 +97,9 @@ function TakeAway(props: {
     </Pressable>
   );
 }
-
+type NavProps = {
+  navigate: (any: string) => void;
+};
 const CheckOutModal = ({
   showModal,
   setShowModal,
@@ -108,8 +109,8 @@ const CheckOutModal = ({
   setShowModal: (boolean: boolean) => void;
   props?: any;
 }) => {
-  const [showModal2, setShowModal2] = useState(false);
-  const [showModal3, setShowModal3] = useState(false);
+  const navigation: NavProps = useNavigation();
+  const [selected, setSelected] = useState();
   const [isDelivery, setIsDelivery] = useState(false);
   const [isTakeAway, setIsTakeAway] = useState(false);
   return (
@@ -118,7 +119,6 @@ const CheckOutModal = ({
         avoidKeyboard
         isOpen={showModal}
         onClose={() => {
-          setIsDelivery(false);
           setShowModal(false);
         }}
         size="lg"
@@ -157,8 +157,8 @@ const CheckOutModal = ({
                 <NativeBaseProvider>
                   <HStack mt="3" space="3">
                     <FormControl flex="1" w="100%">
-                      <FormControl.Label color="green.400">
-                        เลือกแพลตฟอร์ม
+                      <FormControl.Label>
+                        <Text fontFamily="Mitr-Medium">เลือกแพลตฟอร์ม</Text>
                       </FormControl.Label>
                       <SelectPicker
                         style={{
@@ -166,29 +166,44 @@ const CheckOutModal = ({
                           paddingTop: 0,
                           paddingBottom: 0,
                           justifyContent: "center",
+                          borderColor: "#e7e5e4",
                           height: 33,
                           borderRadius: 4,
                         }}
-                        selected="test"
-                        onValueChange={() => {}}
+                        selected={selected}
+                        placeholder="เลือกแพลตฟอร์ม"
+                        onSelectedStyle={{ fontFamily: "Mitr-Light" }}
+                        placeholderStyle={{ fontFamily: "Mitr-Light" }}
+                        onValueChange={(value) => {
+                          setSelected(value);
+                        }}
                       >
-                        <SelectPicker.Item label="test" value="test" />
-                        <SelectPicker.Item label="ta" value="ta" />
-                        <SelectPicker.Item label="test" value="test" />
-                        <SelectPicker.Item label="test" value="test" />
-                        <SelectPicker.Item label="test" value="test" />
+                        <SelectPicker.Item label="Grab" value="3" />
+                        <SelectPicker.Item label="Line Man" value="4" />
+                        <SelectPicker.Item label="Robinhood" value="2" />
+                        <SelectPicker.Item label="อื่นๆ" value="1" />
                       </SelectPicker>
                     </FormControl>
                     <FormControl flex="1" w="100%">
-                      <FormControl.Label>test</FormControl.Label>
-                      <Input></Input>
+                      <FormControl.Label>
+                        <Text fontFamily="Mitr-Medium">หมายเลขอ้างอิง</Text>
+                      </FormControl.Label>
+                      <Input />
                     </FormControl>
                   </HStack>
                 </NativeBaseProvider>
               )}
             </VStack>
             <Divider my="4" />
-            <Button colorScheme="success">ต่อไป</Button>
+            <Button
+              colorScheme="success"
+              onPress={() => {
+                setShowModal(false);
+                navigation.navigate("OrderScreen");
+              }}
+            >
+              ต่อไป
+            </Button>
             {/* <VStack space={3}>
               <HStack alignItems="center" justifyContent="space-between">
                 <Text fontWeight="medium">Sub Total</Text>

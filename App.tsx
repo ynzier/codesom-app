@@ -7,6 +7,7 @@ import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MainMenuScreen from "./src/screens/MainMenuScreen";
+import OrderScreen from "./src/screens/OrderScreen";
 import SecondScreen from "./src/screens/SecondScreen";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
@@ -89,6 +90,21 @@ const theme = extendTheme({
 interface Props {
   props: any;
 }
+
+const MainStack: React.FC<Props> = ({ props }) => {
+  return (
+    <Stack.Navigator
+      initialRouteName="MainScreen"
+      screenOptions={() => ({
+        headerShown: false,
+      })}
+    >
+      <Stack.Screen name="MainScreen" component={MainMenuScreen} />
+      <Stack.Screen name="OrderScreen" component={OrderScreen} />
+    </Stack.Navigator>
+  );
+};
+
 const HomeTabs: React.FC<Props> = ({ props }) => {
   const window = useWindowDimensions();
 
@@ -121,7 +137,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
     >
       <Tab.Screen
         name="MainMenuScreen"
-        component={MainMenuScreen}
+        component={MainStack}
         options={{
           tabBarLabel: "หน้าแรก",
           tabBarIcon: ({ color, size }) => (

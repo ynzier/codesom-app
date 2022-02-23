@@ -12,17 +12,17 @@ import {
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import IconCart from "./IconCart";
+import IconCart from "../IconCart";
 import Feather from "react-native-vector-icons/Feather";
-import AlertToast from "../components/AlertToast";
-import CheckOutModal from "./CheckOutModal";
+import AlertToast from "../AlertToast";
+import CheckOutModal from "../CheckOutModal";
 
 type Props = {
   cartData: any;
   setCartData: (value: any) => void;
 };
 
-const Sidebar = (props: Props) => {
+const CartSidebar = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
@@ -395,4 +395,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Sidebar;
+export default CartSidebar;
