@@ -113,72 +113,75 @@ const ProductList = ({
           renderItem={({ item }: ListRenderItemInfo<productData>) => {
             return (
               <Box
-                h={{ md: 140, xl: 240 }}
-                flex="1"
+                h={{ md: 140, xl: 260 }}
+                w={{ md: 180, xl: 440 }}
                 flexDirection="row"
-                mx={{ md: 2, xl: 6 }}
+                ml={{ md: 6, xl: 6 }}
+                mr={{ md: 16, xl: 4 }}
                 mt={{ md: 4, xl: 2 }}
                 mb={{ md: 4, xl: 2 }}
                 justifyContent="center"
                 alignItems="center"
               >
-                <Box zIndex={1} flex="1" w="100%" h="100%">
-                  <Avatar
-                    left="0"
-                    shadow={3}
-                    zIndex={3}
-                    alignSelf="center"
-                    position="absolute"
-                    size={{ md: 140, xl: 240 }}
-                    source={{
-                      uri:
-                        item.image && item.image.imgObj
-                          ? item.image.imgObj
-                          : ErrorImg,
-                    }}
-                  />
+                <Avatar
+                  bg="#FFFDFA"
+                  shadow={3}
+                  zIndex={3}
+                  alignSelf="center"
+                  position="absolute"
+                  left={0}
+                  size={{ md: 140, xl: 240 }}
+                  source={{
+                    uri:
+                      item.image && item.image.imgObj
+                        ? item.image.imgObj
+                        : ErrorImg,
+                  }}
+                />
 
-                  <Button
-                    colorScheme="greenalt"
-                    position={isInCart(item.prId) ? "relative" : "absolute"}
-                    shadow={4}
-                    zIndex={4}
-                    left={{ md: "50px", xl: 90 }}
-                    bottom={{ md: 1, xl: 25 }}
-                    alignSelf="center"
-                    size={{ md: 10, xl: 60 }}
-                    borderRadius="80"
-                    disabled={isInCart(item.prId)}
-                    display={isInCart(item.prId) ? "none" : "flex"}
-                    onPress={() => {
-                      if (!isInCart(item.prId)) {
-                        addToCart({
-                          key:
-                            item.prId +
-                            Math.floor(Math.random() * (100000 - 1) + 1) * 100,
-                          prId: item.prId,
-                          prName: item.prName,
-                          prPrice: item.prPrice,
-                          prCount: "1",
-                        });
-                      }
-                    }}
-                  >
-                    <Text fontSize={{ md: 24, xl: 38 }} color="white">
-                      +
-                    </Text>
-                  </Button>
-                </Box>
+                <Button
+                  colorScheme="greenalt"
+                  position={isInCart(item.prId) ? "relative" : "absolute"}
+                  shadow={4}
+                  zIndex={4}
+                  left={{ md: "50px", xl: 90 }}
+                  bottom={{ md: 1, xl: 25 }}
+                  alignSelf="center"
+                  size={{ md: 10, xl: 60 }}
+                  borderRadius="80"
+                  disabled={isInCart(item.prId)}
+                  display={isInCart(item.prId) ? "none" : "flex"}
+                  onPress={() => {
+                    if (!isInCart(item.prId)) {
+                      addToCart({
+                        key: item.prId + Math.floor(Math.random() * 100),
+                        prId: item.prId,
+                        prName: item.prName,
+                        prPrice: item.prPrice,
+                        prCount: "1",
+                      });
+                    }
+                  }}
+                >
+                  <Text fontSize={{ md: 24, xl: 38 }} color="white">
+                    +
+                  </Text>
+                </Button>
                 <Box
                   h={{ md: 110, xl: 170 }}
-                  flex="3"
-                  w="100%"
-                  pl="45%"
+                  w={{ md: 170, xl: 250 }}
+                  ml={{ md: 160, xl: 200 }}
+                  pl={{ md: 10, xl: 8 }}
                   borderRadius={16}
                   borderWidth={1}
                   flexDirection="row"
                 >
-                  <VStack justifyContent="center">
+                  <VStack
+                    pl={{ md: 18, xl: 8 }}
+                    pr={{ md: 2, xl: 4 }}
+                    justifyContent="center"
+                    fontSize={16}
+                  >
                     <Text
                       fontWeight={400}
                       fontSize={{ md: 12, xl: 18 }}
@@ -186,7 +189,6 @@ const ProductList = ({
                     >
                       {item.prName}
                     </Text>
-
                     <Text
                       fontWeight={200}
                       fontSize={{ md: 12, xl: 18 }}
@@ -196,7 +198,7 @@ const ProductList = ({
                     </Text>
                     <Text
                       fontWeight={200}
-                      fontSize={{ md: 10, xl: 18 }}
+                      fontSize={{ md: 12, xl: 18 }}
                       flexWrap="wrap"
                       color="#ABBBC2"
                     >

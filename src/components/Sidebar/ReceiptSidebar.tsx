@@ -83,7 +83,7 @@ const ReceiptSidebar = () => {
           <Divider thickness="1" mb={4} width="90%" bg="black" />
           <Box
             flex="8"
-            w={{ md: "90%", xl: "80%" }}
+            w={{ md: "90%", xl: "90%" }}
             h="100%"
             bg="#FFFDFA"
             borderWidth={1}
@@ -97,18 +97,23 @@ const ReceiptSidebar = () => {
                 xl: "xl",
               }}
             >
-              ใบเสร็จ
+              คำสั่งซื้อ
             </Text>
             <Divider thickness="1" mb={4} bg="black" />
             <VStack flex="5" px="4">
               <HStack flex="1" mb="2">
-                <Text flex="5" fontSize={14}>
+                <Text flex="5" fontSize={{ md: 12, xl: 18 }}>
                   รายการ
                 </Text>
-                <Text flex="2" textAlign="right" fontSize={14}>
+                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                   จำนวน
                 </Text>
-                <Text flex="3" ml="2" textAlign="right" fontSize={14}>
+                <Text
+                  flex="3"
+                  ml="2"
+                  textAlign="right"
+                  fontSize={{ md: 12, xl: 18 }}
+                >
                   บาท/หน่วย
                 </Text>
               </HStack>
@@ -127,13 +132,26 @@ const ReceiptSidebar = () => {
                   }) => {
                     return (
                       <Box mb="2" w="100%" flexDirection="row">
-                        <Text flex="5" fontSize={14} noOfLines={2}>
+                        <Text
+                          flex="5"
+                          fontSize={{ md: 12, xl: 18 }}
+                          noOfLines={2}
+                        >
                           • {data.item.prName}
                         </Text>
-                        <Text textAlign="right" flex="2" fontSize={14}>
+                        <Text
+                          textAlign="right"
+                          flex="2"
+                          fontSize={{ md: 12, xl: 18 }}
+                        >
                           {data.item.prCount}
                         </Text>
-                        <Text flex="3" ml="2" textAlign="right" fontSize={14}>
+                        <Text
+                          flex="3"
+                          ml="2"
+                          textAlign="right"
+                          fontSize={{ md: 12, xl: 18 }}
+                        >
                           {data.item.prPrice.toFixed(2)}
                         </Text>
                       </Box>
@@ -151,26 +169,26 @@ const ReceiptSidebar = () => {
             />
             <VStack flex="2" px="4">
               <HStack flex="1">
-                <Text flex="1" textAlign="left" fontSize="16">
+                <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
                   ราคารวม
                 </Text>
-                <Text flex="2" textAlign="right" fontSize="16">
+                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                   {sumAll || 0} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
-                <Text flex="1" textAlign="left" fontSize="16">
+                <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
                   ส่วนลด
                 </Text>
-                <Text flex="2" textAlign="right" fontSize="16">
+                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                   {totalDiscount || 0} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
-                <Text flex="1" textAlign="left" fontSize="16">
+                <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
                   ภาษี 7%
                 </Text>
-                <Text flex="2" textAlign="right" fontSize="16">
+                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                   {totalVat || 0} บาท
                 </Text>
               </HStack>
@@ -184,10 +202,20 @@ const ReceiptSidebar = () => {
               bg="gray.300"
             />
             <HStack flex="1" px="4">
-              <Text flex="1" textAlign="left" fontSize="16" fontWeight={600}>
+              <Text
+                flex="1"
+                textAlign="left"
+                fontSize={{ md: 16, xl: 22 }}
+                fontWeight={600}
+              >
                 ราคาสุทธิ
               </Text>
-              <Text flex="2" textAlign="right" fontSize="16" fontWeight={600}>
+              <Text
+                flex="2"
+                textAlign="right"
+                fontSize={{ md: 16, xl: 22 }}
+                fontWeight={600}
+              >
                 {total || 0} บาท
               </Text>
             </HStack>
@@ -198,7 +226,7 @@ const ReceiptSidebar = () => {
               alignSelf="center"
               bg="gray.300"
             />
-            <VStack flex="2.2" mb="4">
+            <VStack flex="2.2" mb="4" justifyContent="center">
               <HStack flex="1" px="4" mb="2">
                 <Text fontSize="16" fontWeight={600}>
                   เลือกวิธีการชำระเงิน
@@ -206,8 +234,8 @@ const ReceiptSidebar = () => {
               </HStack>
               <HStack px="4" space={2}>
                 <Pressable
-                  w="70px"
-                  h="70px"
+                  w={{ md: "70px", xl: "100px" }}
+                  h={{ md: "70px", xl: "100px" }}
                   borderRadius={100}
                   borderWidth={1}
                   borderColor="light.200"
@@ -218,29 +246,34 @@ const ReceiptSidebar = () => {
                     bg: "emerald.600",
                   }}
                   onPress={() => {
-                    setIsCash(true);
-                    setIsQR(false);
+                    if (isCash) {
+                      setIsCash(false);
+                    } else {
+                      setIsQR(false);
+                      setIsCash(true);
+                    }
                   }}
                 >
                   {({ isPressed }) => (
                     <>
                       <Text
-                        fontSize={12}
+                        fontSize={{ md: 12, xl: 16 }}
                         color={isPressed || isCash ? "#fffdfa" : "black"}
                       >
                         เงินสด
                       </Text>
-                      <Ionicons
+                      <Icon
+                        as={Ionicons}
                         name="cash-outline"
-                        size={24}
+                        size={{ md: 8, xl: 12 }}
                         color={isPressed || isCash ? "#fffdfa" : "black"}
                       />
                     </>
                   )}
                 </Pressable>
                 <Pressable
-                  w="70px"
-                  h="70px"
+                  w={{ md: "70px", xl: "100px" }}
+                  h={{ md: "70px", xl: "100px" }}
                   bg={isQR ? "emerald.500" : "#FFFDFA"}
                   borderRadius={100}
                   borderWidth={1}
@@ -251,21 +284,26 @@ const ReceiptSidebar = () => {
                     bg: "emerald.600",
                   }}
                   onPress={() => {
-                    setIsCash(false);
-                    setIsQR(true);
+                    if (isQR) {
+                      setIsQR(false);
+                    } else {
+                      setIsCash(false);
+                      setIsQR(true);
+                    }
                   }}
                 >
                   {({ isPressed }) => (
                     <>
                       <Text
-                        fontSize={12}
+                        fontSize={{ md: 12, xl: 16 }}
                         color={isPressed || isQR ? "#fffdfa" : "black"}
                       >
                         QR Code
                       </Text>
-                      <Ionicons
+                      <Icon
+                        as={Ionicons}
                         name="qr-code-outline"
-                        size={24}
+                        size={{ md: 8, xl: 12 }}
                         color={isPressed || isQR ? "#fffdfa" : "black"}
                       />
                     </>

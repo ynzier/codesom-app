@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   Button,
@@ -18,6 +18,7 @@ import {
 import SelectPicker from "react-native-form-select-picker";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AlertToast from "./AlertToast";
 
 function Delivery(props: {
   isDelivery: any;
@@ -60,6 +61,7 @@ function Delivery(props: {
 }
 
 function TakeAway(props: {
+  setError: (arg0: string) => void;
   isTakeAway: any;
   setIsDelivery: (arg0: boolean) => void;
   setIsTakeAway: (arg0: boolean) => void;
@@ -79,6 +81,7 @@ function TakeAway(props: {
       borderColor="gray.400"
       flexDirection="column-reverse"
       onPress={() => {
+        props.setError("");
         props.setIsDelivery(false);
         props.setIsTakeAway(true);
       }}
@@ -99,7 +102,10 @@ function TakeAway(props: {
   );
 }
 type NavProps = {
-  navigate: (any: string) => void;
+  navigate: (
+    arg0: string,
+    arg1?: { [key: string]: string | undefined }
+  ) => void;
 };
 const CheckOutModal = ({
   showModal,
@@ -111,9 +117,21 @@ const CheckOutModal = ({
   props?: any;
 }) => {
   const navigation: NavProps = useNavigation();
-  const [selected, setSelected] = useState();
-  const [isDelivery, setIsDelivery] = useState(false);
-  const [isTakeAway, setIsTakeAway] = useState(false);
+  const [selected, setSelected] = useState<string | undefined>();
+  const [isDelivery, setIsDelivery] = useState<boolean>(false);
+  const [isTakeAway, setIsTakeAway] = useState<boolean>(false);
+  const [refNo, setRefNo] = useState<string | undefined>("");
+  const [error, setError] = useState<string>("");
+  useEffect(() => {
+    setIsDelivery(false);
+    setIsTakeAway(false);
+    setRefNo("");
+    setError("");
+    setSelected("");
+
+    return () => {};
+  }, []);
+
   return (
     <Center>
       <Modal
@@ -150,6 +168,7 @@ const CheckOutModal = ({
                 </Box>
                 <Box flex="1" shadow="4" zIndex={4} h="100%" w="100%">
                   <TakeAway
+                    setError={setError}
                     setIsDelivery={setIsDelivery}
                     isTakeAway={isTakeAway}
                     setIsTakeAway={setIsTakeAway}
@@ -170,7 +189,7 @@ const CheckOutModal = ({
                           paddingBottom: 0,
                           justifyContent: "center",
                           borderColor: "#e7e5e4",
-                          height: 33,
+                          height: 40,
                           borderRadius: 4,
                         }}
                         selected={selected}
@@ -191,7 +210,7 @@ const CheckOutModal = ({
                       <FormControl.Label>
                         <Text fontFamily="Mitr-Medium">หมายเลขอ้างอิง</Text>
                       </FormControl.Label>
-                      <Input />
+                      <Input h="10" onChangeText={(e) => setRefNo(e)} />
                     </FormControl>
                   </HStack>
                 </NativeBaseProvider>
@@ -203,26 +222,29 @@ const CheckOutModal = ({
               colorScheme="success"
               _disabled={{ backgroundColor: "gray.400" }}
               onPress={() => {
-                setShowModal(false);
-                navigation.navigate("OrderScreen");
+                if (isTakeAway) {
+                  setShowModal(false);
+                  navigation.navigate("OrderScreen", {
+                    orderType: "delivery",
+                  });
+                } else if (isDelivery) {
+                  if (refNo != "" && selected != "") {
+                    navigation.navigate("OrderScreen", {
+                      orderType: "takeaway",
+                      refNo: refNo,
+                      platform: selected,
+                    });
+                  } else {
+                    setError("กรุณาเลือกแพลตฟอร์มและกรอกหมายเลขอ้างอิงก่อน");
+                  }
+                }
               }}
             >
               ต่อไป
             </Button>
-            {/* <VStack space={3}>
-              <HStack alignItems="center" justifyContent="space-between">
-                <Text fontWeight="medium">Sub Total</Text>
-                <Text color="blueGray.400">$298.77</Text>
-              </HStack>
-              <HStack alignItems="center" justifyContent="space-between">
-                <Text fontWeight="medium">Tax</Text>
-                <Text color="blueGray.400">$38.84</Text>
-              </HStack>
-              <HStack alignItems="center" justifyContent="space-between">
-                <Text fontWeight="medium">Total Amount</Text>
-                <Text color="green.500">$337.61</Text>
-              </HStack>
-            </VStack> */}
+            <Collapse my={2} isOpen={error ? true : false}>
+              <Text color="danger.400">*{error}</Text>
+            </Collapse>
           </Modal.Body>
         </Modal.Content>
       </Modal>

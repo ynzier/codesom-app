@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MainMenuScreen from "./src/screens/MainMenuScreen";
 import OrderScreen from "./src/screens/OrderScreen";
@@ -13,6 +14,7 @@ import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWindowDimensions } from "react-native";
+import Topbar from "./src/components/Topbar";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -91,20 +93,6 @@ interface Props {
   props: any;
 }
 
-const MainStack: React.FC<Props> = ({ props }) => {
-  return (
-    <Stack.Navigator
-      initialRouteName="MainScreen"
-      screenOptions={() => ({
-        headerShown: false,
-      })}
-    >
-      <Stack.Screen name="MainScreen" component={MainMenuScreen} />
-      <Stack.Screen name="OrderScreen" component={OrderScreen} />
-    </Stack.Navigator>
-  );
-};
-
 const HomeTabs: React.FC<Props> = ({ props }) => {
   const window = useWindowDimensions();
 
@@ -136,15 +124,20 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       backBehavior="none"
     >
       <Tab.Screen
-        name="MainMenuScreen"
-        component={MainStack}
+        name="MainScreen"
         options={{
           tabBarLabel: "หน้าแรก",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <MainMenuScreen {...props}>
+            <Topbar />
+          </MainMenuScreen>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="PromotionScreen"
         component={SecondScreen}
@@ -156,15 +149,20 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
         }}
       />
       <Tab.Screen
-        name="CategorieScreen"
-        component={MainMenuScreen}
+        name="OrderScreen"
         options={{
-          tabBarLabel: "ประเภท",
+          tabBarLabel: "ประวัติการขาย",
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="category" color={color} size={size} />
+            <Ionicons name="receipt" size={size} color={color} />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <OrderScreen {...props}>
+            <Topbar />
+          </OrderScreen>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="DeliveryScreen"
         component={MainMenuScreen}
