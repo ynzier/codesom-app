@@ -15,8 +15,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
 import CheckOutModal from "../CheckOutModal";
+import ordersService from "../../services/orders.service";
 
-const ReceiptSidebar = () => {
+interface Props {
+  route: any;
+  fetchOrderList: () => void;
+}
+const ReceiptSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
+  const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -64,6 +70,29 @@ const ReceiptSidebar = () => {
     };
   }, []);
 
+  const postOrder = () => {
+    let paidType;
+    if (isQR) paidType = "QR";
+    if (isCash) paidType = "Cash";
+    const ordHeader = {
+      ordItems: cartData && cartData.length,
+      ordTotal: parseFloat(total).toFixed(2),
+      ordDiscount: parseFloat(totalDiscount).toFixed(2),
+      ordTax: parseFloat(totalVat).toFixed(2),
+      paidType: paidType,
+      ordType: ordType,
+      platformId: platformId,
+      ordRefNo: ordRefNo,
+      ordStatus: "0",
+    };
+    const data = { ordHeader: ordHeader, ordItems: cartData };
+    ordersService
+      .createOrderApp(data)
+      .then((res) => {
+        fetchOrderList();
+      })
+      .catch((e) => console.log(e));
+  };
   return (
     <>
       <CheckOutModal showModal={showModal} setShowModal={setShowModal} />
@@ -120,7 +149,6 @@ const ReceiptSidebar = () => {
               <VStack flex="8">
                 <FlatList
                   data={cartData}
-                  keyExtractor={(item: any) => item.key}
                   renderItem={(data: {
                     item: {
                       key: number;
@@ -328,9 +356,7 @@ const ReceiptSidebar = () => {
               h="75%"
               _text={{ fontSize: 20, color: "white" }}
               startIcon={<Icon as={IconCart} size={5} />}
-              onPress={() => {
-                setShowModal(true);
-              }}
+              onPress={postOrder}
             >
               ชำระเงิน
             </Button>

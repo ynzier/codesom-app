@@ -154,7 +154,9 @@ const ProductList = ({
                   onPress={() => {
                     if (!isInCart(item.prId)) {
                       addToCart({
-                        key: item.prId + Math.floor(Math.random() * 100),
+                        key:
+                          item.prId +
+                          Math.floor(Math.random() * (100000 - 1) + 1) * 100,
                         prId: item.prId,
                         prName: item.prName,
                         prPrice: item.prPrice,

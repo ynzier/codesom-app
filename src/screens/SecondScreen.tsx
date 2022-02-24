@@ -1,23 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, {  } from "react";
 import {
-  SafeAreaView,
   Text,
-  StyleSheet,
   StatusBar,
-  Alert,
-  FlatList,
   View,
 } from "react-native";
-import { NativeBaseProvider, Box, Center } from "native-base";
-import EmployeeServices from "../services/employee.service";
-import deviceStorage from "../services/deviceStorage";
+import { Box, Center } from "native-base";
 import { Navigation } from "../hooks/navigation";
 export type Props = {
   navigation: Navigation;
 };
 
-const SecondScreen: React.FC<Props> = ({ navigation }) => {
-  const [empData, setempData] = useState([]);
+const SecondScreen: React.FC<Props> = () => {
 
   return (
     <>
@@ -51,18 +44,5 @@ const SecondScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "grey",
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-});
 
 export default SecondScreen;

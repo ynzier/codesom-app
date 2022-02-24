@@ -18,7 +18,8 @@ import {
 import SelectPicker from "react-native-form-select-picker";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AlertToast from "./AlertToast";
+import ordersService from "../services/orders.service";
+import deliveryService from "../services/delivery.service";
 
 function Delivery(props: {
   isDelivery: any;
@@ -107,6 +108,10 @@ type NavProps = {
     arg1?: { [key: string]: string | undefined }
   ) => void;
 };
+type IPlatformArray = {
+  platformId: number;
+  platformName: string;
+};
 const CheckOutModal = ({
   showModal,
   setShowModal,
@@ -117,6 +122,7 @@ const CheckOutModal = ({
   props?: any;
 }) => {
   const navigation: NavProps = useNavigation();
+  const [platformData, setPlatformData] = useState<IPlatformArray[]>([]);
   const [selected, setSelected] = useState<string | undefined>();
   const [isDelivery, setIsDelivery] = useState<boolean>(false);
   const [isTakeAway, setIsTakeAway] = useState<boolean>(false);
@@ -128,10 +134,16 @@ const CheckOutModal = ({
     setRefNo("");
     setError("");
     setSelected("");
+    deliveryService
+      .getAllPlatform()
+      .then((res) => {
+        const recData = res.data;
+        setPlatformData(recData);
+      })
+      .catch((e) => console.log(e));
 
     return () => {};
   }, []);
-
   return (
     <Center>
       <Modal
@@ -200,17 +212,24 @@ const CheckOutModal = ({
                           setSelected(value);
                         }}
                       >
-                        <SelectPicker.Item label="Grab" value="3" />
-                        <SelectPicker.Item label="Line Man" value="4" />
-                        <SelectPicker.Item label="Robinhood" value="2" />
-                        <SelectPicker.Item label="อื่นๆ" value="1" />
+                        {platformData.map((item, index) => (
+                          <SelectPicker.Item
+                            key={item.platformId.toString()}
+                            label={item.platformName}
+                            value={item.platformId}
+                          />
+                        ))}
                       </SelectPicker>
                     </FormControl>
                     <FormControl flex="1" w="100%">
                       <FormControl.Label>
                         <Text fontFamily="Mitr-Medium">หมายเลขอ้างอิง</Text>
                       </FormControl.Label>
-                      <Input h="10" onChangeText={(e) => setRefNo(e)} />
+                      <Input
+                        h="10"
+                        placeholder="หมายเลขอ้างอิง"
+                        onChangeText={(e) => setRefNo(e)}
+                      />
                     </FormControl>
                   </HStack>
                 </NativeBaseProvider>
@@ -225,14 +244,17 @@ const CheckOutModal = ({
                 if (isTakeAway) {
                   setShowModal(false);
                   navigation.navigate("OrderScreen", {
-                    orderType: "delivery",
+                    ordType: "takeway",
+                    ordRefNo: "",
+                    platformId: "",
                   });
                 } else if (isDelivery) {
                   if (refNo != "" && selected != "") {
+                    setShowModal(false);
                     navigation.navigate("OrderScreen", {
-                      orderType: "takeaway",
-                      refNo: refNo,
-                      platform: selected,
+                      ordType: "delivery",
+                      ordRefNo: refNo,
+                      platformId: selected,
                     });
                   } else {
                     setError("กรุณาเลือกแพลตฟอร์มและกรอกหมายเลขอ้างอิงก่อน");
