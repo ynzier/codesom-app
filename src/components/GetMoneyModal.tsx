@@ -11,7 +11,6 @@ import {
   AlertDialog,
 } from "native-base";
 import VirtualKeyboard from "react-native-virtual-keyboard";
-import DisplayKeyboard from "react-native-display-keyboard";
 
 const GetMoneyModal = ({
   showModal,
@@ -27,14 +26,14 @@ const GetMoneyModal = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
-  const [money, setMoney] = useState(0);
-  const [tip, setTip] = useState(0);
-  const [paidBack, setPaidBack] = useState(0);
+  const [money, setMoney] = useState("0");
+  const [tip, setTip] = useState("0");
+  const [paidBack, setPaidBack] = useState("0");
   const checkInput = (e: React.SetStateAction<number>) => {
     const data = e.toString();
     const onlyDigits = parseFloat(data).toFixed(2);
     const thoudsandSeperator = parseFloat(onlyDigits).toLocaleString("en-US");
-    setMoney(Number(thoudsandSeperator));
+    setMoney(thoudsandSeperator);
   };
   const isEnough = (needed: number, paid: number) => {
     if (paid - needed >= 0) {
@@ -43,8 +42,8 @@ const GetMoneyModal = ({
     return false;
   };
   useEffect(() => {
-    const remain = money - total - tip;
-    setPaidBack(remain);
+    const remain = parseFloat(money) - total - parseFloat(tip);
+    setPaidBack(parseFloat(remain.toString()).toFixed(2));
     return () => {};
   }, [money, tip, total]);
   return (
@@ -94,7 +93,7 @@ const GetMoneyModal = ({
                   <Button
                     colorScheme="emerald"
                     onPress={() => {
-                      if (isEnough(total, money)) setIsOpen(true);
+                      if (isEnough(total, parseFloat(money))) setIsOpen(true);
                       else setAlertOpen(true);
                     }}
                   >
@@ -152,7 +151,8 @@ const GetMoneyModal = ({
                         flex="1"
                         textAlign="right"
                         fontSize="lg"
-                        value="0.00"
+                        value={tip}
+                        onChangeText={(e) => setTip(e)}
                         rightElement={<Text fontSize="lg">บาท</Text>}
                       />
                     </HStack>
@@ -161,7 +161,7 @@ const GetMoneyModal = ({
                         เงินทอน
                       </Text>
                       <Text fontSize="lg" textAlign="right" flex="1">
-                        {paidBack} บาท
+                        {parseFloat(paidBack).toFixed(2)} บาท
                       </Text>
                     </HStack>
                     <Button size="lg" colorScheme="altred">

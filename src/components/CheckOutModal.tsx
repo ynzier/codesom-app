@@ -18,7 +18,6 @@ import {
 import SelectPicker from "react-native-form-select-picker";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ordersService from "../services/orders.service";
 import deliveryService from "../services/delivery.service";
 
 function Delivery(props: {
@@ -123,7 +122,7 @@ const CheckOutModal = ({
 }) => {
   const navigation: NavProps = useNavigation();
   const [platformData, setPlatformData] = useState<IPlatformArray[]>([]);
-  const [selected, setSelected] = useState<string | undefined>();
+  const [selected, setSelected] = useState<string>("0");
   const [isDelivery, setIsDelivery] = useState<boolean>(false);
   const [isTakeAway, setIsTakeAway] = useState<boolean>(false);
   const [refNo, setRefNo] = useState<string | undefined>("");
@@ -212,7 +211,7 @@ const CheckOutModal = ({
                           setSelected(value);
                         }}
                       >
-                        {platformData.map((item, index) => (
+                        {platformData.map((item) => (
                           <SelectPicker.Item
                             key={item.platformId.toString()}
                             label={item.platformName}
@@ -249,7 +248,14 @@ const CheckOutModal = ({
                     platformId: "",
                   });
                 } else if (isDelivery) {
-                  if (refNo != "" && selected != "") {
+                  if (
+                    refNo != "" &&
+                    (selected == "1" ||
+                      selected == "2" ||
+                      selected == "3" ||
+                      selected == "4" ||
+                      selected == "0")
+                  ) {
                     setShowModal(false);
                     navigation.navigate("OrderScreen", {
                       ordType: "delivery",

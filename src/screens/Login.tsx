@@ -18,7 +18,8 @@ import {
 } from "native-base";
 import { Platform } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
-import AlertToast from "../components/AlertToast";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
+// import AlertToast from "../components/AlertToast";
 import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
@@ -41,7 +42,12 @@ export function SignInForm({ props }: any) {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          AlertToast(resMessage, "alert");
+          // AlertToast(resMessage, "alert");
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: "คำเตือน!",
+            textBody: resMessage,
+          });
         })
     );
   };

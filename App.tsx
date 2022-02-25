@@ -3,6 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme, ToastProvider } from "native-base";
+import { Root as AlertProvider } from "alert-toast-react-native";
+
 import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
@@ -252,8 +254,28 @@ const App: React.FC<Props> = () => {
   } else {
     return (
       <NavigationContainer>
-        <NativeBaseProvider theme={theme}>
-          <ToastProvider>
+        <AlertProvider
+          theme="light"
+          colors={[
+            {
+              label: "#292524",
+              card: "#D3EDFF",
+              overlay: "#831843",
+              success: "#6ee7b7",
+              danger: "#E53455",
+              warning: "#AE5302",
+            },
+            {
+              label: "#000",
+              card: "#E8C2A0",
+              overlay: "#831843",
+              success: "#6ee7b7",
+              danger: "#E53455",
+              warning: "#AE5302",
+            },
+          ]}
+        >
+          <NativeBaseProvider theme={theme}>
             <Stack.Navigator
               screenOptions={{
                 headerShown: false,
@@ -262,8 +284,8 @@ const App: React.FC<Props> = () => {
               <Stack.Screen name="LogInScreen" component={Login} />
               <Stack.Screen name="HomeScreen" component={HomeTabs} />
             </Stack.Navigator>
-          </ToastProvider>
-        </NativeBaseProvider>
+          </NativeBaseProvider>
+        </AlertProvider>
       </NavigationContainer>
     );
   }

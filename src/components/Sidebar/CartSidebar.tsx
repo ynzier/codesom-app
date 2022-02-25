@@ -18,7 +18,8 @@ import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "../IconCart";
 import Feather from "react-native-vector-icons/Feather";
 import CheckOutModal from "../CheckOutModal";
-import AlertToast from "../AlertToast";
+// import AlertToast from "../AlertToast";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 
 type Props = {
   cartData: any;
@@ -366,8 +367,16 @@ const CartSidebar = (props: Props) => {
               onPress={async () => {
                 const cart: any[] = props.cartData;
                 if (props.cartData == "")
-                  return AlertToast("กรุณาเลือกสินค้าก่อนทำรายการ", "warning");
+                  // return AlertToast("กรุณาเลือกสินค้าก่อนทำรายการ", "warning");
+                  return Toast.show({
+                    type: ALERT_TYPE.WARNING,
+                    title: "คำเตือน!",
+                    textBody: "กรุณาเลือกสินค้าก่อนทำรายการ",
+                  });
                 try {
+                  await AsyncStorage.removeItem("cartData").catch((e) =>
+                    console.log(e)
+                  );
                   await trackPromise(
                     new Promise((resolve, _reject) => {
                       setTimeout(() => {

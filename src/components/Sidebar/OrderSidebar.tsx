@@ -7,11 +7,12 @@ import {
   Button,
   VStack,
   Icon,
-  Toast,
   Divider,
   FlatList,
   WarningTwoIcon,
 } from "native-base";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
@@ -27,7 +28,7 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
   const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showCashModal, setCashModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [totalVat, setTotalVat] = useState("0");
@@ -51,26 +52,28 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
     }
     return () => {};
   }, [cartData]);
-  useEffect(() => {
-    let isSubscribed = true;
+  const fetchCartData = () => {
     AsyncStorage.getItem("cartData")
       .then((data: any) => {
-        if (isSubscribed) {
-          const tempCart: any = JSON.parse(data);
-          setCartData(tempCart);
-        }
+        const tempCart: any = JSON.parse(data);
+        setCartData(tempCart);
       })
       .catch((e) => {
-        if (isSubscribed) {
-          console.log(e);
-        }
+        console.log(e);
       });
+  };
+  useEffect(() => {
+    if (!ordType) {
+      AsyncStorage.removeItem("cartData")
+        .then(() => {
+          setCartData([]);
+        })
+        .catch((e) => console.log(e));
+    }
+    fetchCartData();
 
-    return () => {
-      Toast.closeAll();
-      isSubscribed = false;
-    };
-  }, []);
+    return () => {};
+  }, [ordType, route]);
 
   const postOrder = () => {
     let paidType;
@@ -91,7 +94,7 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
     const data = { ordHeader: ordHeader, ordItems: cartData };
     ordersService
       .createOrderApp(data)
-      .then((res) => {
+      .then((_res) => {
         fetchOrderList();
       })
       .catch((error) => {
@@ -108,8 +111,8 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
   return (
     <>
       <GetMoneyModal
-        showModal={showModal}
-        setShowModal={setShowModal}
+        showModal={showCashModal}
+        setShowModal={setCashModal}
         total={total}
       />
       <HStack w="100%" flex="1" bg="#FFF0D9">
@@ -118,11 +121,29 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
             flex="1"
             margin="0"
             w="100%"
-            flexDirection="row"
-            justifyContent="center"
             alignItems="center"
+            justifyContent="center"
+            px="0"
           >
-            <Text fontSize={{ md: 36, xl: 48 }}>สรุปรายการ</Text>
+            <VStack w="100%" alignItems="center" justifyContent="center">
+              <Text fontSize={{ md: 32, xl: 46 }}>สรุปรายการ</Text>
+              <MaterialIcons
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: 0,
+                  fontSize: 32,
+                }}
+                name="cancel"
+                onPress={() => {
+                  AsyncStorage.removeItem("cartData")
+                    .then(() => {
+                      setCartData([]);
+                    })
+                    .catch((e) => console.log(e));
+                }}
+              />
+            </VStack>
           </Box>
           {/** Cart Item */}
           <Divider thickness="1" mb={4} width="90%" bg="black" />
@@ -373,13 +394,33 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
               _text={{ fontSize: 20, color: "white" }}
               startIcon={<Icon as={IconCart} size={5} />}
               onPress={() => {
+                if (!cartData)
+                  // return AlertToast(
+                  //   "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
+                  //   "alert"
+                  // );
+                  return Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "คำเตือน!",
+                    textBody: "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
+                  });
                 if (!ordType || (ordType == "delivery" && !platformId)) {
-                  setShowModal(true);
-                  AlertToast("กรุณาทำรายการอีกครั้ง", "alert");
-                  return;
+                  // AlertToast("กรุณาทำรายการอีกครั้ง", "alert");
+
+                  Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "คำเตือน!",
+                    textBody: "กรุณาทำรายการอีกครั้ง",
+                  });
                 }
                 if (!isQR && !isCash)
-                  return AlertToast("กรุณาเลือกวิธีการชำระเงิน", "alert");
+                  // AlertToast("กรุณาเลือกวิธีการชำระเงิน", "alert");
+                  Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "คำเตือน!",
+                    textBody: "กรุณาเลือกวิธีการชำระเงิน",
+                  });
+                if (isCash) return setCashModal(true);
                 // postOrder();
               }}
             >
