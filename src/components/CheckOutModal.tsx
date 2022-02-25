@@ -244,7 +244,7 @@ const CheckOutModal = ({
                 if (isTakeAway) {
                   setShowModal(false);
                   navigation.navigate("OrderScreen", {
-                    ordType: "takeway",
+                    ordType: "takeaway",
                     ordRefNo: "",
                     platformId: "",
                   });

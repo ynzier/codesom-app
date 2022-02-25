@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme, ToastProvider } from "native-base";
 import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
@@ -253,14 +253,16 @@ const App: React.FC<Props> = () => {
     return (
       <NavigationContainer>
         <NativeBaseProvider theme={theme}>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="LogInScreen" component={Login} />
-            <Stack.Screen name="HomeScreen" component={HomeTabs} />
-          </Stack.Navigator>
+          <ToastProvider>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="LogInScreen" component={Login} />
+              <Stack.Screen name="HomeScreen" component={HomeTabs} />
+            </Stack.Navigator>
+          </ToastProvider>
         </NativeBaseProvider>
       </NavigationContainer>
     );

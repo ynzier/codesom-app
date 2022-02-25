@@ -1,2 +1,2 @@
 export { default as CartSidebar } from "./Sidebar/CartSidebar";
-export { default as ReceiptSidebar } from "./Sidebar/ReceiptSidebar";
+export { default as OrderSidebar } from "./Sidebar/OrderSidebar";

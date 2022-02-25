@@ -9,7 +9,7 @@ import {
   Text,
 } from "native-base";
 import { Navigation } from "../hooks/navigation";
-import { ReceiptSidebar } from "../components";
+import { OrderSidebar } from "../components";
 import orderService from "../services/orders.service";
 import { ListRenderItemInfo } from "react-native";
 import moment from "moment";
@@ -45,7 +45,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
         const recData = res.data;
         setOrderData(recData);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {console.log(e)});
   };
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Text>ประวัติคำสั่งซื้อ</Text>
+                <Text fontSize="xl">ประวัติคำสั่งซื้อ</Text>
               </HStack>
               <VStack
                 w="100%"
@@ -198,6 +198,9 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                               borderRadius: 8,
                               width: "100%",
                             }}
+                            disabled={
+                              item.ordStatus == "1" || item.ordStatus == "2"
+                            }
                             selected={item.ordStatus}
                             onSelectedStyle={{
                               fontFamily: "Mitr-Light",
@@ -210,6 +213,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                               value="0"
                             />
                             <SelectPicker.Item label="เสร็จสิ้น" value="1" />
+                            <SelectPicker.Item label="ยกเลิก" value="2" />
                           </SelectPicker>
                         </Box>
                       </HStack>
@@ -221,7 +225,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
           </VStack>
 
           {/*Sidebar Component */}
-          <ReceiptSidebar
+          <OrderSidebar
             route={route.params}
             fetchOrderList={fetchOrderList}
           />

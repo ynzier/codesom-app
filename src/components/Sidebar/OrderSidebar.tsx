@@ -10,18 +10,20 @@ import {
   Toast,
   Divider,
   FlatList,
+  WarningTwoIcon,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
-import CheckOutModal from "../CheckOutModal";
+import GetMoneyModal from "../GetMoneyModal";
 import ordersService from "../../services/orders.service";
+import AlertToast from "../AlertToast";
 
 interface Props {
   route: any;
   fetchOrderList: () => void;
 }
-const ReceiptSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
+const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
   const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
@@ -74,6 +76,7 @@ const ReceiptSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
     let paidType;
     if (isQR) paidType = "QR";
     if (isCash) paidType = "Cash";
+
     const ordHeader = {
       ordItems: cartData && cartData.length,
       ordTotal: parseFloat(total).toFixed(2),
@@ -91,11 +94,24 @@ const ReceiptSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
       .then((res) => {
         fetchOrderList();
       })
-      .catch((e) => console.log(e));
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        AlertToast(resMessage, "alert");
+      });
   };
+
   return (
     <>
-      <CheckOutModal showModal={showModal} setShowModal={setShowModal} />
+      <GetMoneyModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        total={total}
+      />
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
           <Box
@@ -356,7 +372,16 @@ const ReceiptSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
               h="75%"
               _text={{ fontSize: 20, color: "white" }}
               startIcon={<Icon as={IconCart} size={5} />}
-              onPress={postOrder}
+              onPress={() => {
+                if (!ordType || (ordType == "delivery" && !platformId)) {
+                  setShowModal(true);
+                  AlertToast("กรุณาทำรายการอีกครั้ง", "alert");
+                  return;
+                }
+                if (!isQR && !isCash)
+                  return AlertToast("กรุณาเลือกวิธีการชำระเงิน", "alert");
+                // postOrder();
+              }}
             >
               ชำระเงิน
             </Button>
@@ -367,4 +392,4 @@ const ReceiptSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
   );
 };
 
-export default ReceiptSidebar;
+export default OrderSidebar;
