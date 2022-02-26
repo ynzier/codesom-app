@@ -9,8 +9,13 @@ import {
   Box,
   Input,
   AlertDialog,
+  ScrollView,
+  Spinner,
 } from "native-base";
 import VirtualKeyboard from "react-native-virtual-keyboard";
+import NumberFormat from "react-number-format";
+import moment from "moment";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 
 const GetMoneyModal = ({
   showModal,
@@ -23,16 +28,17 @@ const GetMoneyModal = ({
   total: any;
   props?: any;
 }) => {
+  const { promiseInProgress } = usePromiseTracker();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
   const [money, setMoney] = useState("0");
   const [tip, setTip] = useState("0");
   const [paidBack, setPaidBack] = useState("0");
+  const [showReceipt, setShowReceipt] = useState(false);
   const checkInput = (e: React.SetStateAction<number>) => {
     const data = e.toString();
-    const onlyDigits = parseFloat(data).toFixed(2);
-    const thoudsandSeperator = parseFloat(onlyDigits).toLocaleString("en-US");
+    const thoudsandSeperator = parseFloat(data).toFixed(2);
     setMoney(thoudsandSeperator);
   };
   const isEnough = (needed: number, paid: number) => {
@@ -41,6 +47,7 @@ const GetMoneyModal = ({
     }
     return false;
   };
+
   useEffect(() => {
     const remain = parseFloat(money) - total - parseFloat(tip);
     setPaidBack(parseFloat(remain.toString()).toFixed(2));
@@ -58,26 +65,35 @@ const GetMoneyModal = ({
         avoidKeyboard
         isOpen={showModal}
         onClose={() => {
-          setIsConfirm(false);
           setShowModal(false);
+          setIsConfirm(false);
+          setMoney("0");
         }}
         size="lg"
       >
         <Modal.Content maxWidth="500">
           {!isConfirm && <Modal.CloseButton />}
           <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
-            <Text fontSize="lg">{!isConfirm ? "เงินสด" : "ใบเสร็จ"}</Text>
+            <Text fontSize="lg">{!isConfirm ? "เงินสด" : "บันทึกยอด"}</Text>
           </Modal.Header>
           <Modal.Body _scrollview={{ scrollEnabled: false }} mt="2">
             {!isConfirm ? (
               <>
                 <Box justifyContent="center" w="full" h="20" px="8">
-                  <Text fontSize={16} color="gray.500">
+                  <Text flex="1" fontSize={16} color="gray.500">
                     กรอกจำนวนเงินที่ได้รับ
                   </Text>
-                  <Text fontSize={32} textAlign="right">
-                    {money || 0}
-                  </Text>
+                  <NumberFormat
+                    value={money}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    decimalScale={2}
+                    renderText={(formattedValue) => (
+                      <Text fontSize={32} textAlign="right">
+                        {formattedValue}
+                      </Text>
+                    )}
+                  />
                 </Box>
                 <Box>
                   <VirtualKeyboard
@@ -131,17 +147,33 @@ const GetMoneyModal = ({
                       <Text fontSize="lg" flex="1">
                         ได้รับเงิน
                       </Text>
-                      <Text fontSize="lg" textAlign="right" flex="1">
-                        {parseFloat(money.toString()).toFixed(2)} บาท
-                      </Text>
+                      <NumberFormat
+                        value={money}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1">
                         ราคาสุทธิ
                       </Text>
-                      <Text fontSize="lg" textAlign="right" flex="1">
-                        {parseFloat(total).toFixed(2)} บาท
-                      </Text>
+                      <NumberFormat
+                        value={total}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1">
@@ -160,11 +192,37 @@ const GetMoneyModal = ({
                       <Text fontSize="lg" flex="1">
                         เงินทอน
                       </Text>
-                      <Text fontSize="lg" textAlign="right" flex="1">
-                        {parseFloat(paidBack).toFixed(2)} บาท
-                      </Text>
+                      <NumberFormat
+                        value={paidBack}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
                     </HStack>
-                    <Button size="lg" colorScheme="altred">
+                    <Button
+                      size="lg"
+                      colorScheme="altred"
+                      variant="subtle"
+                      onPress={() => {
+                        setShowReceipt(true);
+                        void trackPromise(
+                          new Promise((resolve, _reject) => {
+                            setTimeout(() => {
+                              resolve(
+                                fetch("url", {
+                                  method: "GET",
+                                }).then((response) => response.json())
+                              );
+                            }, 1000);
+                          })
+                        );
+                      }}
+                    >
                       พิมพ์ใบเสร็จ
                     </Button>
                     <Button size="lg" colorScheme="emerald">
@@ -175,6 +233,276 @@ const GetMoneyModal = ({
               </>
             )}
           </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={showReceipt}
+        onClose={() => setShowReceipt(false)}
+        size="lg"
+      >
+        <Modal.Content h="700" maxWidth="450" justifyContent="center">
+          {promiseInProgress ? (
+            <Spinner size="lg" color="cream" />
+          ) : (
+            <>
+              <Modal.CloseButton />
+              <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
+                <Text fontSize="lg">ใบเสร็จ</Text>
+              </Modal.Header>
+              <Modal.Body h="550">
+                <ScrollView minH="400">
+                  <Box borderWidth={1} mx="4" w="400" alignSelf="center">
+                    <HStack
+                      justifyContent="center"
+                      alignItems="center"
+                      mt={6}
+                      mb="2"
+                    >
+                      <Text fontSize="lg" flex="1" textAlign="center">
+                        CODESOM
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center">
+                      <Text fontSize="lg" flex="1" textAlign="center">
+                        เซ็นทรัลปิ่นเกล้า
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignSelf="center" mx="2">
+                      <Text fontSize="lg" flex="1" textAlign="center">
+                        222 ถนนบรมราชชนนี แขวง อรุณอมรินทร์ เขตบางกอกน้อย
+                        กรุงเทพมหานคร 10700
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center">
+                      <Text fontSize="lg" flex="1" textAlign="center">
+                        เบอร์โทรศัพท์: 02-222-2222
+                      </Text>
+                    </HStack>
+                    <HStack
+                      justifyContent="center"
+                      alignItems="center"
+                      px="4"
+                      mb={4}
+                    >
+                      <Text
+                        ellipsizeMode="clip"
+                        numberOfLines={1}
+                        fontSize="lg"
+                        letterSpacing={1}
+                      >
+                        --------------------------------------------------------------------------------
+                      </Text>
+                    </HStack>
+                    {Array(8)
+                      .fill("")
+                      .map((item, index) => (
+                        <VStack key={index} justifyContent="center">
+                          <HStack px="8">
+                            <VStack flex="1">
+                              <Text fontSize="lg" flex="1">
+                                ไอติมเบนยา
+                              </Text>
+                            </VStack>
+                            <VStack flex="1">
+                              <NumberFormat
+                                value={1600}
+                                displayType={"text"}
+                                thousandSeparator={true}
+                                decimalScale={2}
+                                renderText={(formattedValue) => (
+                                  <Text
+                                    fontSize="lg"
+                                    textAlign="right"
+                                    flex="1"
+                                  >
+                                    {formattedValue} บาท
+                                  </Text>
+                                )}
+                              />
+                            </VStack>
+                          </HStack>
+                          <HStack>
+                            <VStack px={10}>
+                              <Text fontWeight="light" fontSize="lg" flex="1">
+                                8 x 200.00 บาท
+                              </Text>
+                            </VStack>
+                          </HStack>
+                        </VStack>
+                      ))}
+                    <HStack
+                      justifyContent="center"
+                      alignItems="center"
+                      px="4"
+                      mt="4"
+                    >
+                      <Text
+                        ellipsizeMode="clip"
+                        numberOfLines={1}
+                        fontSize="lg"
+                        letterSpacing={1}
+                      >
+                        --------------------------------------------------------------------------------
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center" mx="8">
+                      <Text fontSize="lg" flex="1" textAlign="right">
+                        ราคารวม :
+                      </Text>
+                      <NumberFormat
+                        value={1222.12}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center" mx="8">
+                      <Text fontSize="lg" flex="1" textAlign="right">
+                        ภาษี (7%) :
+                      </Text>
+                      <NumberFormat
+                        value={12.12}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
+                    </HStack>
+                    <HStack
+                      justifyContent="center"
+                      alignSelf="flex-end"
+                      px="4"
+                      w="50%"
+                    >
+                      <Text
+                        ellipsizeMode="clip"
+                        flex="1"
+                        numberOfLines={1}
+                        fontSize="md"
+                        letterSpacing={1}
+                        textAlign="right"
+                      >
+                        ---------------------------------
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center" mx="8">
+                      <Text fontSize="lg" flex="1" textAlign="right">
+                        ราคาสุทธิิ :
+                      </Text>
+                      <NumberFormat
+                        value={1333.12}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
+                    </HStack>
+                    <HStack
+                      justifyContent="center"
+                      alignSelf="flex-end"
+                      px="4"
+                      w="50%"
+                    >
+                      <Text
+                        ellipsizeMode="clip"
+                        flex="1"
+                        numberOfLines={2}
+                        fontSize="md"
+                        letterSpacing={1}
+                        textAlign="right"
+                        lineHeight="xs"
+                      >
+                        -------------------------------------------
+                      </Text>
+                    </HStack>
+
+                    <HStack
+                      justifyContent="center"
+                      alignItems="center"
+                      px="4"
+                      mt="4"
+                    >
+                      <Text
+                        ellipsizeMode="clip"
+                        numberOfLines={1}
+                        fontSize="lg"
+                        letterSpacing={1}
+                      >
+                        --------------------------------------------------------------------------------
+                      </Text>
+                    </HStack>
+                    <HStack
+                      justifyContent="center"
+                      alignItems="center"
+                      mx="8"
+                      mt="4"
+                    >
+                      <Text fontSize="lg" flex="1" textAlign="right">
+                        เงินสด :
+                      </Text>
+                      <NumberFormat
+                        value={1333.12}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center" mx="8">
+                      <Text fontSize="lg" flex="1" textAlign="right">
+                        เงินทอน :
+                      </Text>
+                      <NumberFormat
+                        value={1333.12}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        renderText={(formattedValue) => (
+                          <Text fontSize="lg" textAlign="right" flex="1">
+                            {formattedValue} บาท
+                          </Text>
+                        )}
+                      />
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center" mt="8">
+                      <Text fontSize="lg" flex="1" textAlign="center">
+                        เลขที่ใบเสร็จ {12312}
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center" mb="8">
+                      <Text fontSize="lg" flex="1" textAlign="center">
+                        {moment(1231231232222)
+                          .local()
+                          .format("DD/MM/YYYY HH:mm:ss")}
+                      </Text>
+                    </HStack>
+                  </Box>
+                </ScrollView>
+              </Modal.Body>
+              <Modal.Footer bg="transparent">
+                <Button flex="1" colorScheme="emerald" onPress={() => {}}>
+                  เสร็จสิ้น
+                </Button>
+              </Modal.Footer>
+            </>
+          )}
         </Modal.Content>
       </Modal>
     </Center>
@@ -266,4 +594,5 @@ const ConfirmDialog = ({
     </Center>
   );
 };
+
 export default GetMoneyModal;
