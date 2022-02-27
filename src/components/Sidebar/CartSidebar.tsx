@@ -230,7 +230,11 @@ const CartSidebar = (props: Props) => {
   };
   return (
     <>
-      <CheckOutModal showModal={showModal} setShowModal={setShowModal} />
+      <CheckOutModal
+        showModal={showModal}
+        setCartData={props.setCartData}
+        setShowModal={setShowModal}
+      />
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
           <Box
@@ -384,7 +388,9 @@ const CartSidebar = (props: Props) => {
                           AsyncStorage.setItem(
                             "cartData",
                             JSON.stringify(cart)
-                          ).then(() => setShowModal(true))
+                          ).then(() => {
+                            setShowModal(true);
+                          })
                         );
                       }, 500);
                     }),

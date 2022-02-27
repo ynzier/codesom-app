@@ -12,47 +12,109 @@ import {
   ScrollView,
   Spinner,
 } from "native-base";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import VirtualKeyboard from "react-native-virtual-keyboard";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
+import receiptService from "../services/receipt.service";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 
 const GetMoneyModal = ({
   showModal,
   setShowModal,
-  total,
-  ...props
+  receiptData,
+  fetchCartData,
+  setCartData,
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
-  total: any;
+  receiptData: any;
+  fetchCartData: () => void;
+  setCartData: (a: any) => void;
   props?: any;
 }) => {
+  const { ordHeader, ordItems, ordId, brId, ordVat, paidType } = receiptData;
   const { promiseInProgress } = usePromiseTracker();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
+  const [isDone, setIsDone] = useState(false);
+  const [total, setTotal] = useState("0");
+  const [change, setChange] = useState("0");
+  const [net, setNet] = useState("0");
+  const [vat, setVat] = useState("0");
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
-  const [money, setMoney] = useState("0");
+  const [cash, setCash] = useState("0");
   const [tip, setTip] = useState("0");
-  const [paidBack, setPaidBack] = useState("0");
   const [showReceipt, setShowReceipt] = useState(false);
   const checkInput = (e: React.SetStateAction<number>) => {
     const data = e.toString();
     const thoudsandSeperator = parseFloat(data).toFixed(2);
-    setMoney(thoudsandSeperator);
+    setCash(thoudsandSeperator);
   };
   const isEnough = (needed: number, paid: number) => {
+    console.log("first: ", needed, " second: ", paid);
     if (paid - needed >= 0) {
       return true;
     }
     return false;
   };
+  const onSuccess = () => {
+    AsyncStorage.removeItem("cartData")
+      .then(() => {
+        setCartData([]);
+      })
+      .catch((e) => console.log(e));
+    fetchCartData();
+    onSubmitReceipt();
+  };
 
+  const onSubmitReceipt = () => {
+    const pushData = {
+      paidType: paidType,
+      total: total,
+      cash: cash,
+      tip: tip,
+      tax: vat,
+      change: change,
+    };
+    void trackPromise(
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(
+            receiptService
+              .createReceipt({ receiptData: pushData, ordId: ordId })
+              .then((res) => {
+                setIsDone(true);
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 1000);
+      })
+    );
+  };
   useEffect(() => {
-    const remain = parseFloat(money) - total - parseFloat(tip);
-    setPaidBack(parseFloat(remain.toString()).toFixed(2));
+    if (isConfirm) {
+      setTotal(parseFloat(ordHeader.ordTotal.toString()).toFixed(2));
+      const remain = parseFloat(cash) - parseFloat(total) - parseFloat(tip);
+      setChange(parseFloat(remain.toString()).toFixed(2));
+      setVat(ordVat);
+      const calNet = (parseFloat(total) * 100) / 107;
+      setNet(calNet.toString());
+    }
     return () => {};
-  }, [money, tip, total]);
+  }, [cash, isConfirm, receiptData, ordHeader, ordVat, tip, total]);
   return (
     <Center>
       <ConfirmDialog
@@ -67,7 +129,7 @@ const GetMoneyModal = ({
         onClose={() => {
           setShowModal(false);
           setIsConfirm(false);
-          setMoney("0");
+          setCash("0");
         }}
         size="lg"
       >
@@ -84,7 +146,7 @@ const GetMoneyModal = ({
                     กรอกจำนวนเงินที่ได้รับ
                   </Text>
                   <NumberFormat
-                    value={money}
+                    value={cash}
                     displayType={"text"}
                     thousandSeparator={true}
                     decimalScale={2}
@@ -109,7 +171,8 @@ const GetMoneyModal = ({
                   <Button
                     colorScheme="emerald"
                     onPress={() => {
-                      if (isEnough(total, parseFloat(money))) setIsOpen(true);
+                      if (isEnough(ordHeader.ordTotal, parseFloat(cash)))
+                        setIsOpen(true);
                       else setAlertOpen(true);
                     }}
                   >
@@ -139,7 +202,7 @@ const GetMoneyModal = ({
                       จ่ายเงินสด
                     </Text>
                     <Text fontSize="lg" textAlign="right" flex="1">
-                      เลขที่ออเดอร์: 21312
+                      เลขที่ออเดอร์: {ordId}
                     </Text>
                   </HStack>
                   <VStack mt={4} mb={8} space={4} px={4}>
@@ -148,7 +211,7 @@ const GetMoneyModal = ({
                         ได้รับเงิน
                       </Text>
                       <NumberFormat
-                        value={money}
+                        value={cash}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -193,7 +256,7 @@ const GetMoneyModal = ({
                         เงินทอน
                       </Text>
                       <NumberFormat
-                        value={paidBack}
+                        value={change}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -204,30 +267,44 @@ const GetMoneyModal = ({
                         )}
                       />
                     </HStack>
-                    <Button
-                      size="lg"
-                      colorScheme="altred"
-                      variant="subtle"
-                      onPress={() => {
-                        setShowReceipt(true);
-                        void trackPromise(
-                          new Promise((resolve, _reject) => {
-                            setTimeout(() => {
-                              resolve(
-                                fetch("url", {
-                                  method: "GET",
-                                }).then((response) => response.json())
-                              );
-                            }, 1000);
-                          })
-                        );
-                      }}
-                    >
-                      พิมพ์ใบเสร็จ
-                    </Button>
-                    <Button size="lg" colorScheme="emerald">
-                      เสร็จสิ้น
-                    </Button>
+                    {isDone ? (
+                      <Button
+                        size="lg"
+                        colorScheme="altred"
+                        variant="subtle"
+                        onPress={() => {
+                          setShowReceipt(true);
+                          void trackPromise(
+                            new Promise((resolve, _reject) => {
+                              setTimeout(() => {
+                                resolve(
+                                  fetch("url", {
+                                    method: "GET",
+                                  }).then((response) => response.json())
+                                );
+                              }, 1000);
+                            })
+                          );
+                          setIsDone(false);
+                        }}
+                      >
+                        พิมพ์ใบเสร็จ
+                      </Button>
+                    ) : (
+                      <Button
+                        size="lg"
+                        colorScheme="emerald"
+                        onPress={() => {
+                          onSuccess();
+                        }}
+                      >
+                        {promiseInProgress ? (
+                          <Spinner size="sm" color="cream" />
+                        ) : (
+                          "เสร็จสิ้น"
+                        )}
+                      </Button>
+                    )}
                   </VStack>
                 </VStack>
               </>
@@ -264,7 +341,7 @@ const GetMoneyModal = ({
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        เซ็นทรัลปิ่นเกล้า
+                        เซ็นทรัลปิ่นเกล้า {brId}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignSelf="center" mx="2">
@@ -293,43 +370,52 @@ const GetMoneyModal = ({
                         --------------------------------------------------------------------------------
                       </Text>
                     </HStack>
-                    {Array(8)
-                      .fill("")
-                      .map((item, index) => (
-                        <VStack key={index} justifyContent="center">
-                          <HStack px="8">
-                            <VStack flex="1">
-                              <Text fontSize="lg" flex="1">
-                                ไอติมเบนยา
-                              </Text>
-                            </VStack>
-                            <VStack flex="1">
-                              <NumberFormat
-                                value={1600}
-                                displayType={"text"}
-                                thousandSeparator={true}
-                                decimalScale={2}
-                                renderText={(formattedValue) => (
-                                  <Text
-                                    fontSize="lg"
-                                    textAlign="right"
-                                    flex="1"
-                                  >
-                                    {formattedValue} บาท
-                                  </Text>
-                                )}
-                              />
-                            </VStack>
-                          </HStack>
-                          <HStack>
-                            <VStack px={10}>
-                              <Text fontWeight="light" fontSize="lg" flex="1">
-                                8 x 200.00 บาท
-                              </Text>
-                            </VStack>
-                          </HStack>
-                        </VStack>
-                      ))}
+                    {ordItems &&
+                      ordItems.map(
+                        (
+                          item: {
+                            key: number;
+                            prName: string;
+                            prPrice: number;
+                            prCount: number;
+                          },
+                          index: any
+                        ) => (
+                          <VStack key={index} justifyContent="center">
+                            <HStack px="8">
+                              <VStack flex="1">
+                                <Text fontSize="lg" flex="1">
+                                  {item.prName}
+                                </Text>
+                              </VStack>
+                              <VStack flex="1">
+                                <NumberFormat
+                                  value={item.prPrice * item.prCount}
+                                  displayType={"text"}
+                                  thousandSeparator={true}
+                                  decimalScale={2}
+                                  renderText={(formattedValue) => (
+                                    <Text
+                                      fontSize="lg"
+                                      textAlign="right"
+                                      flex="1"
+                                    >
+                                      {formattedValue} บาท
+                                    </Text>
+                                  )}
+                                />
+                              </VStack>
+                            </HStack>
+                            <HStack>
+                              <VStack px={10}>
+                                <Text fontWeight="light" fontSize="lg" flex="1">
+                                  {item.prCount} x {item.prPrice} บาท
+                                </Text>
+                              </VStack>
+                            </HStack>
+                          </VStack>
+                        )
+                      )}
                     <HStack
                       justifyContent="center"
                       alignItems="center"
@@ -350,7 +436,7 @@ const GetMoneyModal = ({
                         ราคารวม :
                       </Text>
                       <NumberFormat
-                        value={1222.12}
+                        value={net}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -366,7 +452,7 @@ const GetMoneyModal = ({
                         ภาษี (7%) :
                       </Text>
                       <NumberFormat
-                        value={12.12}
+                        value={vat}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -396,10 +482,10 @@ const GetMoneyModal = ({
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mx="8">
                       <Text fontSize="lg" flex="1" textAlign="right">
-                        ราคาสุทธิิ :
+                        ราคาสุทธิ :
                       </Text>
                       <NumberFormat
-                        value={1333.12}
+                        value={total}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -454,7 +540,7 @@ const GetMoneyModal = ({
                         เงินสด :
                       </Text>
                       <NumberFormat
-                        value={1333.12}
+                        value={cash}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -470,7 +556,7 @@ const GetMoneyModal = ({
                         เงินทอน :
                       </Text>
                       <NumberFormat
-                        value={1333.12}
+                        value={change}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -497,7 +583,14 @@ const GetMoneyModal = ({
                 </ScrollView>
               </Modal.Body>
               <Modal.Footer bg="transparent">
-                <Button flex="1" colorScheme="emerald" onPress={() => {}}>
+                <Button
+                  flex="1"
+                  colorScheme="emerald"
+                  onPress={() => {
+                    setShowModal(false);
+                    setShowReceipt(false);
+                  }}
+                >
                   เสร็จสิ้น
                 </Button>
               </Modal.Footer>

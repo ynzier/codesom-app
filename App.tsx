@@ -254,27 +254,7 @@ const App: React.FC<Props> = () => {
   } else {
     return (
       <NavigationContainer>
-        <AlertProvider
-          theme="light"
-          colors={[
-            {
-              label: "#292524",
-              card: "#D3EDFF",
-              overlay: "#831843",
-              success: "#6ee7b7",
-              danger: "#E53455",
-              warning: "#AE5302",
-            },
-            {
-              label: "#000",
-              card: "#E8C2A0",
-              overlay: "#831843",
-              success: "#6ee7b7",
-              danger: "#E53455",
-              warning: "#AE5302",
-            },
-          ]}
-        >
+        <AlertProvider>
           <NativeBaseProvider theme={theme}>
             <Stack.Navigator
               screenOptions={{

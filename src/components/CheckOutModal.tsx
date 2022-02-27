@@ -114,10 +114,12 @@ type IPlatformArray = {
 const CheckOutModal = ({
   showModal,
   setShowModal,
+  setCartData,
   ...props
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
+  setCartData: (a: any) => void;
   props?: any;
 }) => {
   const navigation: NavProps = useNavigation();
@@ -242,6 +244,7 @@ const CheckOutModal = ({
               onPress={() => {
                 if (isTakeAway) {
                   setShowModal(false);
+                  setCartData([]);
                   navigation.navigate("OrderScreen", {
                     ordType: "takeaway",
                     ordRefNo: "",
@@ -257,6 +260,7 @@ const CheckOutModal = ({
                       selected == "0")
                   ) {
                     setShowModal(false);
+                    setCartData([]);
                     navigation.navigate("OrderScreen", {
                       ordType: "delivery",
                       ordRefNo: refNo,

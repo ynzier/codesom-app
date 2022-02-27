@@ -9,7 +9,6 @@ import {
   Icon,
   Divider,
   FlatList,
-  WarningTwoIcon,
 } from "native-base";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -18,22 +17,33 @@ import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
 import GetMoneyModal from "../GetMoneyModal";
 import ordersService from "../../services/orders.service";
-import AlertToast from "../AlertToast";
 
 interface Props {
   route: any;
-  fetchOrderList: () => void;
+  setOrderData: (a: any) => void;
 }
-const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
+const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
   const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
+  const [receiptData, setReceiptData] = useState<any>([]);
   const [showCashModal, setCashModal] = useState(false);
-  const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
+  const [subTotal, setSubtotal] = useState(0);
   const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
   const [cartData, setCartData] = useState<any[]>();
+  const fetchOrderList = () => {
+    ordersService
+      .listOrderApp()
+      .then((res) => {
+        const recData = res.data;
+        setOrderData(recData);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   useEffect(() => {
     if (cartData) {
       const sum: number = cartData
@@ -43,7 +53,7 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
         )
         .reduce((prev: any, curr: any) => prev + curr, 0)
         .toFixed(2);
-      setSumAll(sum);
+      setSubtotal(sum);
       const discount = 0.0;
       setTotalDiscount(discount.toFixed(2));
       const vat = (sum - discount) * 0.07;
@@ -76,16 +86,11 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
   }, [ordType, route]);
 
   const postOrder = () => {
-    let paidType;
-    if (isQR) paidType = "QR";
-    if (isCash) paidType = "Cash";
-
-    const ordHeader = {
+    const ordHeader: any = {
       ordItems: cartData && cartData.length,
       ordTotal: parseFloat(total).toFixed(2),
       ordDiscount: parseFloat(totalDiscount).toFixed(2),
-      ordTax: parseFloat(totalVat).toFixed(2),
-      paidType: paidType,
+      ordSubTotal: parseFloat(subTotal.toString()).toFixed(2),
       ordType: ordType,
       platformId: platformId,
       ordRefNo: ordRefNo,
@@ -94,7 +99,15 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
     const data = { ordHeader: ordHeader, ordItems: cartData };
     ordersService
       .createOrderApp(data)
-      .then((_res) => {
+      .then((res) => {
+        setReceiptData({
+          ordHeader: ordHeader,
+          ordItems: cartData,
+          brId: res.data.brId,
+          ordId: res.data.orderId,
+          ordVat: totalVat,
+          paidType: isCash && "cash",
+        });
         fetchOrderList();
       })
       .catch((error) => {
@@ -104,17 +117,24 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        AlertToast(resMessage, "alert");
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          textBody: resMessage,
+        });
       });
   };
 
   return (
     <>
-      <GetMoneyModal
-        showModal={showCashModal}
-        setShowModal={setCashModal}
-        total={total}
-      />
+      {showCashModal && (
+        <GetMoneyModal
+          showModal={showCashModal}
+          setShowModal={setCashModal}
+          receiptData={receiptData}
+          fetchCartData={fetchCartData}
+          setCartData={setCartData}
+        />
+      )}
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
           <Box
@@ -238,7 +258,7 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
                   ราคารวม
                 </Text>
                 <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
-                  {sumAll || 0} บาท
+                  {subTotal || 0} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
@@ -395,33 +415,25 @@ const OrderSidebar: React.FC<Props> = ({ route, fetchOrderList }) => {
               startIcon={<Icon as={IconCart} size={5} />}
               onPress={() => {
                 if (!cartData)
-                  // return AlertToast(
-                  //   "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
-                  //   "alert"
-                  // );
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,
-                    title: "คำเตือน!",
                     textBody: "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
                   });
                 if (!ordType || (ordType == "delivery" && !platformId)) {
-                  // AlertToast("กรุณาทำรายการอีกครั้ง", "alert");
-
-                  Toast.show({
+                  return Toast.show({
                     type: ALERT_TYPE.DANGER,
-                    title: "คำเตือน!",
                     textBody: "กรุณาทำรายการอีกครั้ง",
                   });
                 }
                 if (!isQR && !isCash)
-                  // AlertToast("กรุณาเลือกวิธีการชำระเงิน", "alert");
-                  Toast.show({
+                  return Toast.show({
                     type: ALERT_TYPE.DANGER,
-                    title: "คำเตือน!",
                     textBody: "กรุณาเลือกวิธีการชำระเงิน",
                   });
-                if (isCash) return setCashModal(true);
-                // postOrder();
+                if (isCash) {
+                  setCashModal(true);
+                  postOrder();
+                }
               }}
             >
               ชำระเงิน

@@ -37,20 +37,27 @@ interface orderData {
 }
 const OrderScreen: React.FC<Props> = ({ route, children }) => {
   const [orderData, setOrderData] = useState<orderData[]>([]);
-  const [filterData, setfilterData] = useState<orderData[]>([]);
-  const fetchOrderList = () => {
+  const fetchOrderList = (isMounted: boolean) => {
     orderService
       .listOrderApp()
       .then((res) => {
-        const recData = res.data;
-        setOrderData(recData);
+        if (isMounted) {
+          const recData = res.data;
+          setOrderData(recData);
+        }
       })
-      .catch((e) => {console.log(e)});
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   useEffect(() => {
-    fetchOrderList();
-    return () => {};
+    let isMounted = true;
+
+    fetchOrderList(isMounted);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -225,10 +232,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
           </VStack>
 
           {/*Sidebar Component */}
-          <OrderSidebar
-            route={route.params}
-            fetchOrderList={fetchOrderList}
-          />
+          <OrderSidebar route={route.params} setOrderData={setOrderData} />
           {/*Sidebar Component */}
         </HStack>
       </Center>
