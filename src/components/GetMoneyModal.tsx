@@ -38,6 +38,8 @@ const GetMoneyModal = ({
   const { promiseInProgress } = usePromiseTracker();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
+  const [receiptId, setReceiptId] = useState("");
+  const [receiptTimestamp, setReceiptTimestamp] = useState("");
   const [isDone, setIsDone] = useState(false);
   const [total, setTotal] = useState("0");
   const [change, setChange] = useState("0");
@@ -85,6 +87,8 @@ const GetMoneyModal = ({
             receiptService
               .createReceipt({ receiptData: pushData, ordId: ordId })
               .then((res) => {
+                setReceiptId(res.data.receiptId);
+                setReceiptTimestamp(res.data.recTimestamp);
                 setIsDone(true);
               })
               .catch((error) => {
@@ -150,6 +154,7 @@ const GetMoneyModal = ({
                     displayType={"text"}
                     thousandSeparator={true}
                     decimalScale={2}
+                    fixedDecimalScale
                     renderText={(formattedValue) => (
                       <Text fontSize={32} textAlign="right">
                         {formattedValue}
@@ -215,6 +220,7 @@ const GetMoneyModal = ({
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
+                        fixedDecimalScale
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
                             {formattedValue} บาท
@@ -231,6 +237,7 @@ const GetMoneyModal = ({
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
+                        fixedDecimalScale
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
                             {formattedValue} บาท
@@ -260,6 +267,7 @@ const GetMoneyModal = ({
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
+                        fixedDecimalScale
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
                             {formattedValue} บาท
@@ -394,6 +402,7 @@ const GetMoneyModal = ({
                                   displayType={"text"}
                                   thousandSeparator={true}
                                   decimalScale={2}
+                                  fixedDecimalScale
                                   renderText={(formattedValue) => (
                                     <Text
                                       fontSize="lg"
@@ -409,7 +418,23 @@ const GetMoneyModal = ({
                             <HStack>
                               <VStack px={10}>
                                 <Text fontWeight="light" fontSize="lg" flex="1">
-                                  {item.prCount} x {item.prPrice} บาท
+                                  {item.prCount} x {}
+                                  <NumberFormat
+                                    value={item.prPrice}
+                                    displayType={"text"}
+                                    thousandSeparator={true}
+                                    fixedDecimalScale
+                                    decimalScale={2}
+                                    renderText={(formattedValue) => (
+                                      <Text
+                                        fontSize="lg"
+                                        textAlign="right"
+                                        flex="1"
+                                      >
+                                        {formattedValue} บาท
+                                      </Text>
+                                    )}
+                                  />
                                 </Text>
                               </VStack>
                             </HStack>
@@ -440,6 +465,7 @@ const GetMoneyModal = ({
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
+                        fixedDecimalScale
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
                             {formattedValue} บาท
@@ -456,6 +482,7 @@ const GetMoneyModal = ({
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
+                        fixedDecimalScale
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
                             {formattedValue} บาท
@@ -489,6 +516,7 @@ const GetMoneyModal = ({
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
+                        fixedDecimalScale
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
                             {formattedValue} บาท
@@ -543,6 +571,7 @@ const GetMoneyModal = ({
                         value={cash}
                         displayType={"text"}
                         thousandSeparator={true}
+                        fixedDecimalScale
                         decimalScale={2}
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
@@ -559,6 +588,7 @@ const GetMoneyModal = ({
                         value={change}
                         displayType={"text"}
                         thousandSeparator={true}
+                        fixedDecimalScale
                         decimalScale={2}
                         renderText={(formattedValue) => (
                           <Text fontSize="lg" textAlign="right" flex="1">
@@ -569,12 +599,12 @@ const GetMoneyModal = ({
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mt="8">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        เลขที่ใบเสร็จ {12312}
+                        เลขที่ใบเสร็จ {receiptId}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mb="8">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        {moment(1231231232222)
+                        {moment(receiptTimestamp)
                           .local()
                           .format("DD/MM/YYYY HH:mm:ss")}
                       </Text>
