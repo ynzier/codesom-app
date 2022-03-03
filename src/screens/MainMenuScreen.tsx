@@ -57,7 +57,9 @@ const MainMenuScreen: React.FC<Props> = ({ navigation, children }) => {
     let isSubscribed = true;
     branchService
       .getCurrentBranch()
-      .then((res) => (isSubscribed ? setBranchData(res.data) : null))
+      .then((res) => {
+        isSubscribed ? setBranchData(res.data) : null;
+      })
       .catch((err) => console.log(err));
     return () => {
       isSubscribed = false;

@@ -13,6 +13,7 @@ import { OrderSidebar } from "../components";
 import orderService from "../services/orders.service";
 import { ListRenderItemInfo } from "react-native";
 import moment from "moment";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import SelectPicker from "react-native-form-select-picker";
 
 interface Props {
@@ -46,11 +47,46 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
           setOrderData(recData);
         }
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        // AlertToast(resMessage, "alert");
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "พบข้อผิดพลาด!",
+          textBody: resMessage,
+        });
       });
   };
 
+  const updateOrderStatus = (updateOrdId: any, updateStatus: number) => {
+    const data = {
+      status: updateStatus,
+      ordId: updateOrdId,
+    };
+    orderService
+      .updateOrderStatus(data)
+      .then((_res) => {
+        fetchOrderList(true);
+      })
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "คำเตือน!",
+          textBody: resMessage,
+        });
+      });
+  };
   useEffect(() => {
     let isMounted = true;
 
@@ -212,6 +248,9 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                             onSelectedStyle={{
                               fontFamily: "Mitr-Light",
                               textAlign: "center",
+                            }}
+                            onValueChange={(value) => {
+                              updateOrderStatus(item.ordId, value);
                             }}
                             placeholderStyle={{ fontFamily: "Mitr-Light" }}
                           >

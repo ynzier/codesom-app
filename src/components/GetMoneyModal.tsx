@@ -19,6 +19,16 @@ import moment from "moment";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import receiptService from "../services/receipt.service";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
+import branchService from "../services/branch.service";
+
+type IBranchObj = {
+  brId: number | null;
+  brName: string;
+  brAddr: string;
+  brTel: string;
+  brStatus: string;
+  brImg: string;
+};
 
 const GetMoneyModal = ({
   showModal,
@@ -49,6 +59,8 @@ const GetMoneyModal = ({
   const [cash, setCash] = useState("0");
   const [tip, setTip] = useState("0");
   const [showReceipt, setShowReceipt] = useState(false);
+
+  const [branchData, setBranchData] = useState<IBranchObj>({} as IBranchObj);
   const checkInput = (e: React.SetStateAction<number>) => {
     const data = e.toString();
     const thoudsandSeperator = parseFloat(data).toFixed(2);
@@ -107,6 +119,19 @@ const GetMoneyModal = ({
       })
     );
   };
+  useEffect(() => {
+    branchService
+      .getCurrentBranchWithOutImage()
+      .then((res) => {
+        setBranchData(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    return () => {};
+  }, []);
+
   useEffect(() => {
     if (isConfirm) {
       setTotal(parseFloat(ordHeader.ordTotal.toString()).toFixed(2));
@@ -347,18 +372,17 @@ const GetMoneyModal = ({
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        เซ็นทรัลปิ่นเกล้า {brId}
+                        {branchData.brName || ""}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignSelf="center" mx="2">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        222 ถนนบรมราชชนนี แขวง อรุณอมรินทร์ เขตบางกอกน้อย
-                        กรุงเทพมหานคร 10700
+                        {branchData.brAddr || ""}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        เบอร์โทรศัพท์: 02-222-2222
+                        เบอร์โทรศัพท์: {branchData.brTel || ""}
                       </Text>
                     </HStack>
                     <HStack

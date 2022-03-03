@@ -32,6 +32,14 @@ const deviceStorage = {
       console.log("AsyncStorage Error: " + error);
     }
   },
+  async setBranchInfo(value: string): Promise<void> {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("branchInfo", jsonValue);
+    } catch (e) {
+      console.log("AsyncStorage Error: " + e);
+    }
+  },
 };
 
 export default deviceStorage;

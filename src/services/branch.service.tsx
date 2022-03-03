@@ -8,7 +8,14 @@ const getCurrentBranch = async () => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
+const getCurrentBranchWithOutImage = async () => {
+  const xToken = await authHeader();
+  return http.get(prefix + "/getCurrentBranchWithOutImage", {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 
 export default {
   getCurrentBranch,
+  getCurrentBranchWithOutImage,
 };

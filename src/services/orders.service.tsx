@@ -12,4 +12,10 @@ const listOrderApp = async () => {
     headers: { "x-access-token": JSON.parse(await xToken) as string },
   });
 };
-export default { createOrderApp, listOrderApp };
+
+const updateOrderStatus = async (data: any) => {
+  return http.put(prefix + "/updateStatus", data, {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+  });
+};
+export default { createOrderApp, listOrderApp, updateOrderStatus };
