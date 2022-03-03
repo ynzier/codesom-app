@@ -28,10 +28,10 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
   const [isCash, setIsCash] = useState(false);
   const [receiptData, setReceiptData] = useState<any>([]);
   const [showCashModal, setCashModal] = useState(false);
-  const [totalDiscount, setTotalDiscount] = useState("0");
-  const [subTotal, setSubtotal] = useState(0);
-  const [totalVat, setTotalVat] = useState("0");
-  const [total, setTotal] = useState("0");
+  const [totalDiscount, setTotalDiscount] = useState<string>("0");
+  const [subTotal, setSubtotal] = useState<string>("0");
+  const [totalVat, setTotalVat] = useState<string>("0");
+  const [total, setTotal] = useState<string>("0");
   const [cartData, setCartData] = useState<any[]>();
   const fetchOrderList = () => {
     ordersService
@@ -45,7 +45,13 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
       });
   };
   useEffect(() => {
-    if (cartData) {
+    if (cartData && cartData.length < 1) {
+      setTotal("0");
+      setTotalVat("0");
+      setTotalDiscount("0");
+      setSubtotal("0");
+    }
+    if (cartData && cartData.length > 0) {
       const sum: number = cartData
         .map(
           (item: { prPrice: string; prCount: string }) =>
@@ -53,15 +59,16 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
         )
         .reduce((prev: any, curr: any) => prev + curr, 0)
         .toFixed(2);
-      setSubtotal(sum);
-      const discount = 0.0;
-      setTotalDiscount(discount.toFixed(2));
-      const vat = (sum - discount) * 0.07;
-      setTotalVat(vat.toFixed(2));
-      setTotal((sum - discount + vat).toFixed(2));
+      const discount = "0.0";
+      setSubtotal(parseFloat(sum.toString()).toFixed(2));
+      setTotalDiscount(parseFloat(discount).toFixed(2));
+      setTotal((sum - parseFloat(totalDiscount)).toFixed(2));
+      setTotalVat(
+        (parseFloat(total) - (parseFloat(total) * 100) / 107).toFixed(2)
+      );
     }
     return () => {};
-  }, [cartData]);
+  }, [cartData, total, totalDiscount]);
   const fetchCartData = () => {
     AsyncStorage.getItem("cartData")
       .then((data: any) => {
@@ -274,7 +281,7 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
                   ภาษี 7%
                 </Text>
                 <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
-                  {totalVat || 0} บาท
+                  {totalVat} บาท
                 </Text>
               </HStack>
             </VStack>

@@ -55,7 +55,6 @@ const GetMoneyModal = ({
     setCash(thoudsandSeperator);
   };
   const isEnough = (needed: number, paid: number) => {
-    console.log("first: ", needed, " second: ", paid);
     if (paid - needed >= 0) {
       return true;
     }
@@ -293,7 +292,6 @@ const GetMoneyModal = ({
                               }, 1000);
                             })
                           );
-                          setIsDone(false);
                         }}
                       >
                         พิมพ์ใบเสร็จ

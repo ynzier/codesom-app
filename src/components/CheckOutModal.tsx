@@ -108,7 +108,7 @@ type NavProps = {
   ) => void;
 };
 type IPlatformArray = {
-  platformId: number;
+  platformId: string;
   platformName: string;
 };
 const CheckOutModal = ({
@@ -213,13 +213,19 @@ const CheckOutModal = ({
                           setSelected(value);
                         }}
                       >
-                        {platformData.map((item) => (
-                          <SelectPicker.Item
-                            key={item.platformId.toString()}
-                            label={item.platformName}
-                            value={item.platformId}
-                          />
-                        ))}
+                        {platformData &&
+                          platformData.map((item) => {
+                            const key =
+                              Math.floor(Math.random() * (100000 - 1) + 1) *
+                              100;
+                            return (
+                              <SelectPicker.Item
+                                key={key}
+                                label={item.platformName}
+                                value={item.platformId}
+                              />
+                            );
+                          })}
                       </SelectPicker>
                     </FormControl>
                     <FormControl flex="1" w="100%">

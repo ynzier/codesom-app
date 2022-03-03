@@ -30,7 +30,6 @@ const CartSidebar = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
-  const [totalVat, setTotalVat] = useState("0");
   const [total, setTotal] = useState("0");
   useEffect(() => {
     if (props.cartData) {
@@ -44,9 +43,7 @@ const CartSidebar = (props: Props) => {
       setSumAll(sum);
       const discount = 0.0;
       setTotalDiscount(discount.toFixed(2));
-      const vat = (sum - discount) * 0.07;
-      setTotalVat(vat.toFixed(2));
-      setTotal((sum - discount + vat).toFixed(2));
+      setTotal((sum - discount).toFixed(2));
     }
     return () => {};
   }, [props.cartData]);
@@ -313,24 +310,6 @@ const CartSidebar = (props: Props) => {
                   fontWeight={600}
                 >
                   {totalDiscount} บาท
-                </Text>
-              </HStack>
-              <HStack>
-                <Text
-                  flex="1"
-                  textAlign="left"
-                  fontSize="18px"
-                  fontWeight={600}
-                >
-                  ภาษี 7%
-                </Text>
-                <Text
-                  flex="2"
-                  textAlign="right"
-                  fontSize="18px"
-                  fontWeight={600}
-                >
-                  {totalVat} บาท
                 </Text>
               </HStack>
               <HStack>

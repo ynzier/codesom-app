@@ -71,14 +71,6 @@ const Topbar = () => {
                 : ErrorImg,
           }}
         />
-        <Ionicons
-          name="receipt"
-          size={36}
-          color="white"
-          style={{
-            marginRight: 16,
-          }}
-        />
         <MaterialIcons
           name="notifications"
           color="white"

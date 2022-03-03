@@ -3,7 +3,7 @@
     "name": "codesomApp",
     "slug": "codesomApp",
     "owner": "miloteam",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "landscape",
     "icon": "./src/assets/icon.png",
     "splash": {
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.miloteam.codesom",
-      "versionCode": 1,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
