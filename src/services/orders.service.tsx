@@ -18,4 +18,15 @@ const updateOrderStatus = async (data: any) => {
     headers: { "x-access-token": JSON.parse(await xToken) as string },
   });
 };
-export default { createOrderApp, listOrderApp, updateOrderStatus };
+const getReceiptByOrderId = async (ordId: any) => {
+  return http.get(prefix + "/getReceiptByOrderId", {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+    params: { ordId: ordId },
+  });
+};
+export default {
+  createOrderApp,
+  listOrderApp,
+  updateOrderStatus,
+  getReceiptByOrderId,
+};

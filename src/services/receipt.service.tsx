@@ -8,4 +8,5 @@ const createReceipt = async (data: any) => {
   });
 };
 
+
 export default { createReceipt };

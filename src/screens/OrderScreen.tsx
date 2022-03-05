@@ -15,6 +15,7 @@ import { ListRenderItemInfo } from "react-native";
 import moment from "moment";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import SelectPicker from "react-native-form-select-picker";
+import ReceiptModal from "../components/ReceiptModal";
 
 interface Props {
   route: any;
@@ -38,6 +39,8 @@ interface orderData {
 }
 const OrderScreen: React.FC<Props> = ({ route, children }) => {
   const [orderData, setOrderData] = useState<orderData[]>([]);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [ordId, setOrdId] = useState("");
   const fetchOrderList = (isMounted: boolean) => {
     orderService
       .listOrderApp()
@@ -102,6 +105,12 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
         translucent
         backgroundColor="transparent"
         barStyle="light-content"
+      />
+      <ReceiptModal
+        showReceipt={showReceipt}
+        setShowReceipt={setShowReceipt}
+        ordId={ordId}
+        setOrdId={setOrdId}
       />
       <Box safeAreaTop bg="coolGray.500" />
       <Center flex="1" bg="#FFF">
@@ -210,7 +219,8 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           fontSize="md"
                           textDecorationLine="underline"
                           onPress={() => {
-                            console.log(item.ordId);
+                            setOrdId(item.ordId.toString());
+                            setShowReceipt(true);
                           }}
                         >
                           {item.ordId}

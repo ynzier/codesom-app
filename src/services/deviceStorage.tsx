@@ -6,7 +6,7 @@ const deviceStorage = {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem("accessToken", jsonValue);
     } catch (e) {
-      // save error
+      console.log(e);
     }
   },
   async loadJWT(): Promise<string | void> {

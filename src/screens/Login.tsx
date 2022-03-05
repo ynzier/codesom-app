@@ -29,8 +29,8 @@ export function SignInForm({ props }: any) {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = React.useState(false);
 
-  const _onLoginPressed = () => {
-    void trackPromise(
+  const _onLoginPressed = async () => {
+    await trackPromise(
       AuthService.signInApp(userName, password)
         .then((_res) => {
           props.navigation.navigate("HomeScreen");
@@ -42,7 +42,6 @@ export function SignInForm({ props }: any) {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          // AlertToast(resMessage, "alert");
           Toast.show({
             type: ALERT_TYPE.DANGER,
             title: "คำเตือน!",

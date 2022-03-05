@@ -12,8 +12,9 @@ const signInApp = async (userName: string, password: string) => {
             brUserName: userName.toLowerCase(),
             brPassword: password,
           })
-          .then((response) => {
-            void deviceStorage.setToken(response.data.accessToken);
+          .then(async (response) => {
+            await deviceStorage.deleteJWT();
+            await deviceStorage.setToken(response.data.accessToken);
           })
       );
     }, 2000);
