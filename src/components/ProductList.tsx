@@ -14,22 +14,26 @@ import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import ProductService from "../services/product.service";
 interface productData {
   key?: number;
-  prId: number;
-  prName: string;
-  prPrice: number;
-  prImg?: number;
-  prCount?: string;
-  prType?: number;
-  prStatus?: string;
-  prDetail?: string;
-  product_type?: {
-    typeId: number;
-    typeName: string;
-    typeStatus: string;
-  };
-  image?: {
-    imgId: number;
-    imgObj: string;
+  productId: number;
+  branchId: number;
+  product: {
+    prId: number;
+    prName: string;
+    prPrice: number;
+    prImg?: number;
+    prCount?: string;
+    prType?: number;
+    prStatus?: string;
+    prDetail?: string;
+    product_type?: {
+      typeId: number;
+      typeName: string;
+      typeStatus: string;
+    };
+    image?: {
+      imgId: number;
+      imgObj: string;
+    };
   };
 }
 const ProductList = ({
@@ -61,7 +65,7 @@ const ProductList = ({
   };
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
-      ProductService.getAllProducts()
+      ProductService.getAllProductsInBranch()
         .then((res) => {
           if (isSubscribed) {
             if (res) {
@@ -88,7 +92,7 @@ const ProductList = ({
     const getFilter = (value: number) => {
       if (value && value != -1) {
         const filterTable = productArray.filter(
-          (productArray) => productArray.prType == value
+          (productArray) => productArray.product.prType == value
         );
         setfilterData(filterTable);
       } else {
@@ -133,15 +137,17 @@ const ProductList = ({
                   size={{ md: 140, xl: 240 }}
                   source={{
                     uri:
-                      item.image && item.image.imgObj
-                        ? item.image.imgObj
+                      item.product.image && item.product.image.imgObj
+                        ? item.product.image.imgObj
                         : ErrorImg,
                   }}
                 />
 
                 <Button
                   colorScheme="greenalt"
-                  position={isInCart(item.prId) ? "relative" : "absolute"}
+                  position={
+                    isInCart(item.product.prId) ? "relative" : "absolute"
+                  }
                   shadow={4}
                   zIndex={4}
                   left={{ md: "50px", xl: 90 }}
@@ -149,17 +155,17 @@ const ProductList = ({
                   alignSelf="center"
                   size={{ md: 10, xl: 60 }}
                   borderRadius="80"
-                  disabled={isInCart(item.prId)}
-                  display={isInCart(item.prId) ? "none" : "flex"}
+                  disabled={isInCart(item.product.prId)}
+                  display={isInCart(item.product.prId) ? "none" : "flex"}
                   onPress={() => {
-                    if (!isInCart(item.prId)) {
+                    if (!isInCart(item.product.prId)) {
                       addToCart({
                         key:
-                          item.prId +
+                          item.product.prId +
                           Math.floor(Math.random() * (100000 - 1) + 1) * 100,
-                        prId: item.prId,
-                        prName: item.prName,
-                        prPrice: item.prPrice,
+                        prId: item.product.prId,
+                        prName: item.product.prName,
+                        prPrice: item.product.prPrice,
                         prCount: "1",
                       });
                     }
@@ -189,14 +195,14 @@ const ProductList = ({
                       fontSize={{ md: 12, xl: 18 }}
                       flexWrap="wrap"
                     >
-                      {item.prName}
+                      {item.product.prName}
                     </Text>
                     <Text
                       fontWeight={200}
                       fontSize={{ md: 12, xl: 18 }}
                       flexWrap="wrap"
                     >
-                      {item.prPrice} บาท/ถ้วย
+                      {item.product.prPrice} บาท/ถ้วย
                     </Text>
                     <Text
                       fontWeight={200}

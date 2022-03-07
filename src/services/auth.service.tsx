@@ -17,7 +17,7 @@ const signInApp = async (userName: string, password: string) => {
             await deviceStorage.setToken(response.data.accessToken);
           })
       );
-    }, 2000);
+    }, 3000);
   });
   return promise;
 };
