@@ -12,6 +12,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MainMenuScreen from "./src/screens/MainMenuScreen";
 import OrderScreen from "./src/screens/OrderScreen";
 import SecondScreen from "./src/screens/SecondScreen";
+import StorageScreen from "./src/screens/StorageScreen";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,24 +24,24 @@ const Tab = createBottomTabNavigator();
 
 const theme = extendTheme({
   fontConfig: {
-    Mitr: {
-      100: {
-        normal: "Mitr-Light",
-      },
+    Prompt: {
       200: {
-        normal: "Mitr-Light",
+        normal: "Prompt-ExtraLight",
       },
       300: {
-        normal: "Mitr-Light",
+        normal: "Prompt-Light",
       },
       400: {
-        normal: "Mitr-Regular",
+        normal: "Prompt-Regular",
       },
       500: {
-        normal: "Mitr-Medium",
+        normal: "Prompt-Medium",
       },
       600: {
-        normal: "Mitr-Medium",
+        normal: "Prompt-SemiBold",
+      },
+      700: {
+        normal: "Prompt-Bold",
       },
     },
   },
@@ -86,9 +87,9 @@ const theme = extendTheme({
 
   // Make sure values below matches any of the keys in `fontConfig`
   fonts: {
-    heading: "Mitr",
-    body: "Mitr",
-    mono: "Mitr",
+    heading: "Prompt",
+    body: "Prompt",
+    mono: "Prompt",
   },
 });
 interface Props {
@@ -97,6 +98,14 @@ interface Props {
 
 const HomeTabs: React.FC<Props> = ({ props }) => {
   const window = useWindowDimensions();
+  type ICartArray = {
+    key: number;
+    prId: string;
+    prName: string;
+    prPrice: string;
+    prCount: number;
+  };
+  const [cartData, setCartData] = useState<ICartArray[]>([]);
 
   return (
     <Tab.Navigator
@@ -105,7 +114,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
         tabBarActiveTintColor: "#9D7463",
         tabBarInactiveTintColor: "#CFCFCF",
         tabBarLabelStyle: {
-          fontFamily: "Mitr-Regular",
+          fontFamily: "Prompt-Regular",
           fontSize: 14,
           marginBottom: 10,
         },
@@ -135,7 +144,11 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
         }}
       >
         {(props) => (
-          <MainMenuScreen {...props}>
+          <MainMenuScreen
+            cartData={cartData}
+            setCartData={setCartData}
+            {...props}
+          >
             <Topbar />
           </MainMenuScreen>
         )}
@@ -167,17 +180,25 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       </Tab.Screen>
       <Tab.Screen
         name="DeliveryScreen"
-        component={MainMenuScreen}
         options={{
           tabBarLabel: "เดลิเวอรี่",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="delivery-dining" color={color} size={size} />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <MainMenuScreen
+            cartData={cartData}
+            setCartData={setCartData}
+            {...props}
+          >
+            <Topbar />
+          </MainMenuScreen>
+        )}
+      </Tab.Screen>
       <Tab.Screen
-        name="StockScreen"
-        component={MainMenuScreen}
+        name="StorageScreen"
         options={{
           tabBarLabel: "คลังวัตถุดิบ",
           tabBarIcon: ({ color, size }) => (
@@ -188,7 +209,13 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
             />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <StorageScreen {...props}>
+            <Topbar />
+          </StorageScreen>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="ReportScreen"
         component={MainMenuScreen}

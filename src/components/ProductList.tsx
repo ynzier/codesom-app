@@ -8,23 +8,29 @@ import {
   Center,
 } from "native-base";
 import BouncingPreloader from "../components/BouncingLoader";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
-import ProductService from "../services/product.service";
+import StorageService from "../services/storage.service";
+import NumberFormat from "react-number-format";
 interface productData {
   key?: number;
   productId: number;
   branchId: number;
+  itemRemain: number;
+  updatedAt: string;
   product: {
     prId: number;
     prName: string;
     prPrice: number;
     prImg?: number;
-    prCount?: string;
+    prCount?: number;
     prType?: number;
     prStatus?: string;
     prDetail?: string;
+    needProcess?: number;
     product_type?: {
       typeId: number;
       typeName: string;
@@ -65,7 +71,7 @@ const ProductList = ({
   };
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
-      ProductService.getAllProductsInBranch()
+      StorageService.getAllProductInStorage()
         .then((res) => {
           if (isSubscribed) {
             if (res) {
@@ -81,13 +87,17 @@ const ProductList = ({
         })
     );
   };
-  useEffect(() => {
-    let isSubscribed = true;
-    fetchProductData(isSubscribed);
-    return () => {
-      isSubscribed = false;
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      let isSubscribed = true;
+      fetchProductData(isSubscribed);
+
+      return () => {
+        setProductArray([]);
+        isSubscribed = false;
+      };
+    }, [])
+  );
   useEffect(() => {
     const getFilter = (value: number) => {
       if (value && value != -1) {
@@ -103,15 +113,15 @@ const ProductList = ({
     return () => {};
   }, [productArray, tabIndex]);
 
-  return promiseInProgress ? (
-    <Center flex="1" pt="16" justifyContent="center" alignItems="center">
-      <BouncingPreloader icons={[require("../assets/bouncingOrange.png")]} />
-    </Center>
-  ) : (
+  return (
     <>
       <Box alignSelf="center" w="100%">
         <FlatList
           numColumns={3}
+          onRefresh={() => {
+            fetchProductData(true);
+          }}
+          refreshing={promiseInProgress}
           data={filterData == null ? productArray : filterData}
           keyExtractor={(item: any) => item.prId}
           renderItem={({ item }: ListRenderItemInfo<productData>) => {
@@ -158,7 +168,7 @@ const ProductList = ({
                   disabled={isInCart(item.product.prId)}
                   display={isInCart(item.product.prId) ? "none" : "flex"}
                   onPress={() => {
-                    if (!isInCart(item.product.prId)) {
+                    if (item.product.needProcess)
                       addToCart({
                         key:
                           item.product.prId +
@@ -166,7 +176,23 @@ const ProductList = ({
                         prId: item.product.prId,
                         prName: item.product.prName,
                         prPrice: item.product.prPrice,
-                        prCount: "1",
+                        prCount: 1,
+                      });
+                    if (item.itemRemain == 0) {
+                      Toast.show({
+                        type: ALERT_TYPE.DANGER,
+                        textBody: "สินค้าในคลังไม่เพียงพอ",
+                      });
+                    }
+                    if (item.itemRemain > 0 && !isInCart(item.product.prId)) {
+                      addToCart({
+                        key:
+                          item.product.prId +
+                          Math.floor(Math.random() * (100000 - 1) + 1) * 100,
+                        prId: item.product.prId,
+                        prName: item.product.prName,
+                        prPrice: item.product.prPrice,
+                        prCount: 1,
                       });
                     }
                   }}
@@ -197,21 +223,43 @@ const ProductList = ({
                     >
                       {item.product.prName}
                     </Text>
-                    <Text
-                      fontWeight={200}
-                      fontSize={{ md: 12, xl: 18 }}
-                      flexWrap="wrap"
-                    >
-                      {item.product.prPrice} บาท/ถ้วย
-                    </Text>
-                    <Text
-                      fontWeight={200}
-                      fontSize={{ md: 12, xl: 18 }}
-                      flexWrap="wrap"
-                      color="#ABBBC2"
-                    >
-                      คงเหลือ 200 ถ้วย
-                    </Text>
+
+                    <NumberFormat
+                      value={item.product.prPrice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      decimalScale={2}
+                      fixedDecimalScale
+                      renderText={(formattedValue) => (
+                        <Text
+                          fontWeight={400}
+                          fontSize={{ md: 12, xl: 18 }}
+                          flexWrap="wrap"
+                        >
+                          {formattedValue} บาท
+                        </Text>
+                      )}
+                    />
+                    {!item.product.needProcess ? (
+                      <Text
+                        fontWeight={300}
+                        fontSize={{ md: 12, xl: 18 }}
+                        flexWrap="wrap"
+                        color={item.itemRemain < 1 ? "red.500" : "#ABBBC2"}
+                      >
+                        คงเหลือ {item.itemRemain}
+                      </Text>
+                    ) : (
+                      <Text
+                        fontWeight={300}
+                        fontSize={{ md: 12, xl: 18 }}
+                        flexWrap="wrap"
+                        color="#ABBBC2"
+                        textDecorationLine="underline"
+                      >
+                        ดูส่วนผสม
+                      </Text>
+                    )}
                   </VStack>
                 </Box>
               </Box>

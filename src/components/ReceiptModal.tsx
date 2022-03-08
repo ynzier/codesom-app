@@ -34,7 +34,7 @@ const ReceiptModal = ({
   showReceipt: boolean;
   setShowReceipt: (boolean: boolean) => void;
   ordId: string;
-  setOrdId: (any: string) => void;
+  setOrdId?: (any: string) => void;
   props?: any;
 }) => {
   const { promiseInProgress } = usePromiseTracker();
@@ -72,10 +72,8 @@ const ReceiptModal = ({
       );
     }
 
-    return () => {
-      setOrdId("");
-    };
-  }, [ordId, setOrdId]);
+    return () => {};
+  }, [ordId]);
 
   return (
     <Center>

@@ -47,7 +47,7 @@ export default class FloatingLabelInput extends Component<any, any> {
         inputRange: [0, 1],
         outputRange: [14, 12],
       }),
-      fontFamily: "Mitr-Medium",
+      fontFamily: "Prompt-Medium",
 
       color: this.props.labelColor,
     } as any;
@@ -62,7 +62,7 @@ export default class FloatingLabelInput extends Component<any, any> {
         inputRange: [0, 1],
         outputRange: [-2, 0],
       }),
-      fontFamily: "Mitr-Medium",
+      fontFamily: "Prompt-Medium",
       color: this.props.labelColor,
     } as any;
     return (

@@ -2,27 +2,28 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar, Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
-import { CartSidebar, MainMenuTab } from "../components";
-import ProductList from "../components/ProductList";
+import { StorageSidebar, StorageTab } from "../components";
+import StorageList from "../components/StorageList";
 interface Props {
   navigation: Navigation;
   children?: JSX.Element;
-  cartData?: any;
-  setCartData: (value: any) => void;
 }
-const MainMenuScreen: React.FC<Props> = ({
-  cartData,
-  setCartData,
-  navigation,
-  children,
-}) => {
-  const [tabIndex, setTabIndex] = useState<number>(-1);
-  useEffect(() => {
-    navigation.addListener("beforeRemove", (e: any) => {
-      e.preventDefault();
-      return;
-    });
-  }, [navigation]);
+const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
+  const [tabIndex, setTabIndex] = useState<number>(1);
+  const [keyword, setKeyword] = useState("");
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.addListener("beforeRemove", (e: any) => {
+        e.preventDefault();
+        return;
+      });
+
+      return () => {
+        console.log("unmount");
+      };
+    }, [navigation])
+  );
 
   return (
     <>
@@ -37,9 +38,7 @@ const MainMenuScreen: React.FC<Props> = ({
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              borderWidth={1}
               w="95%"
-              borderRadius={5}
               flex="10"
               alignSelf="center"
               alignItems="center"
@@ -47,21 +46,24 @@ const MainMenuScreen: React.FC<Props> = ({
               mb={{ md: "10%", xl: "6%" }}
               justifyContent="center"
             >
-              <HStack flex="1" alignItems="center">
-                <MainMenuTab tabIndex={tabIndex} setTabIndex={setTabIndex} />
-              </HStack>
               <VStack w="100%" flex="10">
-                <ProductList
-                  cartData={cartData}
-                  setCartData={setCartData}
-                  tabIndex={tabIndex}
-                />
+                <HStack h="20" w="100%" alignItems="center">
+                  <StorageTab
+                    tabIndex={tabIndex}
+                    setTabIndex={setTabIndex}
+                    keyword={keyword}
+                    setKeyword={setKeyword}
+                  />
+                </HStack>
+                {tabIndex == 1 && <StorageList keyword={keyword} />}
+                {tabIndex == 2 && <StorageList keyword={keyword} />}
+                {tabIndex == 3 && <StorageList keyword={keyword} />}
               </VStack>
             </VStack>
           </VStack>
 
           {/*Sidebar Component */}
-          <CartSidebar cartData={cartData} setCartData={setCartData} />
+          <StorageSidebar />
           {/*Sidebar Component */}
         </HStack>
       </Center>
@@ -69,4 +71,4 @@ const MainMenuScreen: React.FC<Props> = ({
   );
 };
 
-export default MainMenuScreen;
+export default StorageScreen;

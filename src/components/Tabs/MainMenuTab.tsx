@@ -1,7 +1,7 @@
 import { Box, Pressable, ScrollView } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
-import ProductService from "../services/product.service";
+import ProductService from "../../services/product.service";
 
 interface productType {
   typeId: number;
@@ -62,7 +62,7 @@ const MainMenuTab = ({
             style={{
               color: "#000",
               fontSize: 18,
-              fontFamily: tabIndex == -1 ? "Mitr-Medium" : "Mitr-Regular",
+              fontFamily: tabIndex == -1 ? "Prompt-Medium" : "Prompt-Regular",
             }}
           >
             สินค้าขายดี
@@ -92,7 +92,7 @@ const MainMenuTab = ({
                     color: "#000",
                     fontSize: 18,
                     fontFamily:
-                      tabIndex == item.typeId ? "Mitr-Medium" : "Mitr-Regular",
+                      tabIndex == item.typeId ? "Prompt-Medium" : "Prompt-Regular",
                   }}
                 >
                   {item.typeName}

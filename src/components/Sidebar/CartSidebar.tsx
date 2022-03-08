@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import {
   Box,
@@ -20,33 +20,43 @@ import Feather from "react-native-vector-icons/Feather";
 import CheckOutModal from "../CheckOutModal";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import storageService from "../../services/storage.service";
 
 type Props = {
   cartData: any;
   setCartData: (value: any) => void;
 };
 
-const CartSidebar = (props: Props) => {
+const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
   const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [total, setTotal] = useState("0");
-  useEffect(() => {
-    if (props.cartData) {
-      const sum: number = props.cartData
-        .map(
-          (item: { prPrice: string; prCount: string }) =>
-            parseFloat(item.prPrice) * parseInt(item.prCount)
-        )
-        .reduce((prev: any, curr: any) => prev + curr, 0)
-        .toFixed(2);
-      setSumAll(sum);
-      const discount = 0.0;
-      setTotalDiscount(discount.toFixed(2));
-      setTotal((sum - discount).toFixed(2));
-    }
-    return () => {};
-  }, [props.cartData]);
+  const [storageData, setStorageData] = useState<any[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (cartData) {
+        storageService
+          .getRemainOnlyProductId()
+          .then((res) => setStorageData(res.data))
+          .catch((error) => console.log(error));
+        const sum: number = cartData
+          .map(
+            (item: { prPrice: string; prCount: number }) =>
+              parseFloat(item.prPrice) * item.prCount
+          )
+          .reduce((prev: any, curr: any) => prev + curr, 0)
+          .toFixed(2);
+        setSumAll(sum);
+        const discount = 0.0;
+        setTotalDiscount(discount.toFixed(2));
+        setTotal((sum - discount).toFixed(2));
+      }
+      return () => {};
+    }, [cartData])
+  );
 
   const closeRow = (
     rowMap: { [x: string]: { closeRow: () => void } },
@@ -59,16 +69,22 @@ const CartSidebar = (props: Props) => {
 
   const deleteRow = (rowMap: any, rowKey: any) => {
     closeRow(rowMap, rowKey);
-    const newData = [...props.cartData];
-    const prevIndex = props.cartData.findIndex(
+    const newData = [...cartData];
+    const prevIndex = cartData.findIndex(
       (item: { key: any }) => item.key === rowKey
     );
     newData.splice(prevIndex, 1);
-    props.setCartData(newData);
+    setCartData(newData);
   };
 
   const renderItem = (data: {
-    item: { key: number; prName: string; prPrice: string; prCount: string };
+    item: {
+      key: number;
+      prId: number;
+      prName: string;
+      prPrice: string;
+      prCount: number;
+    };
     index: string | number;
   }) => (
     <Box
@@ -123,16 +139,16 @@ const CartSidebar = (props: Props) => {
                 alignItems: "center",
               }}
               onPress={() => {
-                if (parseInt(data.item.prCount) - 1 > 0) {
-                  let temp = parseInt(data.item.prCount);
+                if (data.item.prCount - 1 > 0) {
+                  let temp = data.item.prCount;
                   temp = temp - 1;
 
-                  props.setCartData(
+                  setCartData(
                     Object.values({
-                      ...props.cartData,
+                      ...cartData,
                       [data.index]: {
-                        ...props.cartData[data.index],
-                        prCount: temp.toString(),
+                        ...cartData[data.index],
+                        prCount: temp,
                       },
                     })
                   );
@@ -158,20 +174,24 @@ const CartSidebar = (props: Props) => {
               color="#FFF"
               alignSelf="center"
               borderWidth="0"
-              value={data.item.prCount}
+              value={data.item.prCount.toString()}
               onChangeText={(text) => {
                 const onlyDigits = text.replace(/\D/g, "");
-                const prCount = onlyDigits;
-
-                props.setCartData(
-                  Object.values({
-                    ...props.cartData,
-                    [data.index]: {
-                      ...props.cartData[data.index],
-                      prCount: prCount.toString(),
-                    },
-                  })
+                const prCount: number = parseInt(onlyDigits);
+                const checkIndex = storageData.findIndex(
+                  (product: any) => product.productId === data.item.prId
                 );
+                const max: number = storageData[checkIndex].itemRemain;
+                if (prCount <= max)
+                  setCartData(
+                    Object.values({
+                      ...cartData,
+                      [data.index]: {
+                        ...cartData[data.index],
+                        prCount: prCount,
+                      },
+                    })
+                  );
               }}
             />
           </Box>
@@ -184,17 +204,29 @@ const CartSidebar = (props: Props) => {
                 alignItems: "center",
               }}
               onPress={() => {
-                let temp = parseInt(data.item.prCount);
+                let temp = data.item.prCount;
                 temp = temp + 1;
-                props.setCartData(
-                  Object.values({
-                    ...props.cartData,
-                    [data.index]: {
-                      ...props.cartData[data.index],
-                      prCount: temp.toString(),
-                    },
-                  })
+                const checkIndex = storageData.findIndex(
+                  (product: any) => product.productId === data.item.prId
                 );
+                const max: number = storageData[checkIndex].itemRemain;
+                if (temp <= max) {
+                  setCartData(
+                    Object.values({
+                      ...cartData,
+                      [data.index]: {
+                        ...cartData[data.index],
+                        prCount: temp,
+                      },
+                    })
+                  );
+                } else {
+                  Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "คำเตือน!",
+                    textBody: "สินค้าเหลือเพียง " + max + " ชิ้น",
+                  });
+                }
               }}
             >
               <Text color="#FFF">+</Text>
@@ -229,7 +261,7 @@ const CartSidebar = (props: Props) => {
     <>
       <CheckOutModal
         showModal={showModal}
-        setCartData={props.setCartData}
+        setCartData={setCartData}
         setShowModal={setShowModal}
       />
       <HStack w="100%" flex="1" bg="#FFF0D9">
@@ -244,19 +276,19 @@ const CartSidebar = (props: Props) => {
           >
             <Text fontSize="48">รายการ</Text>
             <Text fontSize="48" marginLeft="10">
-              {props.cartData.length}
+              {cartData.length}
             </Text>
           </Box>
           {/** Cart Item */}
           <Divider thickness="1" mb={4} width="90%" bg="black" />
           <Box flex="6" w="100%" h="100%" justifyContent="center">
-            {props.cartData[0] == null ? (
+            {cartData[0] == null ? (
               <Text alignSelf="center" fontSize={20} color="#837B7F">
                 ไม่มีรายการสินค้า
               </Text>
             ) : (
               <SwipeListView
-                data={props.cartData}
+                data={cartData}
                 renderItem={renderItem}
                 renderHiddenItem={renderHiddenItem}
                 rightOpenValue={-60}
@@ -348,8 +380,8 @@ const CartSidebar = (props: Props) => {
               h="75%"
               startIcon={<Icon as={IconCart} size={5} />}
               onPress={async () => {
-                const cart: any[] = props.cartData;
-                if (props.cartData == "")
+                const cart: any[] = cartData;
+                if (cartData == "")
                   // return AlertToast("กรุณาเลือกสินค้าก่อนทำรายการ", "warning");
                   return Toast.show({
                     type: ALERT_TYPE.WARNING,

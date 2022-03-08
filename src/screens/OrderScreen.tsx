@@ -16,6 +16,7 @@ import moment from "moment";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import SelectPicker from "react-native-form-select-picker";
 import ReceiptModal from "../components/ReceiptModal";
+import NumberFormat from "react-number-format";
 
 interface Props {
   route: any;
@@ -235,10 +236,22 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                         <Text flex="1" textAlign="center" fontSize="md">
                           {item.ordType}
                         </Text>
-
-                        <Text flex="1" textAlign="center" fontSize="md">
-                          {item.ordTotal}
-                        </Text>
+                        <NumberFormat
+                          value={item.ordTotal}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          decimalScale={2}
+                          fixedDecimalScale
+                          renderText={(formattedValue) => (
+                            <Text
+                              flex="1"
+                              textAlign="center"
+                              fontSize={{ md: "md", xl: "xl" }}
+                            >
+                              {formattedValue}
+                            </Text>
+                          )}
+                        />
                         <Box flex="1">
                           <SelectPicker
                             style={{
@@ -256,13 +269,13 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                             }
                             selected={item.ordStatus}
                             onSelectedStyle={{
-                              fontFamily: "Mitr-Light",
+                              fontFamily: "Prompt-Light",
                               textAlign: "center",
                             }}
                             onValueChange={(value) => {
                               updateOrderStatus(item.ordId, value);
                             }}
-                            placeholderStyle={{ fontFamily: "Mitr-Light" }}
+                            placeholderStyle={{ fontFamily: "Prompt-Light" }}
                           >
                             <SelectPicker.Item
                               label="กำลังดำเนินการ"

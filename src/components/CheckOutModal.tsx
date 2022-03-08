@@ -193,7 +193,7 @@ const CheckOutModal = ({
                   <HStack mt="3" space="3">
                     <FormControl flex="1" w="100%">
                       <FormControl.Label>
-                        <Text fontFamily="Mitr-Medium">เลือกแพลตฟอร์ม</Text>
+                        <Text fontFamily="Prompt-Medium">เลือกแพลตฟอร์ม</Text>
                       </FormControl.Label>
                       <SelectPicker
                         style={{
@@ -207,8 +207,8 @@ const CheckOutModal = ({
                         }}
                         selected={selected}
                         placeholder="เลือกแพลตฟอร์ม"
-                        onSelectedStyle={{ fontFamily: "Mitr-Light" }}
-                        placeholderStyle={{ fontFamily: "Mitr-Light" }}
+                        onSelectedStyle={{ fontFamily: "Prompt-Light" }}
+                        placeholderStyle={{ fontFamily: "Prompt-Light" }}
                         onValueChange={(value) => {
                           setSelected(value);
                         }}
@@ -230,7 +230,7 @@ const CheckOutModal = ({
                     </FormControl>
                     <FormControl flex="1" w="100%">
                       <FormControl.Label>
-                        <Text fontFamily="Mitr-Medium">หมายเลขอ้างอิง</Text>
+                        <Text fontFamily="Prompt-Medium">หมายเลขอ้างอิง</Text>
                       </FormControl.Label>
                       <Input
                         h="10"

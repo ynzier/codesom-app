@@ -26,9 +26,9 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
   const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
-  const [receiptData, setReceiptData] = useState<any>([]);
   const [showCashModal, setCashModal] = useState(false);
   const [totalDiscount, setTotalDiscount] = useState<string>("0");
+  const [preSendData, setPreSendData] = useState<any>([]);
   const [subTotal, setSubtotal] = useState<string>("0");
   const [totalVat, setTotalVat] = useState<string>("0");
   const [total, setTotal] = useState<string>("0");
@@ -39,6 +39,11 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
       .then((res) => {
         const recData = res.data;
         setOrderData(recData);
+        AsyncStorage.removeItem("cartData")
+          .then(() => {
+            setCartData([]);
+          })
+          .catch((e) => console.log(e));
       })
       .catch((e) => {
         console.log(e);
@@ -54,8 +59,8 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
     if (cartData && cartData.length > 0) {
       const sum: number = cartData
         .map(
-          (item: { prPrice: string; prCount: string }) =>
-            parseFloat(item.prPrice) * parseInt(item.prCount)
+          (item: { prPrice: string; prCount: number }) =>
+            parseFloat(item.prPrice) * item.prCount
         )
         .reduce((prev: any, curr: any) => prev + curr, 0)
         .toFixed(2);
@@ -104,31 +109,8 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
       ordStatus: "0",
     };
     const data = { ordHeader: ordHeader, ordItems: cartData };
-    ordersService
-      .createOrderApp(data)
-      .then((res) => {
-        setReceiptData({
-          ordHeader: ordHeader,
-          ordItems: cartData,
-          brId: res.data.brId,
-          ordId: res.data.orderId,
-          ordVat: totalVat,
-          paidType: isCash && "cash",
-        });
-        fetchOrderList();
-      })
-      .catch((error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          textBody: resMessage,
-        });
-      });
+    setPreSendData(data);
+    setCashModal(true);
   };
 
   return (
@@ -137,9 +119,14 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
         <GetMoneyModal
           showModal={showCashModal}
           setShowModal={setCashModal}
-          receiptData={receiptData}
           fetchCartData={fetchCartData}
+          cartData={cartData}
           setCartData={setCartData}
+          preSendData={preSendData}
+          setPreSendData={setPreSendData}
+          totalVat={totalVat}
+          isCash={isCash}
+          ordTotal={parseFloat(total).toFixed(2)}
         />
       )}
       <HStack w="100%" flex="1" bg="#FFF0D9">
@@ -438,7 +425,6 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
                     textBody: "กรุณาเลือกวิธีการชำระเงิน",
                   });
                 if (isCash) {
-                  setCashModal(true);
                   postOrder();
                 }
               }}
