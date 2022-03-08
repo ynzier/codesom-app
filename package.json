@@ -37,6 +37,8 @@
     "react-native": "^0.64.3",
     "react-native-bouncing-preloaders": "^1.0.0",
     "react-native-display-keyboard": "^0.2.0",
+    "react-native-element-dropdown": "^1.7.2",
+    "react-native-element-textinput": "^1.4.6",
     "react-native-elements": "^3.4.2",
     "react-native-fade-in-out": "^1.0.6",
     "react-native-form-select-picker": "^0.0.12",

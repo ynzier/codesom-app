@@ -16,12 +16,13 @@ import {
   Box,
   Spinner,
 } from "native-base";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 // import AlertToast from "../components/AlertToast";
 import AuthService from "../services/auth.service";
 import FloatingLabelInput from "../components/FloatingLabelInput";
+import { TextInput } from "react-native-element-textinput";
 
 export function SignInForm({ props }: any) {
   const { promiseInProgress } = usePromiseTracker();
@@ -81,30 +82,31 @@ export function SignInForm({ props }: any) {
           <VStack>
             <VStack space="3">
               <VStack space={{ base: "7", md: "4" }}>
-                <FloatingLabelInput
-                  isRequired
+                <TextInput
+                  value={userName}
+                  style={styles.input}
+                  inputStyle={styles.inputStyle}
+                  labelStyle={styles.labelStyle}
+                  placeholderStyle={styles.placeholderStyle}
+                  textErrorStyle={styles.textErrorStyle}
                   label="ชื่อผู้ใช้งาน"
-                  labelColor="#9ca3af"
-                  labelBGColor="#FFFDFA"
-                  borderRadius="8"
-                  defaultValue={userName}
+                  placeholder="ชื่อผู้ใช้งาน"
+                  placeholderTextColor="gray"
                   onChangeText={(txt: any) => setUserName(txt)}
-                  _text={{
-                    fontSize: "sm",
-                    fontWeight: "medium",
-                  }}
-                  borderColor="coolGray.300"
                 />
-                <FloatingLabelInput
-                  isRequired
-                  type={showPass ? "" : "password"}
+                <TextInput
+                  value={password}
+                  style={styles.input}
+                  inputStyle={styles.inputStyle}
+                  labelStyle={styles.labelStyle}
+                  placeholderStyle={styles.placeholderStyle}
+                  textErrorStyle={styles.textErrorStyle}
                   label="รหัสผ่าน"
-                  borderRadius="8"
-                  labelColor="#9ca3af"
-                  labelBGColor="#FFFDFA"
-                  defaultValue={password}
+                  placeholder="รหัสผ่าน"
+                  placeholderTextColor="gray"
+                  secureTextEntry={!showPass}
                   onChangeText={(txt: any) => setPassword(txt)}
-                  InputRightElement={
+                  renderRightIcon={() => (
                     <IconButton
                       variant="unstyled"
                       icon={
@@ -119,17 +121,7 @@ export function SignInForm({ props }: any) {
                         setShowPass(!showPass);
                       }}
                     />
-                  }
-                  _text={{
-                    fontSize: "sm",
-                    fontWeight: "medium",
-                  }}
-                  _dark={{
-                    borderColor: "coolGray.700",
-                  }}
-                  _light={{
-                    borderColor: "coolGray.300",
-                  }}
+                  )}
                 />
               </VStack>
               <Button
@@ -232,3 +224,33 @@ export default function SignIn(props: any) {
     </>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+  },
+  input: {
+    height: 55,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "#d1d5db",
+  },
+  inputStyle: { fontSize: 16, fontFamily: "Prompt-Regular", letterSpacing: 1 },
+  labelStyle: {
+    fontSize: 14,
+    color: "#9ca3af",
+    position: "absolute",
+    top: -10,
+    backgroundColor: "#FFFDFA",
+    paddingHorizontal: 4,
+    marginLeft: -4,
+    fontFamily: "Prompt-Regular",
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "#9ca3af",
+    fontFamily: "Prompt-Regular",
+    letterSpacing: 1,
+  },
+  textErrorStyle: { fontSize: 16 },
+});

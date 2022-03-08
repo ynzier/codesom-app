@@ -15,10 +15,12 @@ import {
   NativeBaseProvider,
   Collapse,
 } from "native-base";
-import SelectPicker from "react-native-form-select-picker";
+import { TextInput } from "react-native-element-textinput";
+import { Dropdown } from "react-native-element-dropdown";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import deliveryService from "../services/delivery.service";
+import { StyleSheet } from "react-native";
 
 function Delivery(props: {
   isDelivery: any;
@@ -195,47 +197,38 @@ const CheckOutModal = ({
                       <FormControl.Label>
                         <Text fontFamily="Prompt-Medium">เลือกแพลตฟอร์ม</Text>
                       </FormControl.Label>
-                      <SelectPicker
-                        style={{
-                          borderWidth: 1,
-                          paddingTop: 0,
-                          paddingBottom: 0,
-                          justifyContent: "center",
-                          borderColor: "#e7e5e4",
-                          height: 40,
-                          borderRadius: 4,
+                      <Dropdown
+                        style={styles.inputcontainer}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        iconStyle={styles.iconStyle}
+                        data={platformData}
+                        search={false}
+                        maxHeight={300}
+                        labelField="platformName"
+                        valueField="platformId"
+                        placeholder="แพลตฟอร์ม"
+                        value={selected}
+                        onChange={(item) => {
+                          setSelected(item.platformId);
                         }}
-                        selected={selected}
-                        placeholder="เลือกแพลตฟอร์ม"
-                        onSelectedStyle={{ fontFamily: "Prompt-Light" }}
-                        placeholderStyle={{ fontFamily: "Prompt-Light" }}
-                        onValueChange={(value) => {
-                          setSelected(value);
-                        }}
-                      >
-                        {platformData &&
-                          platformData.map((item) => {
-                            const key =
-                              Math.floor(Math.random() * (100000 - 1) + 1) *
-                              100;
-                            return (
-                              <SelectPicker.Item
-                                key={key}
-                                label={item.platformName}
-                                value={item.platformId}
-                              />
-                            );
-                          })}
-                      </SelectPicker>
+                      />
                     </FormControl>
                     <FormControl flex="1" w="100%">
                       <FormControl.Label>
                         <Text fontFamily="Prompt-Medium">หมายเลขอ้างอิง</Text>
                       </FormControl.Label>
-                      <Input
-                        h="10"
-                        placeholder="หมายเลขอ้างอิง"
-                        onChangeText={(e) => setRefNo(e)}
+                      <TextInput
+                        value={refNo}
+                        style={[styles.inputcontainer]}
+                        inputStyle={styles.inputStyle}
+                        placeholderStyle={styles.placeholderStyle}
+                        iconStyle={styles.iconStyle}
+                        placeholder="กรอกหมายเลขอ้างอิง"
+                        placeholderTextColor="gray"
+                        onChangeText={(text) => {
+                          setRefNo(text);
+                        }}
                       />
                     </FormControl>
                   </HStack>
@@ -291,3 +284,30 @@ const CheckOutModal = ({
 };
 
 export default CheckOutModal;
+
+const styles = StyleSheet.create({
+  inputcontainer: {
+    borderWidth: 1,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 16,
+    justifyContent: "center",
+    borderColor: "#e7e5e4",
+    height: 40,
+    borderRadius: 4,
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    fontFamily: "Prompt-Light",
+  },
+  selectedTextStyle: {
+    fontSize: 14,
+    fontFamily: "Prompt-Light",
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+  },
+  inputStyle: { fontSize: 14, fontFamily: "Prompt-Light" },
+});

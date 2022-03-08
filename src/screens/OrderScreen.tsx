@@ -11,12 +11,14 @@ import {
 import { Navigation } from "../hooks/navigation";
 import { OrderSidebar } from "../components";
 import orderService from "../services/orders.service";
-import { ListRenderItemInfo } from "react-native";
+import { ListRenderItemInfo, StyleSheet } from "react-native";
 import moment from "moment";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import SelectPicker from "react-native-form-select-picker";
 import ReceiptModal from "../components/ReceiptModal";
 import NumberFormat from "react-number-format";
+import { Dropdown } from "react-native-element-dropdown";
 
 interface Props {
   route: any;
@@ -39,32 +41,35 @@ interface orderData {
   createTimestamp: Date;
 }
 const OrderScreen: React.FC<Props> = ({ route, children }) => {
+  const { promiseInProgress } = usePromiseTracker();
   const [orderData, setOrderData] = useState<orderData[]>([]);
   const [showReceipt, setShowReceipt] = useState(false);
   const [ordId, setOrdId] = useState("");
   const fetchOrderList = (isMounted: boolean) => {
-    orderService
-      .listOrderApp()
-      .then((res) => {
-        if (isMounted) {
-          const recData = res.data;
-          setOrderData(recData);
-        }
-      })
-      .catch((error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        // AlertToast(resMessage, "alert");
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: "พบข้อผิดพลาด!",
-          textBody: resMessage,
-        });
-      });
+    void trackPromise(
+      orderService
+        .listOrderApp()
+        .then((res) => {
+          if (isMounted) {
+            const recData = res.data;
+            setOrderData(recData);
+          }
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          // AlertToast(resMessage, "alert");
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: "พบข้อผิดพลาด!",
+            textBody: resMessage,
+          });
+        })
+    );
   };
 
   const updateOrderStatus = (updateOrdId: any, updateStatus: number) => {
@@ -99,7 +104,11 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
       isMounted = false;
     };
   }, []);
-
+  const statusData = [
+    { label: "กำลังดำเนินการ", value: "0" },
+    { label: "เสร็จสิ้น", value: "1" },
+    { label: "ยกเลิก", value: "2" },
+  ];
   return (
     <>
       <StatusBar
@@ -202,6 +211,10 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                 </HStack>
                 <FlatList
                   data={orderData}
+                  onRefresh={() => {
+                    fetchOrderList(true);
+                  }}
+                  refreshing={promiseInProgress}
                   keyExtractor={(item: any) => item.ordId.toString()}
                   renderItem={({ item }: ListRenderItemInfo<orderData>) => {
                     if (item.ordType == "takeaway") item.ordType = "รับกลับ";
@@ -253,37 +266,25 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           )}
                         />
                         <Box flex="1">
-                          <SelectPicker
-                            style={{
-                              borderWidth: 1,
-                              paddingTop: 0,
-                              paddingBottom: 0,
-                              justifyContent: "center",
-                              borderColor: "#e7e5e4",
-                              height: 32,
-                              borderRadius: 8,
-                              width: "100%",
-                            }}
-                            disabled={
+                          <Dropdown
+                            style={styles.inputcontainer}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            iconStyle={styles.iconStyle}
+                            dropdownPosition="auto"
+                            data={statusData}
+                            search={false}
+                            disable={
                               item.ordStatus == "1" || item.ordStatus == "2"
                             }
-                            selected={item.ordStatus}
-                            onSelectedStyle={{
-                              fontFamily: "Prompt-Light",
-                              textAlign: "center",
+                            maxHeight={200}
+                            labelField="label"
+                            activeColor="#F9DCC2"
+                            valueField="value"
+                            value={item.ordStatus}
+                            onChange={(e) => {
+                              updateOrderStatus(item.ordId, e.value);
                             }}
-                            onValueChange={(value) => {
-                              updateOrderStatus(item.ordId, value);
-                            }}
-                            placeholderStyle={{ fontFamily: "Prompt-Light" }}
-                          >
-                            <SelectPicker.Item
-                              label="กำลังดำเนินการ"
-                              value="0"
-                            />
-                            <SelectPicker.Item label="เสร็จสิ้น" value="1" />
-                            <SelectPicker.Item label="ยกเลิก" value="2" />
-                          </SelectPicker>
+                          />
                         </Box>
                       </HStack>
                     );
@@ -303,3 +304,31 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
 };
 
 export default OrderScreen;
+
+const styles = StyleSheet.create({
+  inputcontainer: {
+    borderWidth: 1,
+    paddingTop: 0,
+    paddingBottom: 0,
+    justifyContent: "center",
+    borderColor: "#e7e5e4",
+    height: 32,
+    borderRadius: 8,
+    width: "100%",
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    fontFamily: "Prompt-Light",
+  },
+  selectedTextStyle: {
+    textAlign: "center",
+    fontSize: 14,
+    fontFamily: "Prompt-Light",
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+  },
+  inputStyle: { fontSize: 14, fontFamily: "Prompt-Light" },
+});

@@ -10,7 +10,8 @@ import {
   Spacer,
 } from "native-base";
 import React from "react";
-import { Animated, Platform } from "react-native";
+import { StyleSheet } from "react-native";
+import { TextInput } from "react-native-element-textinput";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface filterType {
@@ -35,25 +36,26 @@ const StorageTab = ({
   ];
 
   return (
-    <HStack ml="2" mr="2" borderColor="#B4B4B4" mb="2">
+    <HStack borderColor="#B4B4B4" mb="2">
       <Box
         alignItems="center"
-        p="4"
+        py="4"
         zIndex={2}
         flex="5"
         justifyContent="center"
       >
-        <Input
-          onChangeText={setKeyword}
+        <TextInput
           value={keyword}
+          style={styles.input}
+          inputStyle={styles.inputStyle}
+          labelStyle={styles.labelStyle}
+          placeholderStyle={styles.placeholderStyle}
+          textErrorStyle={styles.textErrorStyle}
+          label="ค้นหา"
           placeholder="ค้นหาด้วยชื่อ/รหัส"
-          width="100%"
-          borderRadius="4"
-          py="3"
-          px="1"
-          height={{ md: 12, xl: 16 }}
-          fontSize={{ md: "md", xl: "xl" }}
-          InputLeftElement={
+          placeholderTextColor="gray"
+          onChangeText={setKeyword}
+          renderLeftIcon={() => (
             <Icon
               m="2"
               ml="3"
@@ -61,7 +63,7 @@ const StorageTab = ({
               color="gray.400"
               as={<MaterialIcons name="search" />}
             />
-          }
+          )}
         />
       </Box>
       <Box
@@ -112,3 +114,32 @@ const StorageTab = ({
 };
 
 export default StorageTab;
+
+const styles = StyleSheet.create({
+  input: {
+    height: 55,
+    width: "100%",
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "#d1d5db",
+  },
+  inputStyle: { fontSize: 16, fontFamily: "Prompt-Regular", letterSpacing: 1 },
+  labelStyle: {
+    fontSize: 14,
+    color: "#9ca3af",
+    position: "absolute",
+    top: -10,
+    backgroundColor: "#FFFDFA",
+    paddingHorizontal: 4,
+    marginLeft: -4,
+    fontFamily: "Prompt-Regular",
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "#9ca3af",
+    fontFamily: "Prompt-Regular",
+    letterSpacing: 1,
+  },
+  textErrorStyle: { fontSize: 16 },
+});
