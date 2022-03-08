@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
 import GetMoneyModal from "../GetMoneyModal";
-import ordersService from "../../services/orders.service";
+import { orderService } from "services";
 
 interface Props {
   route: any;
@@ -33,22 +33,7 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
   const [totalVat, setTotalVat] = useState<string>("0");
   const [total, setTotal] = useState<string>("0");
   const [cartData, setCartData] = useState<any[]>();
-  const fetchOrderList = () => {
-    ordersService
-      .listOrderApp()
-      .then((res) => {
-        const recData = res.data;
-        setOrderData(recData);
-        AsyncStorage.removeItem("cartData")
-          .then(() => {
-            setCartData([]);
-          })
-          .catch((e) => console.log(e));
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
+
   useEffect(() => {
     if (cartData && cartData.length < 1) {
       setTotal("0");

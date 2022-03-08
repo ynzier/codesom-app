@@ -10,7 +10,7 @@ import {
 } from "native-base";
 import { Navigation } from "../hooks/navigation";
 import { OrderSidebar } from "../components";
-import orderService from "../services/orders.service";
+import { orderService } from "services";
 import { ListRenderItemInfo, StyleSheet } from "react-native";
 import moment from "moment";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";

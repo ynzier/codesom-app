@@ -13,7 +13,7 @@ import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
-import StorageService from "../services/storage.service";
+import { storageService } from "services";
 import NumberFormat from "react-number-format";
 interface productData {
   key?: number;
@@ -71,7 +71,7 @@ const ProductList = ({
   };
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
-      StorageService.getAllProductInStorage()
+      storageService.getAllProductInStorage()
         .then((res) => {
           if (isSubscribed) {
             if (res) {

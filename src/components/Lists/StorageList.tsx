@@ -8,12 +8,12 @@ import {
   Center,
   HStack,
 } from "native-base";
-import BouncingPreloader from "./BouncingLoader";
+import BouncingPreloader from "../BouncingLoader";
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
-import StorageService from "../services/storage.service";
+import { StorageService } from "services";
 import NumberFormat from "react-number-format";
 interface productData {
   key?: number;
@@ -93,7 +93,7 @@ const StorageList = ({ keyword }: { keyword: string }) => {
 
   return promiseInProgress ? (
     <Center flex="1" pt="16" justifyContent="center" alignItems="center">
-      <BouncingPreloader icons={[require("../assets/bouncingOrange.png")]} />
+      <BouncingPreloader icons={[require("../../assets/bouncingOrange.png")]} />
     </Center>
   ) : (
     <VStack

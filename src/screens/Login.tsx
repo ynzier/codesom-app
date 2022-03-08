@@ -19,9 +19,7 @@ import {
 import { Platform, StyleSheet } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
-// import AlertToast from "../components/AlertToast";
-import AuthService from "../services/auth.service";
-import FloatingLabelInput from "../components/FloatingLabelInput";
+import { authService } from "services";
 import { TextInput } from "react-native-element-textinput";
 
 export function SignInForm({ props }: any) {
@@ -32,7 +30,8 @@ export function SignInForm({ props }: any) {
 
   const _onLoginPressed = async () => {
     await trackPromise(
-      AuthService.signInApp(userName, password)
+      authService
+        .signInApp(userName, password)
         .then((_res) => {
           props.navigation.navigate("HomeScreen");
         })

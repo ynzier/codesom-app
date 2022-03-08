@@ -16,9 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import VirtualKeyboard from "react-native-virtual-keyboard";
 import NumberFormat from "react-number-format";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
-import receiptService from "../services/receipt.service";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
-import ordersService from "../services/orders.service";
+import { orderService, receiptService } from "services";
 import ReceiptModal from "./ReceiptModal";
 
 const GetMoneyModal = ({
@@ -84,7 +83,7 @@ const GetMoneyModal = ({
       new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(
-            ordersService
+            orderService
               .createOrderApp(preSendData)
               .then((res) => {
                 setReceiptData({

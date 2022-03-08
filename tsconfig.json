@@ -10,7 +10,14 @@
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "paths": {
+      "assets": ["src/assets"],
+      "components": ["src/components"],
+      "services": ["src/services"]
+    }
   },
   "exclude": [
     "node_modules",

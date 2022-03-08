@@ -1,5 +1,5 @@
 import http from "../../http-common";
-import deviceStorage from "./deviceStorage";
+import { deviceStorage } from "services";
 interface AccessToken {
   accessToken: string;
 }

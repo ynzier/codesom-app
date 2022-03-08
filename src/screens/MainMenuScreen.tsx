@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar, Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
-import { CartSidebar, MainMenuTab } from "../components";
-import ProductList from "../components/ProductList";
+import { CartSidebar, MainMenuTab, ProductList } from "components";
 interface Props {
   navigation: Navigation;
   children?: JSX.Element;

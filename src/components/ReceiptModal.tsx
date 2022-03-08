@@ -13,9 +13,7 @@ import {
 import NumberFormat from "react-number-format";
 import moment from "moment";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
-import branchService from "../services/branch.service";
-import ordersService from "../services/orders.service";
-
+import { branchService, orderService } from "services";
 type IBranchObj = {
   brId: number | null;
   brName: string;
@@ -29,7 +27,6 @@ const ReceiptModal = ({
   showReceipt,
   setShowReceipt,
   ordId,
-  setOrdId,
 }: {
   showReceipt: boolean;
   setShowReceipt: (boolean: boolean) => void;
@@ -58,7 +55,7 @@ const ReceiptModal = ({
                 })
             );
             resolve(
-              ordersService
+              orderService
                 .getReceiptByOrderId(ordId)
                 .then((res) => {
                   const receiveData = res.data;
@@ -139,7 +136,7 @@ const ReceiptModal = ({
                         (
                           item: {
                             key: number;
-                            prName: string;
+                            product: { prName: string };
                             prPrice: number;
                             prCount: number;
                           },

@@ -1,6 +1,6 @@
 import { HStack, Avatar, Badge, Text } from "native-base";
 import React, { useCallback, useState } from "react";
-import branchService from "../services/branch.service";
+import { branchService } from "services";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 

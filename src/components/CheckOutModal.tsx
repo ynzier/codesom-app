@@ -19,7 +19,7 @@ import { TextInput } from "react-native-element-textinput";
 import { Dropdown } from "react-native-element-dropdown";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import deliveryService from "../services/delivery.service";
+import { deliveryService } from "services";
 import { StyleSheet } from "react-native";
 
 function Delivery(props: {

@@ -1,7 +1,7 @@
 import { Box, Pressable, ScrollView } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
-import ProductService from "../../services/product.service";
+import { productService } from "services";
 
 interface productType {
   typeId: number;
@@ -16,7 +16,7 @@ const MainMenuTab = ({
 }) => {
   const [productType, setProductType] = useState<productType[]>([]);
   const fetchProductType = (isSubscribed: boolean) => {
-    ProductService.getAllProductTypes()
+    productService.getAllProductTypes()
       .then((res) => {
         if (isSubscribed) {
           if (res) {
@@ -92,7 +92,9 @@ const MainMenuTab = ({
                     color: "#000",
                     fontSize: 18,
                     fontFamily:
-                      tabIndex == item.typeId ? "Prompt-Medium" : "Prompt-Regular",
+                      tabIndex == item.typeId
+                        ? "Prompt-Medium"
+                        : "Prompt-Regular",
                   }}
                 >
                   {item.typeName}

@@ -21,7 +21,7 @@ import CheckOutModal from "../CheckOutModal";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import storageService from "../../services/storage.service";
+import { storageService } from "services";
 
 type Props = {
   cartData: any;
