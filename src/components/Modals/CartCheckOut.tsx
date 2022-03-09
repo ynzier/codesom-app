@@ -16,7 +16,7 @@ import {
   Collapse,
 } from "native-base";
 import { TextInput } from "react-native-element-textinput";
-import { Dropdown } from "react-native-element-dropdown";
+import { Dropdown } from "ynzier-react-native-element-dropdown";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { deliveryService } from "services";

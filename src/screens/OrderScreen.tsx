@@ -18,7 +18,7 @@ import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import SelectPicker from "react-native-form-select-picker";
 import { ReceiptModal } from "components";
 import NumberFormat from "react-number-format";
-import { Dropdown } from "react-native-element-dropdown";
+import { Dropdown } from "ynzier-react-native-element-dropdown";
 
 interface Props {
   route: any;
