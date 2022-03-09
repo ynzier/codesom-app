@@ -1,4 +1,4 @@
-import http from "../../http-common";
+import http from "../http-common";
 const prefix = "/receipt";
 import authHeader from "./auth-header";
 const xToken = authHeader();
