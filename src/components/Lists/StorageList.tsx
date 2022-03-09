@@ -13,7 +13,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
-import { StorageService } from "services";
+import { storageService } from "services";
 import NumberFormat from "react-number-format";
 interface productData {
   key?: number;
@@ -48,7 +48,8 @@ const StorageList = ({ keyword }: { keyword: string }) => {
   const [filterData, setfilterData] = useState<productData[]>([]);
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
-      StorageService.getAllProductInStorage()
+      storageService
+        .getAllProductInStorage()
         .then((res) => {
           if (isSubscribed) {
             if (res) {

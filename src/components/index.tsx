@@ -7,3 +7,8 @@ export { default as StorageTab } from "./Tabs/StorageTab";
 
 export { default as ProductList } from "./Lists/ProductList";
 export { default as StorageList } from "./Lists/StorageList";
+
+export { default as CashPayment } from "./Modals/CashPayment";
+export { default as CartCheckOut } from "./Modals/CartCheckOut";
+export { default as ReceiptModal } from "./Modals/ReceiptModal";
+export { default as RequestModal } from "./Modals/RequestModal";

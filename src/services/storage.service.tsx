@@ -13,8 +13,14 @@ const getRemainOnlyProductId = async () => {
     headers: { "x-access-token": JSON.parse(await xToken) as string },
   });
 };
+const getItemMakeRequest = async () => {
+  return http.get(prefix + "/getItemMakeRequest", {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+  });
+};
 
 export default {
   getAllProductInStorage,
   getRemainOnlyProductId,
+  getItemMakeRequest,
 };

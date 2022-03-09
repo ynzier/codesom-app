@@ -15,8 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
-import GetMoneyModal from "../GetMoneyModal";
-import { orderService } from "services";
+import CashPayment from "../Modals/CashPayment";
 
 interface Props {
   route: any;
@@ -101,7 +100,7 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
   return (
     <>
       {showCashModal && (
-        <GetMoneyModal
+        <CashPayment
           showModal={showCashModal}
           setShowModal={setCashModal}
           fetchCartData={fetchCartData}

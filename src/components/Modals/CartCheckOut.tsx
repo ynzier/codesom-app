@@ -113,7 +113,7 @@ type IPlatformArray = {
   platformId: string;
   platformName: string;
 };
-const CheckOutModal = ({
+const CartCheckOut = ({
   showModal,
   setShowModal,
   setCartData,
@@ -283,7 +283,7 @@ const CheckOutModal = ({
   );
 };
 
-export default CheckOutModal;
+export default CartCheckOut;
 
 const styles = StyleSheet.create({
   inputcontainer: {

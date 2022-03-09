@@ -16,7 +16,7 @@ import moment from "moment";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import SelectPicker from "react-native-form-select-picker";
-import ReceiptModal from "../components/ReceiptModal";
+import { ReceiptModal } from "components";
 import NumberFormat from "react-number-format";
 import { Dropdown } from "react-native-element-dropdown";
 

@@ -17,18 +17,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "../IconCart";
 import Feather from "react-native-vector-icons/Feather";
-import CheckOutModal from "../CheckOutModal";
+import RequestModal from "../Modals/RequestModal";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
-const StorageSidebar: React.FC<Props> = () => {
+const StorageSidebar: React.FC = () => {
+  const [showRequest, setShowRequest] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
   const [total, setTotal] = useState("0");
 
   return (
     <>
+      <RequestModal showRequest={showRequest} setShowRequest={setShowRequest} />
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
           <Box
@@ -60,7 +62,7 @@ const StorageSidebar: React.FC<Props> = () => {
               w="100%"
               h="75%"
               _text={{ fontSize: 20, color: "white" }}
-              onPress={async () => {}}
+              onPress={() => setShowRequest(true)}
             >
               สร้างคำขอ
             </Button>

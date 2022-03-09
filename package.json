@@ -57,7 +57,8 @@
     "react-promise-tracker": "^2.1.0",
     "react-select": "^5.2.2",
     "styled-components": "^5.3.3",
-    "styled-system": "^5.1.5"
+    "styled-system": "^5.1.5",
+    "ynzier-react-native-element-dropdown": "^1.7.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

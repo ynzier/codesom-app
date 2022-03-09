@@ -20,7 +20,7 @@ import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { orderService, receiptService } from "services";
 import ReceiptModal from "./ReceiptModal";
 
-const GetMoneyModal = ({
+const CashPayment = ({
   showModal,
   setShowModal,
   fetchCartData,
@@ -456,4 +456,4 @@ const ConfirmDialog = ({
   );
 };
 
-export default GetMoneyModal;
+export default CashPayment;

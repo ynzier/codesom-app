@@ -17,11 +17,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "../IconCart";
 import Feather from "react-native-vector-icons/Feather";
-import CheckOutModal from "../CheckOutModal";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { storageService } from "services";
+import CartCheckOut from "../Modals/CartCheckOut";
 
 type Props = {
   cartData: any;
@@ -259,7 +259,7 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
   };
   return (
     <>
-      <CheckOutModal
+      <CartCheckOut
         showModal={showModal}
         setCartData={setCartData}
         setShowModal={setShowModal}
