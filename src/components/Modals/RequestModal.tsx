@@ -11,6 +11,7 @@ import {
   Spinner,
   AlertDialog,
   Pressable,
+  Collapse,
 } from "native-base";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { storageService } from "services";
@@ -45,6 +46,7 @@ const RequestModal = ({
   const [isOpen, setIsOpen] = useState(false);
   const [itemList, setItemList] = useState<any>([]);
   const [selected, setSelected] = useState<any>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     void trackPromise(
@@ -68,11 +70,21 @@ const RequestModal = ({
   }, []);
 
   const addItemToList = (item: any) => {
-    setItemList((prev: any) => [...prev, item]);
+    const selectedArray: any = [];
+    item.forEach((element: any) => {
+      const index = itemList.findIndex((e: any) => e.key === element);
+      if (index > -1) selectedArray.push(itemList[index]);
+      else {
+        optionList.find((entry: any) => {
+          if (element == entry.key) selectedArray.push(entry);
+        });
+      }
+    });
+    setItemList(selectedArray);
   };
   const handleQuantityChange = (text: any, key: any) => {
     if (text) {
-      const index = itemList.findIndex((obj: any) => (obj.value = key));
+      const index = itemList.findIndex((obj: any) => obj.key == key);
       setItemList(
         Object.values({
           ...itemList,
@@ -82,31 +94,33 @@ const RequestModal = ({
     }
   };
   const cleanUp = () => {
-    setItemList([]);
-    setSelected([]);
+    // setItemList([]);
+    // setSelected([]);
+    console.log(itemList);
+  };
+  const getItemQuantity = (item: any): string => {
+    const index = itemList.findIndex((obj: any) => obj.key == item.key);
+    return itemList[index].quantity;
   };
   const filterZeroQuantity = () => {
-    const filtered = itemList.filter(
-      (obj: any) => obj.quantity && obj.quantity > 0
+    if (itemList.length < 1) return setError("กรุณาเลือกสินค้าก่อนทำการยืนยัน");
+    const filtered = itemList.find(
+      (obj: any) => !obj.quantity || obj.quantity == 0
     );
 
-    if (!filtered.length) {
-      setSelected([]);
-      return Toast.show({
-        type: ALERT_TYPE.DANGER,
-        textBody: "ทำรายการไม่สำเร็จ กรุณาตรวจสอบจำนวนสินค้าก่อนทำรายการ",
-      });
+    if (filtered) {
+      return setError("ทำรายการไม่สำเร็จ กรุณาตรวจสอบจำนวนสินค้าก่อนทำรายการ");
     }
     setIsLoading(true);
     setTimeout(() => {
-      console.log(filtered);
       cleanUp();
       setIsLoading(false);
+      setError("");
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         textBody: "ทำรายการสำเร็จ",
       });
-    }, 5000);
+    }, 2000);
   };
 
   const renderItem = (item: any) => {
@@ -159,7 +173,6 @@ const RequestModal = ({
                 />
               </Pressable>
             </HStack>
-
             <ScrollView h="400">
               <MultiSelect
                 style={styles.dropdown}
@@ -169,14 +182,17 @@ const RequestModal = ({
                 inputSearchStyle={styles.inputSearchStyle}
                 iconStyle={styles.iconStyle}
                 data={optionList}
-                labelField="ืname"
+                labelField="name"
                 showsVerticalScrollIndicator
-                valueField="value"
+                valueField="key"
                 placeholder="เลือกสินค้า..."
                 value={selected}
                 search
                 searchPlaceholder="Search..."
                 onChange={(item) => {
+                  console.log(itemList);
+                  console.log(selected);
+                  addItemToList(item);
                   setSelected(item);
                 }}
                 renderLeftIcon={() => (
@@ -189,12 +205,6 @@ const RequestModal = ({
                 )}
                 renderItem={renderItem}
                 renderSelectedItem={(item, unSelect) => {
-                  const isExisted = itemList.find(
-                    (entry: any) => entry.value == item.value
-                  );
-                  if (!isExisted) {
-                    addItemToList(item);
-                  }
                   return (
                     <TouchableOpacity>
                       <View style={styles.selectedStyle}>
@@ -209,11 +219,12 @@ const RequestModal = ({
                           showIcon={false}
                           inputStyle={styles.quantityText}
                           numeric
+                          value={getItemQuantity(item)}
                           maxLength={3}
                           placeholder="0"
                           onChangeText={(text) => {
                             const count = parseInt(text);
-                            handleQuantityChange(count, item.value);
+                            handleQuantityChange(count, item.key);
                           }}
                         />
                         <Text>{item.unit}</Text>
@@ -223,7 +234,7 @@ const RequestModal = ({
                           onPress={() => {
                             unSelect && unSelect(item);
                             const filtered = itemList.filter(
-                              (obj: any) => obj.value != item.value
+                              (obj: any) => obj.key != item.key
                             );
                             setItemList(filtered);
                           }}
@@ -244,6 +255,11 @@ const RequestModal = ({
             >
               {isLoading ? <Spinner size="lg" color="cream" /> : "ยืนยัน"}
             </Button>
+            <Collapse isOpen={error != ""}>
+              <Text fontSize={18} color="altred.400">
+                {error}
+              </Text>
+            </Collapse>
           </VStack>
         </Modal.Content>
       </Modal>
@@ -352,6 +368,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     marginTop: 8,
     marginRight: 12,
+    marginBottom: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
     shadowOffset: {
@@ -361,7 +378,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
 
-    elevation: 2,
+    elevation: 1,
   },
   textSelectedStyle: {
     fontFamily: "Prompt-SemiBold",
