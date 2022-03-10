@@ -1,4 +1,4 @@
-import http from "../../http-common";
+import http from "../http-common";
 const prefix = "/order";
 import authHeader from "./auth-header";
 const xToken = authHeader();

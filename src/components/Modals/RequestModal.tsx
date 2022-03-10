@@ -17,21 +17,10 @@ import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { storageService } from "services";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MultiSelect } from "ynzier-react-native-element-dropdown";
 import { TextInput } from "react-native-element-textinput";
-
-const data = [
-  { key: 1, name: "น้ำส้ม", id: "14232", unit: "ชิ้น", type: "สินค้า" },
-  { key: 2, name: "ผงกาแฟ", id: "224", unit: "ลิตร", type: "ส่วนผสม" },
-  { key: 3, name: "ผงโกโก้", id: "4223", unit: "กก.", type: "ส่วนผสม" },
-  { key: 4, name: "น้ำมะนาว", id: "43", unit: "กก.", type: "อื่นๆ" },
-  { key: 5, name: "Item 5", id: "521", unit: "แพค", type: "อื่นๆ" },
-  { key: 6, name: "Item 6", id: "644", unit: "กระสอบ", type: "ส่วนผสม" },
-  { key: 7, name: "Item 7", id: "732", unit: "ลิตร", type: "ส่วนผสม" },
-  { key: 8, name: "Item 8", id: "811", unit: "กก.", type: "สินค้า" },
-];
 
 const RequestModal = ({
   showRequest,
@@ -94,9 +83,8 @@ const RequestModal = ({
     }
   };
   const cleanUp = () => {
-    // setItemList([]);
-    // setSelected([]);
-    console.log(itemList);
+    setItemList([]);
+    setSelected([]);
   };
   const getItemQuantity = (item: any): string => {
     const index = itemList.findIndex((obj: any) => obj.key == item.key);
