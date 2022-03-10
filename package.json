@@ -22,7 +22,7 @@
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.2.5",
     "@types/react-virtual-keyboard": "^1.0.4",
-    "alert-toast-react-native": "^0.0.11",
+    "alert-toast-react-native": "^0.0.12",
     "axios": "^0.25.0",
     "expo": "~44.0.0",
     "expo-app-loading": "^1.3.0",
