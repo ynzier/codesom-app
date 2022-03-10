@@ -11,4 +11,4 @@ export { default as StorageList } from "./Lists/StorageList";
 export { default as CashPayment } from "./Modals/CashPayment";
 export { default as CartCheckOut } from "./Modals/CartCheckOut";
 export { default as ReceiptModal } from "./Modals/ReceiptModal";
-export { default as RequestModal } from "./Modals/RequestModal";
+export { default as RequisitionModal } from "./Modals/RequisitionModal";

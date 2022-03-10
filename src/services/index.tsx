@@ -8,3 +8,4 @@ export { default as orderService } from "./orders.service";
 export { default as productService } from "./product.service";
 export { default as receiptService } from "./receipt.service";
 export { default as storageService } from "./storage.service";
+export { default as requisitionService } from "./requisition.service";
