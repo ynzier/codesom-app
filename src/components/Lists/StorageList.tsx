@@ -1,15 +1,10 @@
 import {
-  Avatar,
   Text,
   FlatList,
-  Box,
   VStack,
-  Button,
-  Center,
   HStack,
 } from "native-base";
-import BouncingPreloader from "../BouncingLoader";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
@@ -80,8 +75,8 @@ const StorageList = ({ keyword }: { keyword: string }) => {
   useFocusEffect(
     useCallback(() => {
       const search = (value: string) => {
-        const filterTable = productArray.filter((o) =>
-          Object.keys(o).some((k) =>
+        const filterTable = productArray.filter((o: any) =>
+          Object.keys(o).some((k: any) =>
             String(o[k]).toLowerCase().includes(value.toLowerCase())
           )
         );
@@ -92,11 +87,7 @@ const StorageList = ({ keyword }: { keyword: string }) => {
     }, [keyword, productArray])
   );
 
-  return promiseInProgress ? (
-    <Center flex="1" pt="16" justifyContent="center" alignItems="center">
-      <BouncingPreloader icons={[require("../../assets/bouncingOrange.png")]} />
-    </Center>
-  ) : (
+  return (
     <VStack
       w="100%"
       flex="12"
@@ -155,6 +146,10 @@ const StorageList = ({ keyword }: { keyword: string }) => {
       </HStack>
       <FlatList
         data={filterData == null ? productArray : filterData}
+        refreshing={promiseInProgress}
+        onRefresh={() => {
+          fetchProductData(true);
+        }}
         keyExtractor={(item: any) => item.product.prId}
         renderItem={({ item }: ListRenderItemInfo<productData>) => {
           return (

@@ -274,8 +274,8 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
             justifyContent="center"
             alignItems="center"
           >
-            <Text fontSize="48">รายการ</Text>
-            <Text fontSize="48" marginLeft="10">
+            <Text fontSize={{ md: 32, xl: 46 }}>รายการ</Text>
+            <Text fontSize={{ md: 32, xl: 46 }} marginLeft="10">
               {cartData.length}
             </Text>
           </Box>
