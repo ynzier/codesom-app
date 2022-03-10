@@ -12,3 +12,4 @@ export { default as CashPayment } from "./Modals/CashPayment";
 export { default as CartCheckOut } from "./Modals/CartCheckOut";
 export { default as ReceiptModal } from "./Modals/ReceiptModal";
 export { default as RequisitionModal } from "./Modals/RequisitionModal";
+export { default as RequisitionDetail } from "./Modals/RequisitionDetail";

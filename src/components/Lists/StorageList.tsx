@@ -1,9 +1,4 @@
-import {
-  Text,
-  FlatList,
-  VStack,
-  HStack,
-} from "native-base";
+import { Text, FlatList, VStack, HStack } from "native-base";
 import React, { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
@@ -38,7 +33,9 @@ interface productData {
   };
 }
 const StorageList = ({ keyword }: { keyword: string }) => {
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress } = usePromiseTracker({
+    area: "list",
+  });
   const [productArray, setProductArray] = useState<productData[]>([]);
   const [filterData, setfilterData] = useState<productData[]>([]);
   const fetchProductData = (isSubscribed: boolean) => {
@@ -57,7 +54,8 @@ const StorageList = ({ keyword }: { keyword: string }) => {
           if (isSubscribed) {
             console.log(err);
           }
-        })
+        }),
+      "list"
     );
   };
 

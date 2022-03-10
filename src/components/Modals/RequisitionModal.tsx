@@ -17,8 +17,7 @@ import {
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { requisitionService, employeeService, storageService } from "services";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MultiSelect, Dropdown } from "ynzier-react-native-element-dropdown";
 import { TextInput } from "react-native-element-textinput";

@@ -19,7 +19,7 @@ import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import IconCart from "../IconCart";
 import { requisitionService } from "services";
 import Feather from "react-native-vector-icons/Feather";
-import RequisitionModal from "../Modals/RequisitionModal";
+import { RequisitionModal, RequisitionDetail } from "components";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
@@ -29,9 +29,10 @@ const StorageSidebar: React.FC = () => {
   const { promiseInProgress } = usePromiseTracker({
     area: "sidebar",
   });
+  const [showDetail, setShowDetail] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
   const [listData, setListData] = useState([]);
-
+  const [reqId, setReqId] = useState(0);
   const fecthHistory = () => {
     void trackPromise(
       requisitionService
@@ -54,6 +55,11 @@ const StorageSidebar: React.FC = () => {
       <RequisitionModal
         showRequest={showRequest}
         setShowRequest={setShowRequest}
+      />
+      <RequisitionDetail
+        showDetail={showDetail}
+        setShowDetail={setShowDetail}
+        reqId={reqId}
       />
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
@@ -88,36 +94,42 @@ const StorageSidebar: React.FC = () => {
                     <Box style={styles.container}>
                       <HStack>
                         <VStack flex="1">
-                          <Text fontSize={{ md: 12, xl: 16 }}>หมายเลขคำขอ</Text>
                           <Text fontSize={{ md: 12, xl: 16 }}>
-                            {item.requisitionId}
+                            เลขที่ใบเบิกสินค้า: {item.requisitionId}
                           </Text>
                         </VStack>
-                        <VStack flex={{ md: 2, xl: 1 }}>
-                          <Text textAlign="right">วันที่/เวลา</Text>
-                          <Text textAlign="right">
-                            {moment(item.createdAt)
-                              .local()
-                              .format("DD/MM/YYYY HH:mm:ss")}
+                        <VStack flex={{ md: 1, xl: 1 }}>
+                          <Text
+                            textAlign="right"
+                            flex="1"
+                            fontSize={{ md: 12, xl: 16 }}
+                          >
+                            สถานะ:{" "}
+                            {item.requisitionStatus == 0
+                              ? "รออนุมัติ"
+                              : item.requisitionStatus == 1
+                              ? "อนุมัติแล้ว"
+                              : item.requisitionStatus == 2
+                              ? "กำลังดำเนินการ"
+                              : item.requisitionStatus == 3
+                              ? "เสร็จสิ้น"
+                              : "ยกเลิก"}
                           </Text>
                         </VStack>
                       </HStack>
                       <HStack mt="1">
-                        <Text flex="1" fontSize={{ md: 12, xl: 16 }}>
-                          สถานะ:{" "}
-                          {item.requisitionStatus == 0
-                            ? "รออนุมัติ"
-                            : item.requisitionStatus == 1
-                            ? "อนุมัติแล้ว"
-                            : item.requisitionStatus == 2
-                            ? "กำลังดำเนินการ"
-                            : item.requisitionStatus == 3
-                            ? "เสร็จสิ้น"
-                            : "ยกเลิก"}
+                        <Text flex="1">
+                          {moment(item.createdAt)
+                            .local()
+                            .format("DD/MM/YYYY HH:mm")}
                         </Text>
                         <Text
                           fontSize={{ md: 12, xl: 16 }}
                           style={styles.lookup}
+                          onPress={() => {
+                            setReqId(item.requisitionId);
+                            setShowDetail(true);
+                          }}
                         >
                           ดูรายการ
                         </Text>

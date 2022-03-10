@@ -26,5 +26,17 @@ const getReqItemsById = async (id: any) => {
     params: { id: id },
   });
 };
+const getReqDetailById = async (id: any) => {
+  return http.get(prefix + "/getReqDetailById", {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+    params: { id: id },
+  });
+};
 
-export default { listReqApp, createReqApp, updateReqStatus, getReqItemsById };
+export default {
+  listReqApp,
+  createReqApp,
+  updateReqStatus,
+  getReqItemsById,
+  getReqDetailById,
+};
