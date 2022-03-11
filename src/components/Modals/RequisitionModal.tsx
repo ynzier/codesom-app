@@ -16,7 +16,7 @@ import {
 } from "native-base";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { requisitionService, employeeService, storageService } from "services";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MultiSelect, Dropdown } from "ynzier-react-native-element-dropdown";
@@ -318,6 +318,9 @@ const RequisitionModal = ({
                       iconStyle={styles.iconStyle}
                       data={empList}
                       search
+                      dropdownPosition={
+                        Platform.OS === "ios" ? "auto" : "bottom"
+                      }
                       maxHeight={300}
                       labelField="label"
                       valueField="value"

@@ -23,7 +23,7 @@ import {
   orderService,
   requisitionService,
 } from "services";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import { Dropdown } from "ynzier-react-native-element-dropdown";
 type IBranchObj = {
   brId: number | null;
@@ -52,7 +52,13 @@ const RequisitionDetail = ({
   const [productList, setProductList] = useState([]);
   const [ingrList, setIngrList] = useState([]);
   const [stuffList, setStuffList] = useState([]);
-
+  const status = [
+    { value: 0, label: "รออนุมัติ" },
+    { value: 1, label: "อนุมัติแล้ว" },
+    { value: 2, label: "กำลังดำเนินการ" },
+    { value: 3, label: "ยกเลิก" },
+    { value: 4, label: "เสร็จสิ้น" },
+  ];
   useEffect(() => {
     if (reqId) {
       void trackPromise(
@@ -106,16 +112,6 @@ const RequisitionDetail = ({
                   console.log(e);
                 })
             );
-            // resolve(
-            //   requisitionService
-            //     .getReqItemsById(reqId)
-            //     .then((res) => {
-            //       const receiveData = res.data;
-            //       setOrderItems(receiveData.orderItems);
-            //       setReceiptData(receiveData.receipt);
-            //     })
-            //     .catch((e) => console.log(e))
-            // );
           }, 2000);
         })
       );
@@ -268,80 +264,80 @@ const RequisitionDetail = ({
                     </Text>
                     <Text>ผู้ตรวจสอบสินค้า</Text>
                   </VStack>
-                  <Divider mt="6" />
-                  <HStack mx="4" mt="4" space={4}>
-                    <VStack flex="2">
-                      <Text mb="3" fontSize={16}>
-                        ลงชื่อผู้ทำรายการ
-                      </Text>
-                      <Dropdown
-                        style={styles.dropdown}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        fontFamily="Prompt-Regular"
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={empList}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="ลงชื่อผู้ทำรายการ"
-                        searchPlaceholder="ค้นหา..."
-                        value={creator}
-                        onChange={(item) => {
-                          setCreator(item.value);
-                        }}
-                        renderLeftIcon={() => (
-                          <FontAwesome5
-                            name="signature"
-                            style={styles.icon}
-                            size={24}
-                            color="black"
-                          />
-                        )}
-                        renderItem={renderEmpItem}
-                      />
-                    </VStack>
-                    <VStack flex="1">
-                      <Text mb="3" fontSize={16}>
-                        สถานะ
-                      </Text>
-                      <Dropdown
-                        style={styles.dropdown}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        fontFamily="Prompt-Regular"
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={[
-                          { value: 0, label: "รออนุมัติ" },
-                          { value: 1, label: "อนุมัติแล้ว" },
-                          { value: 2, label: "กำลังดำเนินการ" },
-                          { value: 3, label: "ยกเลิก" },
-                          { value: 4, label: "เสร็จสิ้น" },
-                        ]}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="สถานะ"
-                        value={requisitData.requisitionStatus}
-                        onChange={(item) => {
-                          setCreator(item.value);
-                        }}
-                        renderItem={renderEmpItem}
-                      />
-                    </VStack>
-                  </HStack>
-                  <Button mx="4" colorScheme="emerald">
-                    ยืนยันการทำรายการ
-                  </Button>
-                  <Collapse isOpen={false}>
-                    <Text fontSize={18} color="altred.400">
-                      test
-                    </Text>
-                  </Collapse>
                 </ScrollView>
+                {requisitData.requisitionStatus < 3 && (
+                  <>
+                    <Divider mt="6" />
+                    <HStack mx="4" mt="4" space={4}>
+                      <VStack flex="2">
+                        <Text mb="3" fontSize={16}>
+                          ลงชื่อผู้ตรวจสอบสินค้า
+                        </Text>
+                        <Dropdown
+                          style={styles.dropdown}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          fontFamily="Prompt-Regular"
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={empList}
+                          search
+                          dropdownPosition={
+                            Platform.OS === "ios" ? "auto" : "bottom"
+                          }
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="ลงชื่อผู้ตรวจสอบสินค้า"
+                          searchPlaceholder="ค้นหา..."
+                          value={creator}
+                          onChange={(item) => {
+                            setCreator(item.value);
+                          }}
+                          renderLeftIcon={() => (
+                            <FontAwesome5
+                              name="signature"
+                              style={styles.icon}
+                              size={24}
+                              color="black"
+                            />
+                          )}
+                          renderItem={renderEmpItem}
+                        />
+                      </VStack>
+                      <VStack flex="1">
+                        <Text mb="3" fontSize={16}>
+                          สถานะ
+                        </Text>
+                        <Dropdown
+                          style={styles.dropdown}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          fontFamily="Prompt-Regular"
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={
+                            requisitData.requisitionStatus > 0
+                              ? status.slice(requisitData.requisitionStatus)
+                              : status
+                          }
+                          maxHeight={200}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="สถานะ"
+                          value={requisitData.requisitionStatus}
+                          onChange={(item) => {
+                            setCreator(item.value);
+                          }}
+                          renderItem={renderEmpItem}
+                        />
+                      </VStack>
+                    </HStack>
+                    <Button mx="4" colorScheme="emerald">
+                      ยืนยันการทำรายการ
+                    </Button>
+                  </>
+                )}
               </Modal.Body>
             </>
           )}
