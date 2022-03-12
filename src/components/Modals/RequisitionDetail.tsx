@@ -249,8 +249,9 @@ const RequisitionDetail = ({
                     <VStack flex="1" alignItems="center">
                       <Text>
                         {requisitData.approver &&
-                          requisitData.creator.firstName}{" "}
-                        {requisitData.approver && requisitData.creator.lastName}
+                          requisitData.approver.firstName}{" "}
+                        {requisitData.approver &&
+                          requisitData.approver.lastName}
                       </Text>
                       <Text>ผู้อนุมัติ</Text>
                     </VStack>
