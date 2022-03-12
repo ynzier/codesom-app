@@ -14,25 +14,12 @@ import {
   Collapse,
   View,
 } from "native-base";
-import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import moment from "moment";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
-import {
-  branchService,
-  employeeService,
-  orderService,
-  requisitionService,
-} from "services";
+import { employeeService, requisitionService } from "services";
 import { StyleSheet, Platform } from "react-native";
 import { Dropdown } from "ynzier-react-native-element-dropdown";
-type IBranchObj = {
-  brId: number | null;
-  brName: string;
-  brAddr: string;
-  brTel: string;
-  brStatus: string;
-  brImg: string;
-};
 
 const RequisitionDetail = ({
   showDetail,
@@ -45,20 +32,35 @@ const RequisitionDetail = ({
   props?: any;
 }) => {
   const { promiseInProgress } = usePromiseTracker();
-  const [branchData, setBranchData] = useState<IBranchObj>({} as IBranchObj);
   const [requisitData, setRequisitData] = useState<any>({});
   const [empList, setEmpList] = useState([]);
-  const [creator, setCreator] = useState<number>(0);
+  const [validatorId, setValidatorId] = useState<number>();
   const [productList, setProductList] = useState([]);
   const [ingrList, setIngrList] = useState([]);
   const [stuffList, setStuffList] = useState([]);
-  const status = [
-    { value: 0, label: "รออนุมัติ" },
-    { value: 1, label: "อนุมัติแล้ว" },
-    { value: 2, label: "กำลังดำเนินการ" },
-    { value: 3, label: "ยกเลิก" },
-    { value: 4, label: "เสร็จสิ้น" },
-  ];
+  const [error, setError] = useState("");
+
+  const validateStatus = () => {
+    const data = { status: 3, validatorId: validatorId };
+
+    void trackPromise(
+      requisitionService
+        .updateReqStatus(reqId, data)
+        .then((res) => {
+          setError("");
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          setError(resMessage);
+        })
+    );
+  };
+
   useEffect(() => {
     if (reqId) {
       void trackPromise(
@@ -117,7 +119,13 @@ const RequisitionDetail = ({
       );
     }
 
-    return () => {};
+    return () => {
+      setError("");
+      setProductList([]);
+      setIngrList([]);
+      setStuffList([]);
+      setValidatorId(undefined);
+    };
   }, [reqId]);
 
   const renderEmpItem = (item: any) => {
@@ -154,7 +162,7 @@ const RequisitionDetail = ({
                             : requisitData.requisitionStatus == 1
                             ? "อนุมัติแล้ว"
                             : requisitData.requisitionStatus == 2
-                            ? "กำลังดำเนินการ"
+                            ? "กำลังจัดส่ง"
                             : requisitData.requisitionStatus == 3
                             ? "เสร็จสิ้น"
                             : "ยกเลิก"}
@@ -266,7 +274,7 @@ const RequisitionDetail = ({
                     <Text>ผู้ตรวจสอบสินค้า</Text>
                   </VStack>
                 </ScrollView>
-                {requisitData.requisitionStatus < 3 && (
+                {requisitData.requisitionStatus == 2 && (
                   <>
                     <Divider mt="6" />
                     <HStack mx="4" mt="4" space={4}>
@@ -291,9 +299,9 @@ const RequisitionDetail = ({
                           valueField="value"
                           placeholder="ลงชื่อผู้ตรวจสอบสินค้า"
                           searchPlaceholder="ค้นหา..."
-                          value={creator}
+                          value={validatorId}
                           onChange={(item) => {
-                            setCreator(item.value);
+                            setValidatorId(item.value);
                           }}
                           renderLeftIcon={() => (
                             <FontAwesome5
@@ -306,39 +314,28 @@ const RequisitionDetail = ({
                           renderItem={renderEmpItem}
                         />
                       </VStack>
-                      <VStack flex="1">
-                        <Text mb="3" fontSize={16}>
-                          สถานะ
-                        </Text>
-                        <Dropdown
-                          style={styles.dropdown}
-                          placeholderStyle={styles.placeholderStyle}
-                          selectedTextStyle={styles.selectedTextStyle}
-                          fontFamily="Prompt-Regular"
-                          inputSearchStyle={styles.inputSearchStyle}
-                          iconStyle={styles.iconStyle}
-                          data={
-                            requisitData.requisitionStatus > 0
-                              ? status.slice(requisitData.requisitionStatus)
-                              : status
-                          }
-                          maxHeight={200}
-                          labelField="label"
-                          valueField="value"
-                          placeholder="สถานะ"
-                          value={requisitData.requisitionStatus}
-                          onChange={(item) => {
-                            setCreator(item.value);
-                          }}
-                          renderItem={renderEmpItem}
-                        />
-                      </VStack>
                     </HStack>
-                    <Button mx="4" colorScheme="emerald">
+                    <Button
+                      mx="4"
+                      colorScheme="emerald"
+                      onPress={() => {
+                        validateStatus();
+                      }}
+                    >
                       ยืนยันการทำรายการ
                     </Button>
                   </>
                 )}
+                <Collapse isOpen={error != ""}>
+                  <Text
+                    mx="4"
+                    textAlign="center"
+                    fontSize={18}
+                    color="altred.400"
+                  >
+                    *{error}
+                  </Text>
+                </Collapse>
               </Modal.Body>
             </>
           )}
