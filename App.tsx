@@ -7,6 +7,7 @@ import { Root as AlertProvider } from "alert-toast-react-native";
 
 import Login from "./src/screens/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { authService, deviceStorage } from "services";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MainMenuScreen from "./src/screens/MainMenuScreen";
@@ -244,28 +245,23 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
   );
 };
 const App: React.FC<Props> = () => {
-  const [accessToken, setAccessToken] = useState("");
-
   const LoadFonts = async () => {
     await useFonts();
-  };
-
-  useEffect(() => {
-    async () => {
-      await AsyncStorage.getItem("accessToken", (error: any, result: any) => {
-        if (result) {
-          setAccessToken(result);
-        } else {
-          console.log("error1:", JSON.stringify(error));
-          return;
+    await authService
+      .checkCurrentSession()
+      .then((res) => {
+        if (res) setSessionAvailable(true);
+      })
+      .catch(async (error) => {
+        if (error) {
+          await deviceStorage.deleteJWT();
+          setSessionAvailable(false);
         }
       });
-    };
-
-    return () => {};
-  }, [accessToken]);
+  };
 
   const [IsReady, SetIsReady] = useState(false);
+  const [sessionAvailable, setSessionAvailable] = useState(false);
 
   if (!IsReady) {
     return (
@@ -288,8 +284,14 @@ const App: React.FC<Props> = () => {
                 headerShown: false,
               }}
             >
-              <Stack.Screen name="LogInScreen" component={Login} />
-              <Stack.Screen name="HomeScreen" component={HomeTabs} />
+              {!sessionAvailable ? (
+                <>
+                  <Stack.Screen name="LogInScreen" component={Login} />
+                  <Stack.Screen name="HomeScreen" component={HomeTabs} />
+                </>
+              ) : (
+                <Stack.Screen name="HomeScreen" component={HomeTabs} />
+              )}
             </Stack.Navigator>
           </NativeBaseProvider>
         </AlertProvider>

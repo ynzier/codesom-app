@@ -7,7 +7,6 @@ import {
   Button,
   Center,
 } from "native-base";
-import BouncingPreloader from "../components/BouncingLoader";
 import React, { useState, useEffect, useCallback } from "react";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
@@ -81,10 +80,17 @@ const ProductList = ({
             }
           }
         })
-        .catch((err) => {
-          if (isSubscribed) {
-            console.log(err);
-          }
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            textBody: resMessage,
+          });
         })
     );
   };

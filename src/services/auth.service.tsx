@@ -1,5 +1,6 @@
 import http from "../http-common";
 import deviceStorage from "./deviceStorage";
+import authHeader from "./auth-header";
 interface AccessToken {
   accessToken: string;
 }
@@ -13,6 +14,7 @@ const signInApp = async (userName: string, password: string) => {
             brPassword: password,
           })
           .then(async (response) => {
+            console.log(response.data.accessToken);
             await deviceStorage.deleteJWT();
             await deviceStorage.setToken(response.data.accessToken);
           })
@@ -21,17 +23,19 @@ const signInApp = async (userName: string, password: string) => {
   });
   return promise;
 };
-
+const checkCurrentSession = async () => {
+  console.log("checking session");
+  const xToken = await authHeader();
+  return await http.get("/auth/checkCurrentSession", {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 const logoutApp = () => {
   // localStorage.deleteJWT()
-};
-
-const getCurrentUser = () => {
-  // return JSON.parse(localStorage.getItem("user"));
 };
 
 export default {
   signInApp,
   logoutApp,
-  getCurrentUser,
+  checkCurrentSession,
 };

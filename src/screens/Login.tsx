@@ -21,8 +21,16 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { authService } from "services";
 import { TextInput } from "react-native-element-textinput";
+import { useNavigation } from "@react-navigation/native";
 
+type NavProps = {
+  navigate: (
+    arg0: string,
+    arg1?: { [key: string]: string | undefined }
+  ) => void;
+};
 export function SignInForm({ props }: any) {
+  const navigation: NavProps = useNavigation();
   const { promiseInProgress } = usePromiseTracker();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +41,7 @@ export function SignInForm({ props }: any) {
       authService
         .signInApp(userName, password)
         .then((_res) => {
-          props.navigation.navigate("HomeScreen");
+          navigation.navigate("HomeScreen");
         })
         .catch((error) => {
           const resMessage =

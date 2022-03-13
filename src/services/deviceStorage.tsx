@@ -5,8 +5,10 @@ const deviceStorage = {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem("accessToken", jsonValue);
+      return;
     } catch (e) {
       console.log(e);
+      throw e;
     }
   },
   async loadJWT(): Promise<string | void> {
@@ -30,6 +32,7 @@ const deviceStorage = {
       });
     } catch (error) {
       console.log("AsyncStorage Error: " + error);
+      throw error;
     }
   },
   async setBranchInfo(value: string): Promise<void> {
