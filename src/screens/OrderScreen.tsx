@@ -234,7 +234,9 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           flex="1"
                           textAlign="center"
                           fontSize="md"
-                          textDecorationLine="underline"
+                          textDecorationLine={
+                            item.ordStatus == "2" ? "none" : "underline"
+                          }
                           onPress={() => {
                             setOrdId(item.ordId.toString());
                             setShowReceipt(true);
