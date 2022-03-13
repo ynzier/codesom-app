@@ -14,6 +14,7 @@ import NumberFormat from "react-number-format";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/th"; // ES 2015
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { branchService, orderService } from "services";
 dayjs.extend(localizedFormat);
@@ -65,7 +66,18 @@ const ReceiptModal = ({
                   setOrderItems(receiveData.orderItems);
                   setReceiptData(receiveData.receipt);
                 })
-                .catch((e) => console.log(e))
+                .catch((error) => {
+                  const resMessage =
+                    (error.response &&
+                      error.response.data &&
+                      error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                  Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    textBody: resMessage,
+                  });
+                })
             );
           }, 2000);
         })
