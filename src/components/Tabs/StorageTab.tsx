@@ -52,7 +52,6 @@ const StorageTab = ({
           placeholderStyle={styles.placeholderStyle}
           textErrorStyle={styles.textErrorStyle}
           label="ค้นหา"
-          placeholder="ค้นหาด้วยชื่อ/รหัส"
           placeholderTextColor="gray"
           onChangeText={setKeyword}
           renderLeftIcon={() => (

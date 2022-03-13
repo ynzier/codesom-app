@@ -8,6 +8,16 @@ const getAllProductInStorage = async () => {
     headers: { "x-access-token": JSON.parse(await xToken) as string },
   });
 };
+const getAllStuffInStorage = async () => {
+  return http.get(prefix + "/getAllStuffInStorage", {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+  });
+};
+const getAllIngrInStorage = async () => {
+  return http.get(prefix + "/getAllIngrInStorage", {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+  });
+};
 const getRemainOnlyProductId = async () => {
   return http.get(prefix + "/getRemainOnlyProductId", {
     headers: { "x-access-token": JSON.parse(await xToken) as string },
@@ -21,6 +31,8 @@ const getItemMakeRequest = async () => {
 
 export default {
   getAllProductInStorage,
+  getAllIngrInStorage,
+  getAllStuffInStorage,
   getRemainOnlyProductId,
   getItemMakeRequest,
 };

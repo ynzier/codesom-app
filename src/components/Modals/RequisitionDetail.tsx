@@ -14,12 +14,14 @@ import {
   Collapse,
   View,
 } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
-import moment from "moment";
+import { FontAwesome5 } from "@expo/vector-icons";import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/th"; // ES 2015
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { employeeService, requisitionService } from "services";
 import { StyleSheet, Platform } from "react-native";
 import { Dropdown } from "ynzier-react-native-element-dropdown";
+dayjs.extend(localizedFormat);
 
 const RequisitionDetail = ({
   showDetail,
@@ -171,9 +173,10 @@ const RequisitionDetail = ({
                       <HStack>
                         <Text flex="1">
                           วันที่/เวลา:{" "}
-                          {moment(requisitData.createdAt)
-                            .local()
-                            .format("DD/MM/YYYY HH:mm")}
+                          {dayjs(requisitData.createdAt)
+                            .locale("th")
+                            .format("D MMMM YYYY เวลา HH:mm")}
+                          receiptData.recTimestamp
                         </Text>
                         <Text>13 รายการ</Text>
                       </HStack>

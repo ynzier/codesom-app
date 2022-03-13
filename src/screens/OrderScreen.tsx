@@ -12,13 +12,16 @@ import { Navigation } from "../hooks/navigation";
 import { OrderSidebar } from "../components";
 import { orderService } from "services";
 import { ListRenderItemInfo, StyleSheet } from "react-native";
-import moment from "moment";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
-import SelectPicker from "react-native-form-select-picker";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/th"; // ES 2015
 import { ReceiptModal } from "components";
 import NumberFormat from "react-number-format";
 import { Dropdown } from "ynzier-react-native-element-dropdown";
+
+dayjs.extend(localizedFormat);
 
 interface Props {
   route: any;
@@ -241,9 +244,9 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                         </Text>
 
                         <Text flex="2" textAlign="center" fontSize="md">
-                          {moment(item.createTimestamp)
-                            .local()
-                            .format("YYYY-MM-DD HH:mm")}
+                          {dayjs(item.createTimestamp)
+                            .locale("th")
+                            .format("D MMMM YYYY เวลา HH:mm")}
                         </Text>
 
                         <Text flex="1" textAlign="center" fontSize="md">
@@ -269,6 +272,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           <Dropdown
                             style={styles.inputcontainer}
                             selectedTextStyle={styles.selectedTextStyle}
+                            placeholderStyle={styles.selectedTextStyle}
                             iconStyle={styles.iconStyle}
                             dropdownPosition="auto"
                             data={statusData}

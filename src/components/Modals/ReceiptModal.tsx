@@ -11,9 +11,12 @@ import {
   Spinner,
 } from "native-base";
 import NumberFormat from "react-number-format";
-import moment from "moment";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/th"; // ES 2015
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { branchService, orderService } from "services";
+dayjs.extend(localizedFormat);
 type IBranchObj = {
   brId: number | null;
   brName: string;
@@ -357,9 +360,9 @@ const ReceiptModal = ({
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mb="8">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        {moment(receiptData.recTimestamp)
-                          .local()
-                          .format("DD/MM/YYYY HH:mm:ss")}
+                        {dayjs(receiptData.recTimestamp)
+                          .locale("th")
+                          .format("D MMMM YYYY เวลา HH:mm")}
                       </Text>
                     </HStack>
                   </Box>

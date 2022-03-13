@@ -71,7 +71,8 @@ const ProductList = ({
   };
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
-      storageService.getAllProductInStorage()
+      storageService
+        .getAllProductInStorage()
         .then((res) => {
           if (isSubscribed) {
             if (res) {
@@ -123,7 +124,7 @@ const ProductList = ({
           }}
           refreshing={promiseInProgress}
           data={filterData == null ? productArray : filterData}
-          keyExtractor={(item: any) => item.prId}
+          keyExtractor={(item: any) => item.productId}
           renderItem={({ item }: ListRenderItemInfo<productData>) => {
             return (
               <Box

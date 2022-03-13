@@ -2,7 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar, Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
-import { StorageSidebar, StorageTab, StorageList } from "../components";
+import {
+  StorageSidebar,
+  StorageTab,
+  StorageList,
+  IngrList,
+  StuffList,
+} from "../components";
 interface Props {
   navigation: Navigation;
   children?: JSX.Element;
@@ -55,8 +61,8 @@ const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
                   />
                 </HStack>
                 {tabIndex == 1 && <StorageList keyword={keyword} />}
-                {tabIndex == 2 && <StorageList keyword={keyword} />}
-                {tabIndex == 3 && <StorageList keyword={keyword} />}
+                {tabIndex == 2 && <IngrList keyword={keyword} />}
+                {tabIndex == 3 && <StuffList keyword={keyword} />}
               </VStack>
             </VStack>
           </VStack>

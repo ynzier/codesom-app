@@ -24,7 +24,11 @@ import RequisitionDetail from "../Modals/RequisitionDetail";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import moment from "moment";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/th"; // ES 2015
+
+dayjs.extend(localizedFormat);
 
 const StorageSidebar: React.FC = () => {
   const { promiseInProgress } = usePromiseTracker({
@@ -119,10 +123,10 @@ const StorageSidebar: React.FC = () => {
                         </VStack>
                       </HStack>
                       <HStack mt="1">
-                        <Text flex="1">
-                          {moment(item.createdAt)
-                            .local()
-                            .format("DD/MM/YYYY HH:mm")}
+                        <Text flex="1" fontSize={{ md: 12, xl: 16 }}>
+                          {dayjs(item.createdAt)
+                            .locale("th")
+                            .format("D MMMM YYYY เวลา HH:mm")}
                         </Text>
                         <Text
                           fontSize={{ md: 12, xl: 16 }}
