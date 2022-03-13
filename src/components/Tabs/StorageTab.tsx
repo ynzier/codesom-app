@@ -74,22 +74,22 @@ const StorageTab = ({
         {filterType.map((item: filterType) => {
           const borderColor = tabIndex == item.typeId ? "#9D7463" : "#CFCFCF";
           return (
-            <Box
+            <Pressable
               key={item.typeId}
-              alignItems="center"
-              p="4"
-              zIndex={2}
-              width={{ md: 32, xl: 40 }}
-              mx="1"
-              backgroundColor={borderColor}
-              borderRadius={12}
-              borderBottomColor={borderColor}
+              onPress={() => {
+                setKeyword("");
+                setTabIndex(item.typeId);
+              }}
             >
-              <Pressable
-                onPress={() => {
-                  setKeyword("");
-                  setTabIndex(item.typeId);
-                }}
+              <Box
+                alignItems="center"
+                p="4"
+                zIndex={2}
+                width={{ md: 32, xl: 40 }}
+                mx="1"
+                backgroundColor={borderColor}
+                borderRadius={12}
+                borderBottomColor={borderColor}
               >
                 <Text
                   fontSize={{ md: "md", xl: "xl" }}
@@ -103,8 +103,8 @@ const StorageTab = ({
                 >
                   {item.typeName}
                 </Text>
-              </Pressable>
-            </Box>
+              </Box>
+            </Pressable>
           );
         })}
       </Box>

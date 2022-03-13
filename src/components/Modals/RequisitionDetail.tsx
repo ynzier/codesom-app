@@ -14,7 +14,8 @@ import {
   Collapse,
   View,
 } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";import dayjs from "dayjs";
+import { FontAwesome5 } from "@expo/vector-icons";
+import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/th"; // ES 2015
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
@@ -50,6 +51,7 @@ const RequisitionDetail = ({
         .updateReqStatus(reqId, data)
         .then((res) => {
           setError("");
+          setShowDetail(false);
         })
         .catch((error) => {
           const resMessage =
