@@ -31,17 +31,25 @@ const ReceiptModal = ({
   showReceipt,
   setShowReceipt,
   ordId,
+  setOrdId,
 }: {
   showReceipt: boolean;
   setShowReceipt: (boolean: boolean) => void;
   ordId: string;
-  setOrdId?: (any: string) => void;
+  setOrdId: (any: string) => void;
   props?: any;
 }) => {
   const { promiseInProgress } = usePromiseTracker();
   const [branchData, setBranchData] = useState<IBranchObj>({} as IBranchObj);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [receiptData, setReceiptData] = useState<any>({});
+
+  const handleClose = () => {
+    setShowReceipt(false);
+    setOrderItems([]);
+    setReceiptData({});
+    setOrdId("");
+  };
 
   useEffect(() => {
     if (ordId != "") {
@@ -73,6 +81,7 @@ const ReceiptModal = ({
                       error.response.data.message) ||
                     error.message ||
                     error.toString();
+                  console.log(error);
                   Toast.show({
                     type: ALERT_TYPE.DANGER,
                     textBody: resMessage,
@@ -89,11 +98,7 @@ const ReceiptModal = ({
 
   return (
     <Center>
-      <Modal
-        isOpen={showReceipt}
-        onClose={() => setShowReceipt(false)}
-        size="lg"
-      >
+      <Modal isOpen={showReceipt} onClose={handleClose} size="lg">
         <Modal.Content h="700" maxWidth="450" justifyContent="center">
           {promiseInProgress ? (
             <Spinner size="lg" color="cream" />
@@ -106,12 +111,10 @@ const ReceiptModal = ({
               <Modal.Body h="550">
                 <ScrollView minH="400">
                   <Box borderWidth={1} mx="4" w="400" alignSelf="center">
-                    <HStack
-                      justifyContent="center"
-                      alignItems="center"
-                      mt={6}
-                      mb="2"
-                    >
+                    <HStack mt={6} justifyContent="center" alignItems="center">
+                      <Text fontSize="lg">เลขออเดอร์: {ordId}</Text>
+                    </HStack>
+                    <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
                         CODESOM
                       </Text>

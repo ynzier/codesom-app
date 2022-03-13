@@ -108,9 +108,10 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
     };
   }, []);
   const statusData = [
-    { label: "กำลังดำเนินการ", value: 0 },
-    { label: "เสร็จสิ้น", value: 1 },
-    { label: "ยกเลิก", value: 2 },
+    { label: "รอชำระเงิน", value: 0 },
+    { label: "กำลังดำเนินการ", value: 1 },
+    { label: "เสร็จสิ้น", value: 2 },
+    { label: "ยกเลิก", value: 3 },
   ];
   return (
     <>
@@ -169,7 +170,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                     fontWeight={600}
                     letterSpacing="xl"
                   >
-                    เลขที่ใบเสร็จ
+                    ออเดอร์
                   </Text>
 
                   <Text
