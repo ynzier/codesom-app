@@ -29,7 +29,7 @@ interface productData {
     prType?: number;
     prStatus?: string;
     prDetail?: string;
-    needProcess?: number;
+    recipeId?: number;
     product_type?: {
       typeId: number;
       typeName: string;
@@ -175,7 +175,7 @@ const ProductList = ({
                   disabled={isInCart(item.product.prId)}
                   display={isInCart(item.product.prId) ? "none" : "flex"}
                   onPress={() => {
-                    if (item.product.needProcess)
+                    if (item.product.recipeId)
                       addToCart({
                         key:
                           item.product.prId +
@@ -185,7 +185,7 @@ const ProductList = ({
                         prPrice: item.product.prPrice,
                         prCount: 1,
                       });
-                    if (item.itemRemain == 0) {
+                    if (item.itemRemain == 0 && !item.product.recipeId) {
                       Toast.show({
                         type: ALERT_TYPE.DANGER,
                         textBody: "สินค้าในคลังไม่เพียงพอ",
@@ -247,7 +247,7 @@ const ProductList = ({
                         </Text>
                       )}
                     />
-                    {!item.product.needProcess ? (
+                    {!item.product.recipeId ? (
                       <Text
                         fontWeight={300}
                         fontSize={{ md: 12, xl: 18 }}

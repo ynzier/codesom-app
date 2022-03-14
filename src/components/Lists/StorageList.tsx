@@ -20,7 +20,7 @@ interface productData {
     prType?: number;
     prStatus?: string;
     prDetail?: string;
-    needProcess?: number;
+    recipeId?: number;
     product_type?: {
       typeId: number;
       typeName: string;
@@ -191,7 +191,7 @@ const StorageList = ({ keyword }: { keyword: string }) => {
                   </Text>
                 )}
               />
-              {item.product.needProcess ? (
+              {item.product.recipeId ? (
                 <Text
                   flex="1"
                   textAlign="center"
