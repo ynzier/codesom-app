@@ -148,6 +148,7 @@ const IngrList = ({ keyword }: { keyword: string }) => {
                 <Text
                   textAlign="center"
                   fontSize={{ md: "md", xl: "xl" }}
+                  style={{ flex: 1, marginLeft: 20 }}
                   textDecorationLine="underline"
                   onPress={() => {}}
                 >

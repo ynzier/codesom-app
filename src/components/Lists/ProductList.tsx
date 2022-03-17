@@ -13,6 +13,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { storageService } from "services";
+import RecipeModal from "../Modals/RecipeModal";
 import NumberFormat from "react-number-format";
 interface productData {
   key?: number;
@@ -29,7 +30,7 @@ interface productData {
     prType?: number;
     prStatus?: string;
     prDetail?: string;
-    recipeId?: number;
+    needProcess?: number;
     product_type?: {
       typeId: number;
       typeName: string;
@@ -51,6 +52,8 @@ const ProductList = ({
   tabIndex: number;
 }) => {
   const { promiseInProgress } = usePromiseTracker();
+  const [recipeOpen, setRecipeOpen] = useState(false);
+  const [recipeId, setRecipeId] = useState<any>();
   const [productArray, setProductArray] = useState<productData[]>([]);
   const [filterData, setfilterData] = useState<productData[]>([]);
   const ErrorImg =
@@ -122,6 +125,13 @@ const ProductList = ({
 
   return (
     <>
+      {recipeOpen && (
+        <RecipeModal
+          recipeOpen={recipeOpen}
+          setRecipeOpen={setRecipeOpen}
+          recipeId={recipeId}
+        />
+      )}
       <Box alignSelf="center" w="100%">
         <FlatList
           numColumns={3}
@@ -175,8 +185,8 @@ const ProductList = ({
                   disabled={isInCart(item.product.prId)}
                   display={isInCart(item.product.prId) ? "none" : "flex"}
                   onPress={() => {
-                    if (item.product.recipeId)
-                      addToCart({
+                    if (item.product.needProcess)
+                      return addToCart({
                         key:
                           item.product.prId +
                           Math.floor(Math.random() * (100000 - 1) + 1) * 100,
@@ -185,14 +195,14 @@ const ProductList = ({
                         prPrice: item.product.prPrice,
                         prCount: 1,
                       });
-                    if (item.itemRemain == 0 && !item.product.recipeId) {
-                      Toast.show({
+                    if (item.itemRemain == 0 && !item.product.needProcess) {
+                      return Toast.show({
                         type: ALERT_TYPE.DANGER,
                         textBody: "สินค้าในคลังไม่เพียงพอ",
                       });
                     }
                     if (item.itemRemain > 0 && !isInCart(item.product.prId)) {
-                      addToCart({
+                      return addToCart({
                         key:
                           item.product.prId +
                           Math.floor(Math.random() * (100000 - 1) + 1) * 100,
@@ -247,7 +257,7 @@ const ProductList = ({
                         </Text>
                       )}
                     />
-                    {!item.product.recipeId ? (
+                    {!item.product.needProcess ? (
                       <Text
                         fontWeight={300}
                         fontSize={{ md: 12, xl: 18 }}
@@ -263,6 +273,10 @@ const ProductList = ({
                         flexWrap="wrap"
                         color="#ABBBC2"
                         textDecorationLine="underline"
+                        onPress={() => {
+                          setRecipeId(item.productId);
+                          setRecipeOpen(true);
+                        }}
                       >
                         ดูส่วนผสม
                       </Text>
