@@ -5,24 +5,16 @@ import {
   Box,
   Text,
   HStack,
-  Pressable,
   Button,
   VStack,
-  Input,
-  Icon,
   Divider,
-  Spinner,
   FlatList,
 } from "native-base";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import IconCart from "../IconCart";
+import { StyleSheet } from "react-native";
 import { requisitionService } from "services";
-import Feather from "react-native-vector-icons/Feather";
 import RequisitionModal from "../Modals/RequisitionModal";
 import RequisitionDetail from "../Modals/RequisitionDetail";
 // import AlertToast from "../AlertToast";
-import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";

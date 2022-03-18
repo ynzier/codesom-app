@@ -26,16 +26,9 @@ import CartCheckOut from "../Modals/CartCheckOut";
 type Props = {
   cartData: any;
   setCartData: (value: any) => void;
-  totalIngr: any;
-  setTotalIngr: (value: any) => void;
 };
 
-const CartSidebar: React.FC<Props> = ({
-  cartData,
-  setCartData,
-  totalIngr,
-  setTotalIngr,
-}) => {
+const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
   const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
@@ -399,11 +392,12 @@ const CartSidebar: React.FC<Props> = ({
                   (obj: any) => obj.needProcess
                 );
                 let available = true;
+                let ingrList: any[];
                 if (needProcess.length > 0) {
                   await storageService
                     .checkRecipeCartAvailable(needProcess)
                     .then((res) => {
-                      setTotalIngr(res.data.totalIngr);
+                      ingrList = res.data.totalIngr;
                     })
                     .catch((error) => {
                       const resMessage =
@@ -429,7 +423,7 @@ const CartSidebar: React.FC<Props> = ({
                   await trackPromise(
                     new Promise((resolve, _reject) => {
                       setTimeout(() => {
-                        if (totalIngr.length > 0) {
+                        if (ingrList.length > 0) {
                           resolve(
                             AsyncStorage.setItem(
                               "cartData",
@@ -439,7 +433,7 @@ const CartSidebar: React.FC<Props> = ({
                           resolve(
                             AsyncStorage.setItem(
                               "totalIngrCart",
-                              JSON.stringify(totalIngr)
+                              JSON.stringify(ingrList)
                             ).then(() => {
                               setShowModal(true);
                             })

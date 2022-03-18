@@ -108,7 +108,11 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       ordRefNo: ordRefNo,
       ordStatus: "0",
     };
-    const data = { ordHeader: ordHeader, ordItems: cartData };
+    const data = {
+      ordHeader: ordHeader,
+      ordItems: cartData,
+      orderIngr: totalIngr,
+    };
     setPreSendData(data);
     setCashModal(true);
   };
@@ -120,12 +124,14 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           showModal={showCashModal}
           setShowModal={setCashModal}
           fetchCartData={fetchCartData}
+          fetchTotalIngr={fetchTotalIngr}
           cartData={cartData}
           setCartData={setCartData}
           preSendData={preSendData}
           setPreSendData={setPreSendData}
           totalVat={totalVat}
           isCash={isCash}
+          setTotalIngr={setTotalIngr}
           ordTotal={parseFloat(total).toFixed(2)}
         />
       )}
@@ -153,6 +159,11 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   AsyncStorage.removeItem("cartData")
                     .then(() => {
                       setCartData([]);
+                    })
+                    .catch((e) => console.log(e));
+                  AsyncStorage.removeItem("totalIngrCart")
+                    .then(() => {
+                      setTotalIngr([]);
                     })
                     .catch((e) => console.log(e));
                 }}
@@ -426,7 +437,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   });
                 if (isCash) {
                   postOrder();
-                  console.log(cartData);
                 }
               }}
             >

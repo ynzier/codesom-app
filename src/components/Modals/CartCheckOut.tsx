@@ -22,11 +22,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { deliveryService } from "services";
 import { StyleSheet } from "react-native";
 
-function Delivery(props: {
+const Delivery = (props: {
   isDelivery: any;
   setIsTakeAway: (arg0: boolean) => void;
   setIsDelivery: (arg0: boolean) => void;
-}) {
+}) => {
   return (
     <Pressable
       w="100"
@@ -60,7 +60,7 @@ function Delivery(props: {
       )}
     </Pressable>
   );
-}
+};
 
 function TakeAway(props: {
   setError: (arg0: string) => void;

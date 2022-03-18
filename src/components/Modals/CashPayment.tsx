@@ -9,7 +9,7 @@ import {
   Box,
   AlertDialog,
   Spinner,
-  Collapse,
+  View,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import VirtualKeyboard from "react-native-virtual-keyboard";
@@ -18,6 +18,7 @@ import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { orderService } from "services";
 import ReceiptModal from "./ReceiptModal";
+import { ActivityIndicator, StyleSheet } from "react-native";
 
 const CashPayment = ({
   showModal,
@@ -26,6 +27,8 @@ const CashPayment = ({
   setCartData,
   preSendData,
   setPreSendData,
+  setTotalIngr,
+  fetchTotalIngr,
   isCash,
   totalVat,
   ordTotal,
@@ -33,6 +36,7 @@ const CashPayment = ({
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
   fetchCartData: () => void;
+  fetchTotalIngr: () => void;
   cartData: any;
   setCartData: (a: any) => void;
   preSendData: any;
@@ -41,6 +45,7 @@ const CashPayment = ({
   isCash: any;
   ordTotal: any;
   props?: any;
+  setTotalIngr: (value: any) => void;
 }) => {
   const [finishState, setFinishState] = useState(false);
   const [orderId, setOrderId] = useState<any>("");
@@ -84,11 +89,19 @@ const CashPayment = ({
                     setCartData([]);
                   })
                   .catch((e) => console.log(e));
+                AsyncStorage.removeItem("totalIngr")
+                  .then(() => {
+                    setTotalIngr([]);
+                  })
+                  .catch((e) => console.log(e));
                 fetchCartData();
+                fetchTotalIngr();
                 Toast.show({
                   type: ALERT_TYPE.SUCCESS,
                   textBody: res.data.message,
                 });
+                setIsOpen(false);
+                setIsConfirm(true);
               })
               .catch((error) => {
                 const resMessage =
@@ -114,7 +127,6 @@ const CashPayment = ({
       <ConfirmDialog
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        setIsConfirm={setIsConfirm}
         createOrder={createOrder}
       />
       <NotEnoughAlert isAlertOpen={isAlertOpen} setAlertOpen={setAlertOpen} />
@@ -330,23 +342,20 @@ const NotEnoughAlert = ({
 const ConfirmDialog = ({
   isOpen,
   setIsOpen,
-  setIsConfirm,
   createOrder,
 }: {
   isOpen: boolean;
   setIsOpen: (any: boolean) => void;
-  setIsConfirm: (any: boolean) => void;
   createOrder: () => void;
 }) => {
   const onClose = () => {
     setIsOpen(false);
   };
   const onConfirm = () => {
-    createOrder();
-    setIsOpen(false);
-    setIsConfirm(true);
+    createOrder(); /////// <<<<<
   };
 
+  const { promiseInProgress } = usePromiseTracker();
   const cancelRef = useRef(null);
   return (
     <Center>
@@ -372,7 +381,11 @@ const ConfirmDialog = ({
                 ยกเลิก
               </Button>
               <Button colorScheme="emerald" onPress={onConfirm}>
-                ตกลง
+                {promiseInProgress ? (
+                  <Spinner size="sm" color="altred.500" />
+                ) : (
+                  "ตกลง"
+                )}
               </Button>
             </Button.Group>
           </AlertDialog.Footer>
