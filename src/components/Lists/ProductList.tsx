@@ -194,6 +194,7 @@ const ProductList = ({
                         prName: item.product.prName,
                         prPrice: item.product.prPrice,
                         prCount: 1,
+                        needProcess: item.product.needProcess,
                       });
                     if (item.itemRemain == 0 && !item.product.needProcess) {
                       return Toast.show({

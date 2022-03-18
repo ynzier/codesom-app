@@ -84,6 +84,7 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
       prName: string;
       prPrice: string;
       prCount: number;
+      needProcess: number | null;
     };
     index: string | number;
   }) => (
@@ -182,7 +183,7 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                   (product: any) => product.productId === data.item.prId
                 );
                 const max: number = storageData[checkIndex].itemRemain;
-                if (prCount <= max)
+                if (prCount <= max || data.item.needProcess)
                   setCartData(
                     Object.values({
                       ...cartData,
@@ -210,7 +211,7 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                   (product: any) => product.productId === data.item.prId
                 );
                 const max: number = storageData[checkIndex].itemRemain;
-                if (temp <= max) {
+                if (temp <= max || data.item.needProcess) {
                   setCartData(
                     Object.values({
                       ...cartData,
@@ -382,16 +383,38 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
               onPress={async () => {
                 const cart: any[] = cartData;
                 if (cartData == "")
-                  // return AlertToast("กรุณาเลือกสินค้าก่อนทำรายการ", "warning");
                   return Toast.show({
                     type: ALERT_TYPE.WARNING,
                     title: "คำเตือน!",
                     textBody: "กรุณาเลือกสินค้าก่อนทำรายการ",
                   });
-                try {
-                  await AsyncStorage.removeItem("cartData").catch((e) =>
-                    console.log(e)
-                  );
+                const needProcess = cartData.filter(
+                  (obj: any) => obj.needProcess
+                );
+                let available = false;
+                if (needProcess.length > 0) {
+                  await storageService
+                    .checkRecipeCartAvailable(needProcess)
+                    .then((res) => {
+                      if (res.data.status == "OK") available = true;
+                    })
+                    .catch((error) => {
+                      const resMessage =
+                        (error.response &&
+                          error.response.data &&
+                          error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                      return Toast.show({
+                        type: ALERT_TYPE.DANGER,
+                        textBody: resMessage,
+                      });
+                    });
+                }
+                if (available) {
+                  await AsyncStorage.removeItem("cartData").catch((e) => {
+                    console.log(e);
+                  });
                   await trackPromise(
                     new Promise((resolve, _reject) => {
                       setTimeout(() => {
@@ -407,8 +430,6 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                     }),
                     "setCart"
                   );
-                } catch (e) {
-                  console.log(e);
                 }
               }}
             >

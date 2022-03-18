@@ -410,6 +410,7 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
                   });
                 if (isCash) {
                   postOrder();
+                  console.log(cartData);
                 }
               }}
             >

@@ -105,6 +105,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
     prName: string;
     prPrice: string;
     prCount: number;
+    [name: string]: any;
   };
   const [cartData, setCartData] = useState<ICartArray[]>([]);
 
