@@ -108,10 +108,9 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
     };
   }, []);
   const statusData = [
-    { label: "รอชำระเงิน", value: 0 },
-    { label: "กำลังดำเนินการ", value: 1 },
-    { label: "เสร็จสิ้น", value: 2 },
-    { label: "ยกเลิก", value: 3 },
+    { label: "กำลังดำเนินการ", value: 0 },
+    { label: "เสร็จสิ้น", value: 1 },
+    { label: "ยกเลิก", value: 2 },
   ];
   return (
     <>

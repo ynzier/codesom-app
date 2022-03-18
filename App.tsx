@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useMemo,
+  createContext,
+} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme, ToastProvider } from "native-base";
 import { Root as AlertProvider } from "alert-toast-react-native";
@@ -14,13 +22,19 @@ import MainMenuScreen from "./src/screens/MainMenuScreen";
 import OrderScreen from "./src/screens/OrderScreen";
 import SecondScreen from "./src/screens/SecondScreen";
 import StorageScreen from "./src/screens/StorageScreen";
+import SettingScreen from "./src/screens/SettingScreen";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
 import { useWindowDimensions } from "react-native";
 import Topbar from "./src/components/Topbar";
-
+import http from "./src/http-common";
+import { AuthContext } from "./src/context/AuthContext";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+interface AccessToken {
+  accessToken: string;
+}
 
 const theme = extendTheme({
   fontConfig: {
@@ -238,35 +252,112 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       />
       <Tab.Screen
         name="SettingScreen"
-        component={MainMenuScreen}
         options={{
           tabBarLabel: "ตั้งค่า",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="settings" color={color} size={size} />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <SettingScreen {...props}>
+            <Topbar />
+          </SettingScreen>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
 const App: React.FC<Props> = () => {
+  const [state, dispatch] = useReducer(
+    (prevState: any, action: { type: any; token: any }) => {
+      switch (action.type) {
+        case "RESTORE_TOKEN":
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case "SIGN_IN":
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case "SIGN_OUT":
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    }
+  );
+
   const LoadFonts = async () => {
     await useFonts();
-    await authService
-      .checkCurrentSession()
-      .then((res) => {
-        if (res) setSessionAvailable(true);
-      })
-      .catch(async (error) => {
-        if (error) {
-          await deviceStorage.deleteJWT();
-          setSessionAvailable(false);
-        }
-      });
   };
 
+  useEffect(() => {
+    // Fetch the token from storage then navigate to our appropriate place
+    const bootstrapAsync = async () => {
+      let userToken;
+
+      try {
+        userToken = await AsyncStorage.getItem("accessToken");
+      } catch (e) {
+        // Restoring token failed
+      }
+
+      // After restoring token, we may need to validate it in production apps
+      await authService
+        .checkCurrentSession()
+        .then((res) => {
+          if (res.data.message == "เข้าสู่ระบบสำเร็จโ")
+            console.log(res.data.message);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      dispatch({ type: "RESTORE_TOKEN", token: userToken });
+    };
+
+    void bootstrapAsync();
+  }, []);
+
+  const authContext = useMemo(
+    () => ({
+      signIn: async (userName: string, password: string) => {
+        // In a production app, we need to send some data (usually username, password) to server and get a token
+        // We will also need to handle errors if sign in failed
+        // After getting token, we need to persist the token using `SecureStore`
+        // In the example, we'll use a dummy token
+        let userToken;
+        await http
+          .post<AccessToken>("/auth/signinApp", {
+            brUserName: userName.toLowerCase(),
+            brPassword: password,
+          })
+          .then(async (response) => {
+            await deviceStorage.deleteJWT();
+            await deviceStorage.setToken(response.data.accessToken);
+            userToken = response.data.accessToken;
+          });
+        dispatch({ type: "SIGN_IN", token: userToken });
+      },
+      signOut: () => dispatch({ type: "SIGN_OUT", token: null }),
+    }),
+    []
+  );
+
   const [IsReady, SetIsReady] = useState(false);
-  const [sessionAvailable, setSessionAvailable] = useState(false);
 
   if (!IsReady) {
     return (
@@ -284,20 +375,19 @@ const App: React.FC<Props> = () => {
       <NavigationContainer>
         <AlertProvider>
           <NativeBaseProvider theme={theme}>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              {!sessionAvailable ? (
-                <>
+            <AuthContext.Provider value={authContext}>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                {state.userToken == null ? (
                   <Stack.Screen name="LogInScreen" component={Login} />
+                ) : (
                   <Stack.Screen name="HomeScreen" component={HomeTabs} />
-                </>
-              ) : (
-                <Stack.Screen name="HomeScreen" component={HomeTabs} />
-              )}
-            </Stack.Navigator>
+                )}
+              </Stack.Navigator>
+            </AuthContext.Provider>
           </NativeBaseProvider>
         </AlertProvider>
       </NavigationContainer>

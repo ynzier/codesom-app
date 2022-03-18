@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import {
   Button,
@@ -19,18 +19,12 @@ import {
 import { Platform, StyleSheet } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
-import { authService } from "services";
 import { TextInput } from "react-native-element-textinput";
-import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../context/AuthContext";
 
-type NavProps = {
-  navigate: (
-    arg0: string,
-    arg1?: { [key: string]: string | undefined }
-  ) => void;
-};
-export function SignInForm({ props }: any) {
-  const navigation: NavProps = useNavigation();
+const SignInForm = () => {
+  const { signIn } = useContext(AuthContext);
+
   const { promiseInProgress } = usePromiseTracker();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -38,12 +32,12 @@ export function SignInForm({ props }: any) {
 
   const _onLoginPressed = async () => {
     await trackPromise(
-      authService
-        .signInApp(userName, password)
-        .then((_res) => {
-          navigation.navigate("HomeScreen");
-        })
-        .catch((error) => {
+      signIn(userName, password).catch(
+        (error: {
+          response: { data: { message: any } };
+          message: any;
+          toString: () => any;
+        }) => {
           const resMessage =
             (error.response &&
               error.response.data &&
@@ -55,7 +49,8 @@ export function SignInForm({ props }: any) {
             title: "คำเตือน!",
             textBody: resMessage,
           });
-        })
+        }
+      )
     );
   };
 
@@ -190,8 +185,8 @@ export function SignInForm({ props }: any) {
       </Center>
     </VStack>
   );
-}
-export default function SignIn(props: any) {
+};
+export default () => {
   return (
     <>
       <StatusBar
@@ -224,13 +219,13 @@ export default function SignIn(props: any) {
                 source={require("../assets/logo-white.png")}
               />
             </Center>
-            <SignInForm props={props} />
+            <SignInForm />
           </Stack>
         </KeyboardAvoidingView>
       </Center>
     </>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     padding: 16,

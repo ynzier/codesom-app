@@ -18,6 +18,7 @@ import IconCart from "../IconCart";
 import CashPayment from "../Modals/CashPayment";
 
 interface Props {
+  setOrderData: (a: any) => void;
   route: any;
 }
 const OrderSidebar: React.FC<Props> = ({ route }) => {

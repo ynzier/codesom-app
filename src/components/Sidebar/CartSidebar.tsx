@@ -392,7 +392,7 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                   (obj: any) => obj.needProcess
                 );
                 let available = true;
-                let ingrList: any[];
+                let ingrList: any[] = [];
                 if (needProcess.length > 0) {
                   await storageService
                     .checkRecipeCartAvailable(needProcess)

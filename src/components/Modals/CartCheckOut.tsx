@@ -154,6 +154,9 @@ const CartCheckOut = ({
         isOpen={showModal}
         onClose={() => {
           setIsDelivery(false);
+          setError("");
+          setRefNo("");
+          setSelected("");
           setIsTakeAway(false);
           setShowModal(false);
         }}
@@ -244,6 +247,7 @@ const CartCheckOut = ({
                 if (isTakeAway) {
                   setShowModal(false);
                   setCartData([]);
+                  setIsTakeAway(false);
                   navigation.navigate("OrderScreen", {
                     ordType: "takeaway",
                     ordRefNo: "",
@@ -260,6 +264,7 @@ const CartCheckOut = ({
                   ) {
                     setShowModal(false);
                     setCartData([]);
+                    setIsDelivery(false);
                     navigation.navigate("OrderScreen", {
                       ordType: "delivery",
                       ordRefNo: refNo,
