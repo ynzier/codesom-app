@@ -19,9 +19,8 @@ import CashPayment from "../Modals/CashPayment";
 
 interface Props {
   route: any;
-  setOrderData: (a: any) => void;
 }
-const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
+const OrderSidebar: React.FC<Props> = ({ route }) => {
   const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
@@ -32,6 +31,7 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
   const [totalVat, setTotalVat] = useState<string>("0");
   const [total, setTotal] = useState<string>("0");
   const [cartData, setCartData] = useState<any[]>();
+  const [totalIngr, setTotalIngr] = useState<any[]>([]);
 
   useEffect(() => {
     if (cartData && cartData.length < 1) {
@@ -68,6 +68,16 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
         console.log(e);
       });
   };
+  const fetchTotalIngr = () => {
+    AsyncStorage.getItem("totalIngrCart")
+      .then((data: any) => {
+        const tempCart: any = JSON.parse(data);
+        setTotalIngr(tempCart);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   useEffect(() => {
     if (!ordType) {
       AsyncStorage.removeItem("cartData")
@@ -75,8 +85,14 @@ const OrderSidebar: React.FC<Props> = ({ route, setOrderData }) => {
           setCartData([]);
         })
         .catch((e) => console.log(e));
+      AsyncStorage.removeItem("totalIngrCart")
+        .then(() => {
+          setTotalIngr([]);
+        })
+        .catch((e) => console.log(e));
     }
     fetchCartData();
+    fetchTotalIngr();
 
     return () => {};
   }, [ordType, route]);

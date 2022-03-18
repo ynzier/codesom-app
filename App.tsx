@@ -16,7 +16,6 @@ import SecondScreen from "./src/screens/SecondScreen";
 import StorageScreen from "./src/screens/StorageScreen";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWindowDimensions } from "react-native";
 import Topbar from "./src/components/Topbar";
 
@@ -108,6 +107,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
     [name: string]: any;
   };
   const [cartData, setCartData] = useState<ICartArray[]>([]);
+  const [totalIngr, setTotalIngr] = useState<any[]>([]);
 
   return (
     <Tab.Navigator
@@ -149,6 +149,8 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           <MainMenuScreen
             cartData={cartData}
             setCartData={setCartData}
+            totalIngr={totalIngr}
+            setTotalIngr={setTotalIngr}
             {...props}
           >
             <Topbar />
@@ -193,6 +195,8 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           <MainMenuScreen
             cartData={cartData}
             setCartData={setCartData}
+            totalIngr={totalIngr}
+            setTotalIngr={setTotalIngr}
             {...props}
           >
             <Topbar />

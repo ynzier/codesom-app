@@ -8,11 +8,15 @@ interface Props {
   children?: JSX.Element;
   cartData?: any;
   setCartData: (value: any) => void;
+  totalIngr: any;
+  setTotalIngr: (value: any) => void;
 }
 const MainMenuScreen: React.FC<Props> = ({
   cartData,
   setCartData,
   navigation,
+  totalIngr,
+  setTotalIngr,
   children,
 }) => {
   const [tabIndex, setTabIndex] = useState<number>(-1);
@@ -60,7 +64,12 @@ const MainMenuScreen: React.FC<Props> = ({
           </VStack>
 
           {/*Sidebar Component */}
-          <CartSidebar cartData={cartData} setCartData={setCartData} />
+          <CartSidebar
+            cartData={cartData}
+            setCartData={setCartData}
+            totalIngr={totalIngr}
+            setTotalIngr={setTotalIngr}
+          />
           {/*Sidebar Component */}
         </HStack>
       </Center>

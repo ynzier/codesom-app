@@ -26,9 +26,16 @@ import CartCheckOut from "../Modals/CartCheckOut";
 type Props = {
   cartData: any;
   setCartData: (value: any) => void;
+  totalIngr: any;
+  setTotalIngr: (value: any) => void;
 };
 
-const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
+const CartSidebar: React.FC<Props> = ({
+  cartData,
+  setCartData,
+  totalIngr,
+  setTotalIngr,
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [sumAll, setSumAll] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState("0");
@@ -391,12 +398,12 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                 const needProcess = cartData.filter(
                   (obj: any) => obj.needProcess
                 );
-                let available = false;
+                let available = true;
                 if (needProcess.length > 0) {
                   await storageService
                     .checkRecipeCartAvailable(needProcess)
                     .then((res) => {
-                      if (res.data.status == "OK") available = true;
+                      setTotalIngr(res.data.totalIngr);
                     })
                     .catch((error) => {
                       const resMessage =
@@ -405,6 +412,7 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                           error.response.data.message) ||
                         error.message ||
                         error.toString();
+                      available = false;
                       return Toast.show({
                         type: ALERT_TYPE.DANGER,
                         textBody: resMessage,
@@ -415,17 +423,36 @@ const CartSidebar: React.FC<Props> = ({ cartData, setCartData }) => {
                   await AsyncStorage.removeItem("cartData").catch((e) => {
                     console.log(e);
                   });
+                  await AsyncStorage.removeItem("totalIngrCart").catch((e) => {
+                    console.log(e);
+                  });
                   await trackPromise(
                     new Promise((resolve, _reject) => {
                       setTimeout(() => {
-                        resolve(
-                          AsyncStorage.setItem(
-                            "cartData",
-                            JSON.stringify(cart)
-                          ).then(() => {
-                            setShowModal(true);
-                          })
-                        );
+                        if (totalIngr.length > 0) {
+                          resolve(
+                            AsyncStorage.setItem(
+                              "cartData",
+                              JSON.stringify(cart)
+                            )
+                          );
+                          resolve(
+                            AsyncStorage.setItem(
+                              "totalIngrCart",
+                              JSON.stringify(totalIngr)
+                            ).then(() => {
+                              setShowModal(true);
+                            })
+                          );
+                        } else
+                          resolve(
+                            AsyncStorage.setItem(
+                              "cartData",
+                              JSON.stringify(cart)
+                            ).then(() => {
+                              setShowModal(true);
+                            })
+                          );
                       }, 500);
                     }),
                     "setCart"
