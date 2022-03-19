@@ -306,7 +306,7 @@ const App: React.FC<Props> = () => {
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      let userToken;
+      let userToken: string | null;
 
       try {
         userToken = await AsyncStorage.getItem("accessToken");
@@ -319,14 +319,13 @@ const App: React.FC<Props> = () => {
         .checkCurrentSession()
         .then((res) => {
           if (res.data.message == "เข้าสู่ระบบสำเร็จโ")
-            console.log(res.data.message);
+            dispatch({ type: "RESTORE_TOKEN", token: userToken });
         })
         .catch((error) => {
-          console.log(error);
+          if (error) dispatch({ type: "SIGN_OUT", token: null });
         });
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      dispatch({ type: "RESTORE_TOKEN", token: userToken });
     };
 
     void bootstrapAsync();

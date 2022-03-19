@@ -132,11 +132,6 @@ const CartCheckOut = ({
   const [refNo, setRefNo] = useState<string | undefined>("");
   const [error, setError] = useState<string>("");
   useEffect(() => {
-    setIsDelivery(false);
-    setIsTakeAway(false);
-    setRefNo("");
-    setError("");
-    setSelected("");
     deliveryService
       .getAllPlatform()
       .then((res) => {
@@ -145,7 +140,13 @@ const CartCheckOut = ({
       })
       .catch((e) => console.log(e));
 
-    return () => {};
+    return () => {
+      setIsDelivery(false);
+      setIsTakeAway(false);
+      setRefNo("");
+      setError("");
+      setSelected("");
+    };
   }, []);
   return (
     <Center>
@@ -270,6 +271,11 @@ const CartCheckOut = ({
                       ordRefNo: refNo,
                       platformId: selected,
                     });
+                    setIsDelivery(false);
+                    setIsTakeAway(false);
+                    setRefNo("");
+                    setError("");
+                    setSelected("");
                   } else {
                     setError("กรุณาเลือกแพลตฟอร์มและกรอกหมายเลขอ้างอิงก่อน");
                   }

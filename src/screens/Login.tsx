@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import Constants from "expo-constants";
+
 import {
   Button,
   HStack,
@@ -178,9 +180,8 @@ const SignInForm = () => {
             _light={{ color: "coolGray.800" }}
             _dark={{ color: "coolGray.400" }}
           >
-            Milo Team
+            Milo Team@{Constants?.manifest?.version}
           </Text>
-          {/* Opening Link Tag navigateTo:"SignUp" */}
         </HStack>
       </Center>
     </VStack>
