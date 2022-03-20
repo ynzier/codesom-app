@@ -187,7 +187,7 @@ const SignInForm = () => {
     </VStack>
   );
 };
-export default () => {
+const LoginScreen = () => {
   return (
     <>
       <StatusBar
@@ -257,3 +257,5 @@ const styles = StyleSheet.create({
   },
   textErrorStyle: { fontSize: 16 },
 });
+
+export default LoginScreen;

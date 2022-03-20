@@ -1,28 +1,23 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { StatusBar, Box, Center, HStack, VStack } from "native-base";
+import React, { useContext } from "react";
+import { Text, StatusBar, View } from "react-native";
+import { Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
-import { CartSidebar, MainMenuTab, ProductList } from "components";
+import { AuthContext } from "../context/AuthContext";
+import { CartSidebar } from "components";
 interface Props {
   navigation: Navigation;
   children?: JSX.Element;
   cartData?: any;
   setCartData: (value: any) => void;
 }
-const MainMenuScreen: React.FC<Props> = ({
+
+const PromotionScreen: React.FC<Props> = ({
   cartData,
   setCartData,
   navigation,
   children,
 }) => {
-  const [tabIndex, setTabIndex] = useState<number>(-1);
-  useEffect(() => {
-    navigation.addListener("beforeRemove", (e: any) => {
-      e.preventDefault();
-      return;
-    });
-  }, [navigation]);
-
+  const { signOut } = useContext(AuthContext);
   return (
     <>
       <StatusBar
@@ -46,16 +41,13 @@ const MainMenuScreen: React.FC<Props> = ({
               mb={{ md: "10%", xl: "6%" }}
               justifyContent="center"
             >
-              <HStack flex="1" alignItems="center">
-                <MainMenuTab tabIndex={tabIndex} setTabIndex={setTabIndex} />
-              </HStack>
-              <VStack w="100%" flex="10">
-                <ProductList
-                  cartData={cartData}
-                  setCartData={setCartData}
-                  tabIndex={tabIndex}
-                />
-              </VStack>
+              <Text
+                onPress={() => {
+                  signOut();
+                }}
+              >
+                LOGOUT
+              </Text>
             </VStack>
           </VStack>
 
@@ -68,4 +60,4 @@ const MainMenuScreen: React.FC<Props> = ({
   );
 };
 
-export default MainMenuScreen;
+export default PromotionScreen;

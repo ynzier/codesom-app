@@ -1,28 +1,25 @@
-import React, {
-  useState,
-  useEffect,
-  useReducer,
-  useMemo,
-  createContext,
-} from "react";
+import React, { useState, useEffect, useReducer, useMemo } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NativeBaseProvider, extendTheme, ToastProvider } from "native-base";
+import { NativeBaseProvider, extendTheme } from "native-base";
 import { Root as AlertProvider } from "alert-toast-react-native";
 
-import Login from "./src/screens/Login";
+import Login from "./src/screens/LoginScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { authService, deviceStorage } from "services";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MainMenuScreen from "./src/screens/MainMenuScreen";
-import OrderScreen from "./src/screens/OrderScreen";
-import SecondScreen from "./src/screens/SecondScreen";
-import StorageScreen from "./src/screens/StorageScreen";
-import SettingScreen from "./src/screens/SettingScreen";
+import {
+  LoginScreen,
+  MainMenuScreen,
+  OrderScreen,
+  PromotionScreen,
+  StorageScreen,
+  SettingScreen,
+} from "./src/screens";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
 import { useWindowDimensions } from "react-native";
@@ -163,8 +160,6 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           <MainMenuScreen
             cartData={cartData}
             setCartData={setCartData}
-            totalIngr={totalIngr}
-            setTotalIngr={setTotalIngr}
             {...props}
           >
             <Topbar />
@@ -173,14 +168,23 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       </Tab.Screen>
       <Tab.Screen
         name="PromotionScreen"
-        component={SecondScreen}
         options={{
           tabBarLabel: "โปรโมชั่น",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="percent" color={color} size={size} />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <PromotionScreen
+            cartData={cartData}
+            setCartData={setCartData}
+            {...props}
+          >
+            <Topbar />
+          </PromotionScreen>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="OrderScreen"
         options={{
@@ -209,8 +213,6 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           <MainMenuScreen
             cartData={cartData}
             setCartData={setCartData}
-            totalIngr={totalIngr}
-            setTotalIngr={setTotalIngr}
             {...props}
           >
             <Topbar />
@@ -318,14 +320,12 @@ const App: React.FC<Props> = () => {
       await authService
         .checkCurrentSession()
         .then((res) => {
-          if (res.data.message == "เข้าสู่ระบบสำเร็จโ")
+          if (res.data.message == "เข้าสู่ระบบสำเร็จ")
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
         })
         .catch((error) => {
           if (error) dispatch({ type: "SIGN_OUT", token: null });
         });
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
     };
 
     void bootstrapAsync();

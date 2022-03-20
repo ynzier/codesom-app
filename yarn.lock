@@ -1010,7 +1010,7 @@
     "pirates" "^4.0.0"
     "source-map-support" "^0.5.16"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.13.10", "@babel/runtime@^7.14.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@*", "@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.13.10", "@babel/runtime@^7.14.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   "integrity" "sha512-TXWihFIS3Pyv5hzR7j6ihmeLkZfrXGxAr5UfSl8CHf+6q/wpiYDkUau0czckpYG8QmnCIuPpdLtuA9VmuGGyMA=="
   "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.16.5.tgz"
   "version" "7.16.5"
@@ -8947,6 +8947,11 @@
     "react" "16.11.0"
     "react-native" "0.62.2"
 
+"react-native-dualscreeninfo@^0.1.0":
+  "integrity" "sha512-OGooE+P0Nr61bp8G5EJDp2cT2+4ZU6nMpyxdxLERPh1KpGF08p8cLQZfXSVV6ombauqsg02AzmltpV+86xykKg=="
+  "resolved" "https://registry.npmjs.org/react-native-dualscreeninfo/-/react-native-dualscreeninfo-0.1.9.tgz"
+  "version" "0.1.9"
+
 "react-native-element-textinput@^1.4.6":
   "integrity" "sha512-CBg/MMWChGsEznfcXMSwdO3HSAyFopgyEhHCrFPfHlUjBAwsDUw9VAyhAnHZrYHab+tV4QoA21vwQaNlS+wQfA=="
   "resolved" "https://registry.npmjs.org/react-native-element-textinput/-/react-native-element-textinput-1.4.6.tgz"
@@ -9062,6 +9067,13 @@
   "integrity" "sha512-SjAEuHc/D6ovp+RjDUhfNmw6NYOntdT7+GFhfMGfP/BSLMuMWynpzJy9GKQeyB8sI78T6Lzip21TVbongOg1Mw=="
   "resolved" "https://registry.npmjs.org/react-native-swipe-list-view/-/react-native-swipe-list-view-3.2.9.tgz"
   "version" "3.2.9"
+
+"react-native-twopaneview@^0.1.0":
+  "integrity" "sha512-cK6z/I+VdgoOVMMzR997puMRRh16T9gOdYyGY/OeTKfKs3kv9nDjxLu4S9qAwx1WN1VBq4LGPcg2JnEBGH++KQ=="
+  "resolved" "https://registry.npmjs.org/react-native-twopaneview/-/react-native-twopaneview-0.1.0.tgz"
+  "version" "0.1.0"
+  dependencies:
+    "react-native-dualscreeninfo" "^0.1.0"
 
 "react-native-vector-icons@*", "react-native-vector-icons@^9.0.0", "react-native-vector-icons@>= 6.0.0", "react-native-vector-icons@>7.0.0":
   "integrity" "sha512-qKX5d5/TafHmI4B7UOSZCL3BAGh7ZfF30iLwRgxBkKfZl2lKSuHp8Ottj9OyWh9b5fFtlg+LtyvZrns3g2kh+w=="
