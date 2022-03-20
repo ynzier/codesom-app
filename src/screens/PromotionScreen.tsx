@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { Text, StatusBar, View } from "react-native";
-import { Box, Center, HStack, VStack } from "native-base";
+import { StatusBar, View } from "react-native";
+import { Box, Center, HStack, VStack, Text } from "native-base";
 import { Navigation } from "../hooks/navigation";
-import { AuthContext } from "../context/AuthContext";
-import { CartSidebar } from "components";
+import { CartSidebar, PromotionList } from "components";
 interface Props {
   navigation: Navigation;
   children?: JSX.Element;
@@ -14,10 +13,8 @@ interface Props {
 const PromotionScreen: React.FC<Props> = ({
   cartData,
   setCartData,
-  navigation,
   children,
 }) => {
-  const { signOut } = useContext(AuthContext);
   return (
     <>
       <StatusBar
@@ -31,9 +28,7 @@ const PromotionScreen: React.FC<Props> = ({
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              borderWidth={1}
               w="95%"
-              borderRadius={5}
               flex="10"
               alignSelf="center"
               alignItems="center"
@@ -41,13 +36,27 @@ const PromotionScreen: React.FC<Props> = ({
               mb={{ md: "10%", xl: "6%" }}
               justifyContent="center"
             >
-              <Text
-                onPress={() => {
-                  signOut();
-                }}
+              <HStack
+                w="100%"
+                flex="1"
+                alignItems="center"
+                justifyContent="center"
               >
-                LOGOUT
-              </Text>
+                <Text fontSize="xl">โปรโมชัน</Text>
+              </HStack>
+              <VStack
+                w="100%"
+                flex="12"
+                px={4}
+                py={2}
+                borderWidth={1}
+                borderRadius={5}
+              >
+                <PromotionList
+                  cartData={cartData}
+                  setCartData={setCartData}
+                />
+              </VStack>
             </VStack>
           </VStack>
 

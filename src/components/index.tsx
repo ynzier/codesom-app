@@ -7,6 +7,7 @@ export { default as MainMenuTab } from "./Tabs/MainMenuTab";
 export { default as StorageTab } from "./Tabs/StorageTab";
 
 export { default as ProductList } from "./Lists/ProductList";
+export { default as PromotionList } from "./Lists/PromotionList";
 export { default as StorageList } from "./Lists/StorageList";
 export { default as IngrList } from "./Lists/IngrList";
 export { default as StuffList } from "./Lists/StuffList";
