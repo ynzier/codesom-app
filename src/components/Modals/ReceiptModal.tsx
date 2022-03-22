@@ -43,11 +43,13 @@ const ReceiptModal = ({
   const [branchData, setBranchData] = useState<IBranchObj>({} as IBranchObj);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [receiptData, setReceiptData] = useState<any>({});
+  const [orderDetail, setOrderDetail] = useState<any>({});
 
   const handleClose = () => {
     setShowReceipt(false);
     setOrderItems([]);
     setReceiptData({});
+    setOrderDetail({});
     setOrdId("");
   };
 
@@ -73,6 +75,7 @@ const ReceiptModal = ({
                   const receiveData = res.data;
                   setOrderItems(receiveData.orderItems);
                   setReceiptData(receiveData.receipt);
+                  setOrderDetail(receiveData.orderDetail);
                 })
                 .catch((error) => {
                   const resMessage =
@@ -212,6 +215,29 @@ const ReceiptModal = ({
                           </VStack>
                         )
                       )}
+                    <VStack justifyContent="center">
+                      <HStack px="8">
+                        <VStack flex="1">
+                          <Text fontSize="lg" flex="1">
+                            ส่วนลด
+                          </Text>
+                        </VStack>
+                        <VStack flex="1">
+                          <NumberFormat
+                            value={orderDetail?.ordDiscount}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text fontSize="lg" textAlign="right" flex="1">
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
+                        </VStack>
+                      </HStack>
+                    </VStack>
                     <HStack
                       justifyContent="center"
                       alignItems="center"
@@ -313,7 +339,6 @@ const ReceiptModal = ({
                         -------------------------------------------
                       </Text>
                     </HStack>
-
                     <HStack
                       justifyContent="center"
                       alignItems="center"
