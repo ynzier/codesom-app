@@ -8,11 +8,15 @@ interface Props {
   children?: JSX.Element;
   cartData?: any;
   setCartData: (value: any) => void;
+  promoCart?: any;
+  setPromoCart: (value: any) => void;
 }
 
 const PromotionScreen: React.FC<Props> = ({
   cartData,
   setCartData,
+  promoCart,
+  setPromoCart,
   children,
 }) => {
   return (
@@ -55,13 +59,20 @@ const PromotionScreen: React.FC<Props> = ({
                 <PromotionList
                   cartData={cartData}
                   setCartData={setCartData}
+                  promoCart={promoCart}
+                  setPromoCart={setPromoCart}
                 />
               </VStack>
             </VStack>
           </VStack>
 
           {/*Sidebar Component */}
-          <CartSidebar cartData={cartData} setCartData={setCartData} />
+          <CartSidebar
+            cartData={cartData}
+            setCartData={setCartData}
+            promoCart={promoCart}
+            setPromoCart={setPromoCart}
+          />
           {/*Sidebar Component */}
         </HStack>
       </Center>

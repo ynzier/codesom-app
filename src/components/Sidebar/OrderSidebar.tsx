@@ -33,6 +33,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   const [total, setTotal] = useState<string>("0");
   const [cartData, setCartData] = useState<any[]>();
   const [totalIngr, setTotalIngr] = useState<any[]>([]);
+  const [promoCart, setPromoCart] = useState<any[]>([]);
 
   useEffect(() => {
     if (cartData && cartData.length < 1) {
@@ -44,26 +45,53 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     if (cartData && cartData.length > 0) {
       const sum: number = cartData
         .map(
-          (item: { prPrice: string; prCount: number }) =>
-            parseFloat(item.prPrice) * item.prCount
+          (item: { prPrice: number; prCount: number; promoId: number }) =>
+            !item.promoId && item.prPrice * item.prCount
         )
-        .reduce((prev: any, curr: any) => prev + curr, 0)
-        .toFixed(2);
-      const discount = "0.0";
-      setSubtotal(parseFloat(sum.toString()).toFixed(2));
-      setTotalDiscount(parseFloat(discount).toFixed(2));
-      setTotal((sum - parseFloat(totalDiscount)).toFixed(2));
+        .reduce((prev: any, curr: any) => prev + curr, 0);
+      const sumPromo: number = promoCart
+        .map((item: any) => item.promoCost * item.promoCount)
+        .reduce((prev: any, curr: any) => prev + curr, 0);
+      const sumPromoPrice: number = promoCart
+        .map((item: any) => item.promoPrice * item.promoCount)
+        .reduce((prev: any, curr: any) => prev + curr, 0);
+      const discount = promoCart
+        .map(
+          (item: any) =>
+            item.promoCost * item.promoCount - item.promoPrice * item.promoCount
+        )
+        .reduce((prev: any, curr: any) => prev + curr, 0);
+
+      const forSumAll = sum + sumPromo;
+
+      setTotalDiscount(discount.toFixed(2));
+      const forTotal = sum + sumPromoPrice;
+      setTotal(forTotal.toFixed(2));
+
+      setSubtotal(forSumAll.toFixed(2));
+
       setTotalVat(
         (parseFloat(total) - (parseFloat(total) * 100) / 107).toFixed(2)
       );
     }
     return () => {};
-  }, [cartData, total, totalDiscount]);
+  }, [cartData, promoCart, total, totalDiscount]);
   const fetchCartData = () => {
     AsyncStorage.getItem("cartData")
       .then((data: any) => {
         const tempCart: any = JSON.parse(data);
         setCartData(tempCart);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const fetchPromoCart = () => {
+    AsyncStorage.getItem("promoCart")
+      .then((data: any) => {
+        const tempCart: any = JSON.parse(data);
+        setPromoCart(tempCart);
       })
       .catch((e) => {
         console.log(e);
@@ -86,6 +114,14 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           setCartData([]);
         })
         .catch((e) => console.log(e));
+
+      AsyncStorage.removeItem("promoCart")
+        .then(() => {
+          setPromoCart([]);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       AsyncStorage.removeItem("totalIngrCart")
         .then(() => {
           setTotalIngr([]);
@@ -94,6 +130,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     }
     fetchCartData();
     fetchTotalIngr();
+    fetchPromoCart();
 
     return () => {};
   }, [ordType, route]);
@@ -113,6 +150,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       ordHeader: ordHeader,
       ordItems: cartData,
       orderIngr: totalIngr,
+      orderPromo: promoCart,
     };
     setPreSendData(data);
     setCashModal(true);
@@ -156,13 +194,21 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   fontSize: 32,
                 }}
                 name="cancel"
-                onPress={() => {
-                  AsyncStorage.removeItem("cartData")
+                onPress={async () => {
+                  await AsyncStorage.removeItem("cartData")
                     .then(() => {
                       setCartData([]);
                     })
                     .catch((e) => console.log(e));
-                  AsyncStorage.removeItem("totalIngrCart")
+
+                  await AsyncStorage.removeItem("promoCart")
+                    .then(() => {
+                      setPromoCart([]);
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    });
+                  await AsyncStorage.removeItem("totalIngrCart")
                     .then(() => {
                       setTotalIngr([]);
                     })

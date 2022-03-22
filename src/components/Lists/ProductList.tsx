@@ -61,7 +61,10 @@ const ProductList = ({
 
   const isInCart = (itemId: number) => {
     if (
-      cartData.filter((e: { prId: number }) => e.prId === itemId).length > 0
+      cartData.filter(
+        (e: { prId: number; promoId: number }) =>
+          e.prId === itemId && !e.promoId
+      ).length > 0
     ) {
       return true;
     } else {

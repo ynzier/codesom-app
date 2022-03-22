@@ -117,11 +117,13 @@ const CartCheckOut = ({
   showModal,
   setShowModal,
   setCartData,
+  setPromoCart,
   ...props
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
   setCartData: (a: any) => void;
+  setPromoCart: (a: any) => void;
   props?: any;
 }) => {
   const navigation: NavProps = useNavigation();
@@ -248,6 +250,7 @@ const CartCheckOut = ({
                 if (isTakeAway) {
                   setShowModal(false);
                   setCartData([]);
+                  setPromoCart([]);
                   setIsTakeAway(false);
                   navigation.navigate("OrderScreen", {
                     ordType: "takeaway",
@@ -265,6 +268,8 @@ const CartCheckOut = ({
                   ) {
                     setShowModal(false);
                     setCartData([]);
+                    setPromoCart([]);
+
                     setIsDelivery(false);
                     navigation.navigate("OrderScreen", {
                       ordType: "delivery",

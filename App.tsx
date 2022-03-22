@@ -118,7 +118,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
     [name: string]: any;
   };
   const [cartData, setCartData] = useState<ICartArray[]>([]);
-  const [totalIngr, setTotalIngr] = useState<any[]>([]);
+  const [promoCart, setPromoCart] = useState<any[]>([]);
 
   return (
     <Tab.Navigator
@@ -160,6 +160,8 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           <MainMenuScreen
             cartData={cartData}
             setCartData={setCartData}
+            promoCart={promoCart}
+            setPromoCart={setPromoCart}
             {...props}
           >
             <Topbar />
@@ -179,6 +181,8 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           <PromotionScreen
             cartData={cartData}
             setCartData={setCartData}
+            promoCart={promoCart}
+            setPromoCart={setPromoCart}
             {...props}
           >
             <Topbar />
@@ -211,6 +215,9 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       >
         {(props) => (
           <MainMenuScreen
+            setPromoCart={function (value: any): void {
+              throw new Error("Function not implemented.");
+            }}
             cartData={cartData}
             setCartData={setCartData}
             {...props}
