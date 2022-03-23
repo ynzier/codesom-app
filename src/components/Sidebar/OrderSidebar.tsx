@@ -26,21 +26,21 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
   const [showCashModal, setCashModal] = useState(false);
-  const [totalDiscount, setTotalDiscount] = useState<string>("0");
+  const [totalDiscount, setTotalDiscount] = useState<string>("0.00");
   const [preSendData, setPreSendData] = useState<any>([]);
-  const [subTotal, setSubtotal] = useState<string>("0");
-  const [totalVat, setTotalVat] = useState<string>("0");
-  const [total, setTotal] = useState<string>("0");
+  const [subTotal, setSubtotal] = useState<string>("0.00");
+  const [totalVat, setTotalVat] = useState<string>("0.00");
+  const [total, setTotal] = useState<string>("0.00");
   const [cartData, setCartData] = useState<any[]>();
   const [totalIngr, setTotalIngr] = useState<any[]>([]);
   const [promoCart, setPromoCart] = useState<any[]>([]);
 
   useEffect(() => {
     if (cartData && cartData.length < 1) {
-      setTotal("0");
-      setTotalVat("0");
-      setTotalDiscount("0");
-      setSubtotal("0");
+      setTotal("0.00");
+      setTotalVat("0.00");
+      setTotalDiscount("0.000");
+      setSubtotal("0.00");
     }
     if (cartData && cartData.length > 0) {
       const sum: number = cartData
@@ -52,24 +52,24 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       const sumPromo: number =
         promoCart.length > 0
           ? promoCart
-            .map((item: any) => item.promoCost * item.promoCount)
-            .reduce((prev: any, curr: any) => prev + curr, 0)
+              .map((item: any) => item.promoCost * item.promoCount)
+              .reduce((prev: any, curr: any) => prev + curr, 0)
           : 0;
       const sumPromoPrice: number =
         promoCart.length > 0
           ? promoCart
-            .map((item: any) => item.promoPrice * item.promoCount)
-            .reduce((prev: any, curr: any) => prev + curr, 0)
+              .map((item: any) => item.promoPrice * item.promoCount)
+              .reduce((prev: any, curr: any) => prev + curr, 0)
           : 0;
       const discount =
         promoCart.length > 0
           ? promoCart
-            .map(
-              (item: any) =>
-                item.promoCost * item.promoCount -
+              .map(
+                (item: any) =>
+                  item.promoCost * item.promoCount -
                   item.promoPrice * item.promoCount
-            )
-            .reduce((prev: any, curr: any) => prev + curr, 0)
+              )
+              .reduce((prev: any, curr: any) => prev + curr, 0)
           : 0;
 
       const forSumAll = sum + sumPromo;
@@ -182,6 +182,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           isCash={isCash}
           setTotalIngr={setTotalIngr}
           ordTotal={parseFloat(total).toFixed(2)}
+          setPromoCart={setPromoCart}
+          fetchPromoCart={fetchPromoCart}
         />
       )}
       <HStack w="100%" flex="1" bg="#FFF0D9">

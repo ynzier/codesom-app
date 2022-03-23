@@ -9,7 +9,6 @@ import {
   Box,
   AlertDialog,
   Spinner,
-  View,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import VirtualKeyboard from "react-native-virtual-keyboard";
@@ -18,7 +17,6 @@ import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { orderService } from "services";
 import ReceiptModal from "./ReceiptModal";
-import { ActivityIndicator, StyleSheet } from "react-native";
 
 const CashPayment = ({
   showModal,
@@ -32,6 +30,8 @@ const CashPayment = ({
   isCash,
   totalVat,
   ordTotal,
+  setPromoCart,
+  fetchPromoCart,
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
@@ -46,6 +46,8 @@ const CashPayment = ({
   ordTotal: any;
   props?: any;
   setTotalIngr: (value: any) => void;
+  setPromoCart: (value: any) => void;
+  fetchPromoCart: () => void;
 }) => {
   const [finishState, setFinishState] = useState(false);
   const [orderId, setOrderId] = useState<any>("");
@@ -94,6 +96,14 @@ const CashPayment = ({
                     setTotalIngr([]);
                   })
                   .catch((e) => console.log(e));
+                AsyncStorage.removeItem("promoCart")
+                  .then(() => {
+                    setPromoCart([]);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+                fetchPromoCart();
                 fetchCartData();
                 fetchTotalIngr();
                 Toast.show({

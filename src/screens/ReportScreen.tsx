@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/th"; // ES 2015
 import { DisabledSidebar } from "components";
+import NumberFormat from "react-number-format";
 dayjs.extend(localizedFormat);
 export type Props = {
   navigation: Navigation;
@@ -85,27 +86,54 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                           <Text flex="1" textAlign={"center"}>
                             1
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            500.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={500}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">Thai QR</Text>
                           <Text flex="1" textAlign={"center"}>
                             0
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">อื่นๆ</Text>
                           <Text flex="1" textAlign={"center"}>
                             0
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <Spacer h={{ lg: "24px", xl: "32px" }} />
                         <HStack>
@@ -113,45 +141,90 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                           <Text flex="1" textAlign={"center"}>
                             1
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            500.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={500}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">Line Man</Text>
                           <Text flex="1" textAlign={"center"}>
                             0
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">Robinhood</Text>
                           <Text flex="1" textAlign={"center"}>
                             0
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">Grab</Text>
                           <Text flex="1" textAlign={"center"}>
                             0
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">อื่นๆ</Text>
                           <Text flex="1" textAlign={"center"}>
                             0
                           </Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                       </VStack>
                       <VStack
@@ -168,46 +241,109 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         </HStack>
                         <HStack>
                           <Text flex="2">คืนเงิน</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">ยอดค่าจัดส่ง</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">ยอดรวม</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            500.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={500}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">VAT 7%</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">ยอดรวม VAT</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            500.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={500}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <HStack>
                           <Text flex="2">ยกเลิกบิล</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            0.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                         <Spacer h={{ lg: "24px", xl: "32px" }} />
                         <HStack>
                           <Text flex="2">ยอดขายสุทธิ</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            500.00 บาท
-                          </Text>
+                          <NumberFormat
+                            value={500}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="2" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
                         </HStack>
                       </VStack>
                     </HStack>
@@ -226,7 +362,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                     >
                       <Text>สินค้าขายดี</Text>
                     </VStack>
-                    <ScrollView px="4">
+                    <ScrollView px="4" py="4">
                       {Array(10)
                         .fill("")
                         .map((obj, index) => (
