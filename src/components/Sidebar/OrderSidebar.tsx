@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Text,
-  HStack,
-  Pressable,
-  Button,
-  VStack,
-  Icon,
-  Divider,
-  FlatList,
-} from "native-base";
+import { Box, Text, HStack, Pressable, Button, VStack, Icon, Divider, FlatList } from "native-base";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -43,35 +33,27 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       setSubtotal("0.00");
     }
     if (cartData && cartData.length > 0) {
+      let sumPromo = 0;
+      let sumPromoPrice = 0;
+      let discount = 0;
       const sum: number = cartData
         .map(
-          (item: { prPrice: number; prCount: number; promoId: number }) =>
-            !item.promoId && item.prPrice * item.prCount
+          (item: { prPrice: number; prCount: number; promoId: number }) => !item.promoId && item.prPrice * item.prCount
         )
         .reduce((prev: any, curr: any) => prev + curr, 0);
-      const sumPromo: number =
-        promoCart.length > 0
-          ? promoCart
-              .map((item: any) => item.promoCost * item.promoCount)
-              .reduce((prev: any, curr: any) => prev + curr, 0)
-          : 0;
-      const sumPromoPrice: number =
-        promoCart.length > 0
-          ? promoCart
-              .map((item: any) => item.promoPrice * item.promoCount)
-              .reduce((prev: any, curr: any) => prev + curr, 0)
-          : 0;
-      const discount =
-        promoCart.length > 0
-          ? promoCart
-              .map(
-                (item: any) =>
-                  item.promoCost * item.promoCount -
-                  item.promoPrice * item.promoCount
-              )
-              .reduce((prev: any, curr: any) => prev + curr, 0)
-          : 0;
+      if (promoCart.length > 0) {
+        sumPromo = promoCart
+          .map((item: any) => item.promoCost * item.promoCount)
+          .reduce((prev: any, curr: any) => prev + curr, 0);
 
+        sumPromoPrice = promoCart
+          .map((item: any) => item.promoPrice * item.promoCount)
+          .reduce((prev: any, curr: any) => prev + curr, 0);
+
+        discount = promoCart
+          .map((item: any) => item.promoCost * item.promoCount - item.promoPrice * item.promoCount)
+          .reduce((prev: any, curr: any) => prev + curr, 0);
+      }
       const forSumAll = sum + sumPromo;
 
       setTotalDiscount(discount.toFixed(2));
@@ -80,9 +62,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
 
       setSubtotal(forSumAll.toFixed(2));
 
-      setTotalVat(
-        (parseFloat(total) - (parseFloat(total) * 100) / 107).toFixed(2)
-      );
+      setTotalVat((parseFloat(total) - (parseFloat(total) * 100) / 107).toFixed(2));
     }
     return () => {};
   }, [cartData, promoCart, total, totalDiscount]);
@@ -188,14 +168,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       )}
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
-          <Box
-            flex="1"
-            margin="0"
-            w="100%"
-            alignItems="center"
-            justifyContent="center"
-            px="0"
-          >
+          <Box flex="1" margin="0" w="100%" alignItems="center" justifyContent="center" px="0">
             <VStack w="100%" alignItems="center" justifyContent="center">
               <Text fontSize={{ md: 32, xl: 46 }}>สรุปรายการ</Text>
               <MaterialIcons
@@ -231,14 +204,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           </Box>
           {/** Cart Item */}
           <Divider thickness="1" mb={4} width="90%" bg="black" />
-          <Box
-            flex="8"
-            w={{ md: "90%", xl: "90%" }}
-            h="100%"
-            bg="#FFFDFA"
-            borderWidth={1}
-            mb="4"
-          >
+          <Box flex="8" w={{ md: "90%", xl: "90%" }} h="100%" bg="#FFFDFA" borderWidth={1} mb="4">
             <Text
               my="2"
               alignSelf="center"
@@ -258,12 +224,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                   จำนวน
                 </Text>
-                <Text
-                  flex="3"
-                  ml="2"
-                  textAlign="right"
-                  fontSize={{ md: 12, xl: 18 }}
-                >
+                <Text flex="3" ml="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                   บาท/หน่วย
                 </Text>
               </HStack>
@@ -281,26 +242,13 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   }) => {
                     return (
                       <Box mb="2" w="100%" flexDirection="row">
-                        <Text
-                          flex="5"
-                          fontSize={{ md: 12, xl: 18 }}
-                          noOfLines={2}
-                        >
+                        <Text flex="5" fontSize={{ md: 12, xl: 18 }} noOfLines={2}>
                           • {data.item.prName}
                         </Text>
-                        <Text
-                          textAlign="right"
-                          flex="2"
-                          fontSize={{ md: 12, xl: 18 }}
-                        >
+                        <Text textAlign="right" flex="2" fontSize={{ md: 12, xl: 18 }}>
                           {data.item.prCount}
                         </Text>
-                        <Text
-                          flex="3"
-                          ml="2"
-                          textAlign="right"
-                          fontSize={{ md: 12, xl: 18 }}
-                        >
+                        <Text flex="3" ml="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
                           {data.item.prPrice.toFixed(2)}
                         </Text>
                       </Box>
@@ -309,13 +257,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 />
               </VStack>
             </VStack>
-            <Divider
-              thickness="1"
-              mb={4}
-              w="5/6"
-              alignSelf="center"
-              bg="gray.300"
-            />
+            <Divider thickness="1" mb={4} w="5/6" alignSelf="center" bg="gray.300" />
             <VStack flex="2" px="4">
               <HStack flex="1">
                 <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
@@ -342,39 +284,16 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 </Text>
               </HStack>
             </VStack>
-            <Divider
-              thickness="1"
-              mb={4}
-              mt={2}
-              w="5/6"
-              alignSelf="center"
-              bg="gray.300"
-            />
+            <Divider thickness="1" mb={4} mt={2} w="5/6" alignSelf="center" bg="gray.300" />
             <HStack flex="1" px="4">
-              <Text
-                flex="1"
-                textAlign="left"
-                fontSize={{ md: 16, xl: 22 }}
-                fontWeight={600}
-              >
+              <Text flex="1" textAlign="left" fontSize={{ md: 16, xl: 22 }} fontWeight={600}>
                 ราคาสุทธิ
               </Text>
-              <Text
-                flex="2"
-                textAlign="right"
-                fontSize={{ md: 16, xl: 22 }}
-                fontWeight={600}
-              >
+              <Text flex="2" textAlign="right" fontSize={{ md: 16, xl: 22 }} fontWeight={600}>
                 {total || 0} บาท
               </Text>
             </HStack>
-            <Divider
-              thickness="1"
-              mb={4}
-              w="5/6"
-              alignSelf="center"
-              bg="gray.300"
-            />
+            <Divider thickness="1" mb={4} w="5/6" alignSelf="center" bg="gray.300" />
             <VStack flex="2.2" mb="4" justifyContent="center">
               <HStack flex="1" px="4" mb="2">
                 <Text fontSize="16" fontWeight={600}>
@@ -405,10 +324,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 >
                   {({ isPressed }) => (
                     <>
-                      <Text
-                        fontSize={{ md: 12, xl: 16 }}
-                        color={isPressed || isCash ? "#fffdfa" : "black"}
-                      >
+                      <Text fontSize={{ md: 12, xl: 16 }} color={isPressed || isCash ? "#fffdfa" : "black"}>
                         เงินสด
                       </Text>
                       <Icon
@@ -443,10 +359,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 >
                   {({ isPressed }) => (
                     <>
-                      <Text
-                        fontSize={{ md: 12, xl: 16 }}
-                        color={isPressed || isQR ? "#fffdfa" : "black"}
-                      >
+                      <Text fontSize={{ md: 12, xl: 16 }} color={isPressed || isQR ? "#fffdfa" : "black"}>
                         QR Code
                       </Text>
                       <Icon
@@ -461,14 +374,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
               </HStack>
             </VStack>
           </Box>
-          <Box
-            flex="1"
-            w="100%"
-            h="100%"
-            bg="#FFF0D9"
-            px="4"
-            alignItems="center"
-          >
+          <Box flex="1" w="100%" h="100%" bg="#FFF0D9" px="4" alignItems="center">
             <Button
               borderRadius="xl"
               colorScheme="greenalt"
