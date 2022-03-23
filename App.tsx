@@ -7,7 +7,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import { Root as AlertProvider } from "alert-toast-react-native";
 
-import Login from "./src/screens/LoginScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { authService, deviceStorage } from "services";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +18,7 @@ import {
   PromotionScreen,
   StorageScreen,
   SettingScreen,
+  ReportScreen,
 } from "./src/screens";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
@@ -34,6 +34,18 @@ interface AccessToken {
 }
 
 const theme = extendTheme({
+  components: {
+    Text: {
+      baseStyle: {
+        lineHeight: { lg: "xl" },
+        fontSize: {
+          lg: "14",
+          xl: "18",
+        },
+      },
+    },
+  },
+
   fontConfig: {
     Prompt: {
       200: {
@@ -247,7 +259,6 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       </Tab.Screen>
       <Tab.Screen
         name="ReportScreen"
-        component={MainMenuScreen}
         options={{
           tabBarLabel: "รายงาน",
           tabBarIcon: ({ color, size }) => (
@@ -258,7 +269,13 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
             />
           ),
         }}
-      />
+      >
+        {(props) => (
+          <ReportScreen {...props}>
+            <Topbar />
+          </ReportScreen>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="SettingScreen"
         options={{
@@ -388,7 +405,7 @@ const App: React.FC<Props> = () => {
                 }}
               >
                 {state.userToken == null ? (
-                  <Stack.Screen name="LogInScreen" component={Login} />
+                  <Stack.Screen name="LogInScreen" component={LoginScreen} />
                 ) : (
                   <Stack.Screen name="HomeScreen" component={HomeTabs} />
                 )}

@@ -128,7 +128,7 @@ const PromotionList = ({
   const fetchPromo = (isSubscribed: boolean) => {
     void trackPromise(
       promotionService
-        .getAllPromotion()
+        .getCurrentPromotion()
         .then((res) => {
           if (isSubscribed) {
             if (res) {
@@ -211,24 +211,28 @@ const PromotionList = ({
         <Box style={styles.textBox}>
           <Text
             fontWeight={700}
-            fontSize="md"
+            fontSize={{ md: 14, xl: 18 }}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
             {item.promoName}
           </Text>
-          <Text ellipsizeMode="tail" numberOfLines={2}>
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={2}
+            fontSize={{ md: 12, xl: 16 }}
+          >
             {item.promoDetail}
           </Text>
-          <Text color="light.500">
+          <Text color="light.500" fontSize={{ md: 12, xl: 16 }}>
             เริ่มต้น:{" "}
             {dayjs(item.promoStart).locale("th").format("D MMMM YYYY ")}
           </Text>
-          <Text color="light.500">
+          <Text color="light.500" fontSize={{ md: 12, xl: 16 }}>
             สิ้นสุด: {dayjs(item.promoEnd).locale("th").format("D MMMM YYYY ")}
           </Text>
           <Box style={styles.footerText}>
-            <Text>ราคา: </Text>
+            <Text fontSize={{ md: 14, xl: 18 }}>ราคา: </Text>
             <NumberFormat
               value={item.promoCost}
               displayType={"text"}
@@ -236,7 +240,10 @@ const PromotionList = ({
               decimalScale={2}
               fixedDecimalScale
               renderText={(formattedValue) => (
-                <Text textDecorationLine="line-through">
+                <Text
+                  textDecorationLine="line-through"
+                  fontSize={{ md: 14, xl: 18 }}
+                >
                   {" "}
                   {formattedValue}{" "}
                 </Text>
@@ -249,7 +256,10 @@ const PromotionList = ({
               decimalScale={2}
               fixedDecimalScale
               renderText={(formattedValue) => (
-                <Text color="red.600"> {formattedValue} บาท</Text>
+                <Text color="red.600" fontSize={{ md: 14, xl: 18 }}>
+                  {" "}
+                  {formattedValue} บาท
+                </Text>
               )}
             />
           </Box>
@@ -313,5 +323,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     bottom: 12, //Here is the trick
+    right: 0,
   },
 });

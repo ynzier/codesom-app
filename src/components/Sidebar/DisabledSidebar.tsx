@@ -19,7 +19,16 @@ dayjs.extend(localizedFormat);
 const DisabledSidebar: React.FC = () => {
   return (
     <>
-      <HStack w="100%" flex="1" bg="#FFF0D9"></HStack>
+      <HStack
+        w="100%"
+        flex="1"
+        bg="#FFF0D9"
+        opacity={0.5}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Text fontSize={24}>ไม่พร้อมใช้งานในหน้านี้</Text>
+      </HStack>
     </>
   );
 };

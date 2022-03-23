@@ -49,18 +49,28 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
             !item.promoId && item.prPrice * item.prCount
         )
         .reduce((prev: any, curr: any) => prev + curr, 0);
-      const sumPromo: number = promoCart
-        .map((item: any) => item.promoCost * item.promoCount)
-        .reduce((prev: any, curr: any) => prev + curr, 0);
-      const sumPromoPrice: number = promoCart
-        .map((item: any) => item.promoPrice * item.promoCount)
-        .reduce((prev: any, curr: any) => prev + curr, 0);
-      const discount = promoCart
-        .map(
-          (item: any) =>
-            item.promoCost * item.promoCount - item.promoPrice * item.promoCount
-        )
-        .reduce((prev: any, curr: any) => prev + curr, 0);
+      const sumPromo: number =
+        promoCart.length > 0
+          ? promoCart
+            .map((item: any) => item.promoCost * item.promoCount)
+            .reduce((prev: any, curr: any) => prev + curr, 0)
+          : 0;
+      const sumPromoPrice: number =
+        promoCart.length > 0
+          ? promoCart
+            .map((item: any) => item.promoPrice * item.promoCount)
+            .reduce((prev: any, curr: any) => prev + curr, 0)
+          : 0;
+      const discount =
+        promoCart.length > 0
+          ? promoCart
+            .map(
+              (item: any) =>
+                item.promoCost * item.promoCount -
+                  item.promoPrice * item.promoCount
+            )
+            .reduce((prev: any, curr: any) => prev + curr, 0)
+          : 0;
 
       const forSumAll = sum + sumPromo;
 
@@ -91,7 +101,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     AsyncStorage.getItem("promoCart")
       .then((data: any) => {
         const tempCart: any = JSON.parse(data);
-        setPromoCart(tempCart);
+        if (tempCart) setPromoCart(tempCart);
       })
       .catch((e) => {
         console.log(e);
@@ -101,7 +111,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     AsyncStorage.getItem("totalIngrCart")
       .then((data: any) => {
         const tempCart: any = JSON.parse(data);
-        setTotalIngr(tempCart);
+        if (tempCart) setTotalIngr(tempCart);
       })
       .catch((e) => {
         console.log(e);

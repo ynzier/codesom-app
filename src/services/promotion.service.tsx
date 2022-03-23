@@ -2,9 +2,9 @@ import http from "../http-common";
 const prefix = "/promotion";
 import authHeader from "./auth-header";
 
-const getAllPromotion = async () => {
+const getCurrentPromotion = async () => {
   const xToken = authHeader();
-  return http.get(prefix + "/getAllPromotion", {
+  return http.get(prefix + "/getCurrentPromotion", {
     headers: { "x-access-token": JSON.parse(await xToken) as string },
   });
 };
@@ -17,6 +17,6 @@ const getPromoItemToCart = async (promoId: number) => {
 };
 
 export default {
-  getAllPromotion,
+  getCurrentPromotion,
   getPromoItemToCart,
 };

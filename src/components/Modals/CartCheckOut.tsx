@@ -128,7 +128,7 @@ const CartCheckOut = ({
 }) => {
   const navigation: NavProps = useNavigation();
   const [platformData, setPlatformData] = useState<IPlatformArray[]>([]);
-  const [selected, setSelected] = useState<string>("0");
+  const [selected, setSelected] = useState<string>("-1");
   const [isDelivery, setIsDelivery] = useState<boolean>(false);
   const [isTakeAway, setIsTakeAway] = useState<boolean>(false);
   const [refNo, setRefNo] = useState<string | undefined>("");
@@ -258,6 +258,7 @@ const CartCheckOut = ({
                     platformId: "",
                   });
                 } else if (isDelivery) {
+                  console.log(selected);
                   if (
                     refNo != "" &&
                     (selected == "1" ||
