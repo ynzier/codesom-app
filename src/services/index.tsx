@@ -10,3 +10,4 @@ export { default as receiptService } from "./receipt.service";
 export { default as storageService } from "./storage.service";
 export { default as requisitionService } from "./requisition.service";
 export { default as promotionService } from "./promotion.service";
+export { default as reportService } from "./report.service";
