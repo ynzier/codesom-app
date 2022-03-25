@@ -22,13 +22,61 @@ export type Props = {
   navigation: Navigation;
   children: any;
 };
-
+type totalReport = {
+  deliveryCost: number;
+  subTotal: number;
+  totalVat: number;
+  finalTotal: number;
+  paidCash: number;
+  totalCash: number;
+  paidQR: number;
+  totalQR: number;
+  takeAway: number;
+  totalTakeAway: number;
+  deliveryLineman: number;
+  totalLineman: number;
+  deliveryRobinhood: number;
+  totalRobinhood: number;
+  deliveryGrab: number;
+  totalGrab: number;
+  deliveryETC: number;
+  totalETC: number;
+  deliveryOff: number;
+  totalOff: number;
+};
 const ReportScreen: React.FC<Props> = ({ children }) => {
   const [topSale, setTopSale] = useState<any[]>([]);
+  const [totalReport, setTotalReport] = useState<totalReport>({
+    deliveryCost: 0,
+    subTotal: 0,
+    totalVat: 0,
+    finalTotal: 0,
+    paidCash: 0,
+    totalCash: 0,
+    paidQR: 0,
+    totalQR: 0,
+    takeAway: 0,
+    totalTakeAway: 0,
+    deliveryLineman: 0,
+    totalLineman: 0,
+    deliveryRobinhood: 0,
+    totalRobinhood: 0,
+    deliveryGrab: 0,
+    totalGrab: 0,
+    deliveryETC: 0,
+    totalETC: 0,
+    deliveryOff: 0,
+    totalOff: 0,
+  });
   useEffect(() => {
     reportService
       .getTopSaleBranch()
       .then((res) => setTopSale(res.data))
+      .catch((err) => console.log(err));
+
+    reportService
+      .getTodayReport()
+      .then((res) => setTotalReport(res.data))
       .catch((err) => console.log(err));
 
     return () => {};
@@ -65,7 +113,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                 space={3}
               >
                 <Box>
-                  <Text fontSize={"xl"}>
+                  <Text fontSize={"xl"} fontWeight={600}>
                     รายงานประจำวันที่{" "}
                     {dayjs().locale("th").format("D MMMM YYYY ")}
                   </Text>
@@ -84,9 +132,11 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                       borderBottomWidth={1}
                       borderColor={"light.300"}
                     >
-                      <Text>รายงานยอดขาย</Text>
+                      <Text fontWeight={500} fontSize="lg">
+                        รายงานยอดขาย
+                      </Text>
                     </VStack>
-                    <HStack space="8" py="4">
+                    <HStack space="6" py="4">
                       <VStack
                         w="100%"
                         flex="1"
@@ -94,54 +144,40 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         pl="4"
                       >
                         <HStack>
-                          <Text flex="2">เงินสด</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            เงินสด
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            1
+                            {totalReport.paidCash}
                           </Text>
                           <NumberFormat
-                            value={500}
+                            value={totalReport.totalCash}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
                           />
                         </HStack>
                         <HStack>
-                          <Text flex="2">Thai QR</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            Thai QR
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            0
+                            {totalReport.paidQR}
                           </Text>
                           <NumberFormat
-                            value={0}
+                            value={totalReport.totalQR}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
-                                {formattedValue} บาท
-                              </Text>
-                            )}
-                          />
-                        </HStack>
-                        <HStack>
-                          <Text flex="2">อื่นๆ</Text>
-                          <Text flex="1" textAlign={"center"}>
-                            0
-                          </Text>
-                          <NumberFormat
-                            value={0}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            decimalScale={2}
-                            fixedDecimalScale
-                            renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
@@ -149,90 +185,120 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         </HStack>
                         <Divider my="4" />
                         <HStack>
-                          <Text flex="2">หน้าร้าน</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            หน้าร้าน
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            1
+                            {totalReport.takeAway}
                           </Text>
                           <NumberFormat
-                            value={500}
+                            value={totalReport.totalTakeAway}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
                           />
                         </HStack>
                         <HStack>
-                          <Text flex="2">Line Man</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            Line Man
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            0
+                            {totalReport.deliveryLineman}
                           </Text>
                           <NumberFormat
-                            value={0}
+                            value={totalReport.totalLineman}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
                           />
                         </HStack>
                         <HStack>
-                          <Text flex="2">Robinhood</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            Robinhood
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            0
+                            {totalReport.deliveryRobinhood}
                           </Text>
                           <NumberFormat
-                            value={0}
+                            value={totalReport.totalRobinhood}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
                           />
                         </HStack>
                         <HStack>
-                          <Text flex="2">Grab</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            Grab
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            0
+                            {totalReport.deliveryGrab}
                           </Text>
                           <NumberFormat
-                            value={0}
+                            value={totalReport.totalGrab}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
                           />
                         </HStack>
                         <HStack>
-                          <Text flex="2">อื่นๆ</Text>
+                          <Text flex="2" numberOfLines={1}>
+                            Line Official
+                          </Text>
                           <Text flex="1" textAlign={"center"}>
-                            0
+                            {totalReport.deliveryOff}
                           </Text>
                           <NumberFormat
-                            value={0}
+                            value={totalReport.totalOff}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
                             fixedDecimalScale
                             renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
+                              <Text flex="3" textAlign={"right"}>
+                                {formattedValue} บาท
+                              </Text>
+                            )}
+                          />
+                        </HStack>
+                        <HStack>
+                          <Text flex="2" numberOfLines={1}>
+                            อื่นๆ
+                          </Text>
+                          <Text flex="1" textAlign={"center"}>
+                            {totalReport.deliveryETC}
+                          </Text>
+                          <NumberFormat
+                            value={totalReport.totalETC}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={2}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text flex="3" textAlign={"right"}>
                                 {formattedValue} บาท
                               </Text>
                             )}
@@ -240,22 +306,11 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         </HStack>
                       </VStack>
                       <Divider orientation="vertical" />
-                      <VStack
-                        w="100%"
-                        flex="1"
-                        justifyContent={"center"}
-                        pr="4"
-                      >
+                      <VStack w="100%" flex="1" pr="4">
                         <HStack>
                           <Text flex="2">ยอดขาย</Text>
-                          <Text flex="2" textAlign={"right"}>
-                            500.00 บาท
-                          </Text>
-                        </HStack>
-                        <HStack>
-                          <Text flex="2">คืนเงิน</Text>
                           <NumberFormat
-                            value={0}
+                            value={totalReport.subTotal}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
@@ -270,22 +325,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         <HStack>
                           <Text flex="2">ยอดค่าจัดส่ง</Text>
                           <NumberFormat
-                            value={0}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            decimalScale={2}
-                            fixedDecimalScale
-                            renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
-                                {formattedValue} บาท
-                              </Text>
-                            )}
-                          />
-                        </HStack>
-                        <HStack>
-                          <Text flex="2">ยอดรวม</Text>
-                          <NumberFormat
-                            value={500}
+                            value={totalReport.deliveryCost}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
@@ -300,37 +340,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         <HStack>
                           <Text flex="2">VAT 7%</Text>
                           <NumberFormat
-                            value={0}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            decimalScale={2}
-                            fixedDecimalScale
-                            renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
-                                {formattedValue} บาท
-                              </Text>
-                            )}
-                          />
-                        </HStack>
-                        <HStack>
-                          <Text flex="2">ยอดรวม VAT</Text>
-                          <NumberFormat
-                            value={500}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            decimalScale={2}
-                            fixedDecimalScale
-                            renderText={(formattedValue) => (
-                              <Text flex="2" textAlign={"right"}>
-                                {formattedValue} บาท
-                              </Text>
-                            )}
-                          />
-                        </HStack>
-                        <HStack>
-                          <Text flex="2">ยกเลิกบิล</Text>
-                          <NumberFormat
-                            value={0}
+                            value={totalReport.totalVat}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
@@ -346,7 +356,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         <HStack>
                           <Text flex="2">ยอดขายสุทธิ</Text>
                           <NumberFormat
-                            value={500}
+                            value={totalReport.finalTotal}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
@@ -372,13 +382,18 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                       justifyContent={"center"}
                       h={50}
                       borderBottomWidth={1}
+                      borderColor={"light.300"}
                     >
-                      <Text>สินค้าขายดี</Text>
+                      <Text fontWeight={500} fontSize="lg">
+                        สินค้าขายดี
+                      </Text>
                     </VStack>
                     <ScrollView px="4" py="4">
                       {topSale.map((obj) => (
                         <HStack key={obj.productId}>
-                          <Text flex="3" numberOfLines={1}>{obj.productName}</Text>
+                          <Text flex="3" numberOfLines={1}>
+                            {obj.productName}
+                          </Text>
                           <Text flex="1" textAlign={"right"}>
                             {obj.totalCount}
                           </Text>

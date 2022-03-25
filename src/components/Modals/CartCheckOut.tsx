@@ -254,11 +254,8 @@ const CartCheckOut = ({
                   setIsTakeAway(false);
                   navigation.navigate("OrderScreen", {
                     ordType: "takeaway",
-                    ordRefNo: "",
-                    platformId: "",
                   });
                 } else if (isDelivery) {
-                  console.log(selected);
                   if (
                     refNo != "" &&
                     (selected == "1" ||

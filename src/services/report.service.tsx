@@ -7,5 +7,11 @@ const getTopSaleBranch = async () => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
+const getTodayReport = async () => {
+  const xToken = await authHeader();
+  return http.get(prefix + "/getTodayReport", {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 
-export default { getTopSaleBranch };
+export default { getTopSaleBranch, getTodayReport };
