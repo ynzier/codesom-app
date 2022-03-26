@@ -52,6 +52,14 @@ const RequisitionDetail = ({
         .then((res) => {
           setError("");
           setShowDetail(false);
+          requisitionService
+            .getReqDetailById(reqId)
+            .then((res) => {
+              setRequisitData(res.data.requisitionData);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         })
         .catch((error) => {
           const resMessage =
@@ -174,13 +182,16 @@ const RequisitionDetail = ({
                       </HStack>
                       <HStack>
                         <Text flex="1">
-                          วันที่/เวลา:{" "}
                           {dayjs(requisitData.createdAt)
                             .locale("th")
                             .format("D MMMM YYYY เวลา HH:mm")}
-                          receiptData.recTimestamp
                         </Text>
-                        <Text>13 รายการ</Text>
+                        <Text>
+                          {ingrList.length +
+                            productList.length +
+                            stuffList.length}{" "}
+                          รายการ
+                        </Text>
                       </HStack>
                     </VStack>
                     <Divider mb="4" />

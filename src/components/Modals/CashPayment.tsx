@@ -28,6 +28,7 @@ const CashPayment = ({
   setTotalIngr,
   fetchTotalIngr,
   isCash,
+  setIsCash,
   totalVat,
   ordTotal,
   setPromoCart,
@@ -43,6 +44,7 @@ const CashPayment = ({
   setPreSendData: (a: any) => void;
   totalVat: any;
   isCash: any;
+  setIsCash: (value: boolean) => void;
   ordTotal: any;
   props?: any;
   setTotalIngr: (value: any) => void;
@@ -110,6 +112,7 @@ const CashPayment = ({
                   type: ALERT_TYPE.SUCCESS,
                   textBody: res.data.message,
                 });
+                setIsCash(false);
                 setIsOpen(false);
                 setIsConfirm(true);
               })

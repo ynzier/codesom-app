@@ -31,8 +31,10 @@ const RecipeModal = ({
         productService
           .getRecipeByIdIncStorage(recipeId)
           .then((res) => {
-            setRecipeData(res.data.recipeData);
-            setIngrArray(res.data.recipeData.recipe_ingredients);
+            if (isSubscribed) {
+              setRecipeData(res.data.recipeData);
+              setIngrArray(res.data.recipeData.recipe_ingredients);
+            }
           })
           .catch((err) => console.log(err));
       };

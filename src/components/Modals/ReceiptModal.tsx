@@ -114,9 +114,6 @@ const ReceiptModal = ({
               <Modal.Body h="550">
                 <ScrollView minH="400">
                   <Box borderWidth={1} mx="4" w="400" alignSelf="center">
-                    <HStack mt={6} justifyContent="center" alignItems="center">
-                      <Text fontSize="lg">เลขออเดอร์: {ordId}</Text>
-                    </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
                         CODESOM
