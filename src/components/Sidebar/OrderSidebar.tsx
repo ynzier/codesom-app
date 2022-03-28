@@ -489,9 +489,14 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                     textBody: "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
                   });
                 if (
-                  !ordType ||
-                  (ordType == "delivery" &&
-                    (platformId == null || platformId == ""))
+                  ordType == "delivery" &&
+                  !(
+                    platformId == "1" ||
+                    platformId == "2" ||
+                    platformId == "3" ||
+                    platformId == "4" ||
+                    platformId == "0"
+                  )
                 ) {
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,

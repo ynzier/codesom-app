@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Text, StatusBar, View } from "react-native";
 import { Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
+import Constants from "expo-constants";
 import { AuthContext } from "../context/AuthContext";
 import { DisabledSidebar } from "components";
 export type Props = {
@@ -41,6 +42,7 @@ const SettingScreen: React.FC<Props> = ({ children }) => {
               >
                 LOGOUT
               </Text>
+              <Text>{Constants?.manifest?.version}</Text>
             </VStack>
           </VStack>
 

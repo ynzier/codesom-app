@@ -185,7 +185,7 @@ const CartCheckOut = ({
                     isDelivery={isDelivery}
                     setIsDelivery={setIsDelivery}
                     setIsTakeAway={setIsTakeAway}
-                  ></Delivery>
+                  />
                 </Box>
                 <Box flex="1" shadow="4" zIndex={4} h="100%" w="100%">
                   <TakeAway
@@ -193,7 +193,7 @@ const CartCheckOut = ({
                     setIsDelivery={setIsDelivery}
                     isTakeAway={isTakeAway}
                     setIsTakeAway={setIsTakeAway}
-                  ></TakeAway>
+                  />
                 </Box>
               </HStack>
               <Collapse isOpen={isDelivery}>
