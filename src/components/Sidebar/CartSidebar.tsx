@@ -244,7 +244,8 @@ const CartSidebar: React.FC<Props> = ({
                 value={data.item.prCount.toString()}
                 onChangeText={(text) => {
                   const onlyDigits = text.replace(/\D/g, "");
-                  const prCount: number = parseInt(onlyDigits);
+                  let prCount: number = parseInt(onlyDigits);
+                  if (text == "") prCount = 1;
                   const checkIndex = storageData.findIndex(
                     (product: any) => product.productId === data.item.prId
                   );
@@ -370,7 +371,7 @@ const CartSidebar: React.FC<Props> = ({
                 <SwipeListView
                   data={cartData}
                   renderItem={renderItem}
-                  keyExtractor={(item) => item.key}
+                  keyExtractor={(item: any) => item.key}
                 />
               </>
             )}

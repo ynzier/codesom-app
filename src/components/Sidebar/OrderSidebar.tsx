@@ -39,7 +39,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     if (cartData && cartData.length < 1) {
       setTotal("0.00");
       setTotalVat("0.00");
-      setTotalDiscount("0.000");
+      setTotalDiscount("0.00");
       setSubtotal("0.00");
     }
     if (cartData && cartData.length > 0) {
@@ -135,6 +135,9 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
         })
         .catch((e) => console.log(e));
     }
+    setPromoCart([]);
+    setTotalIngr([]);
+    setCartData([]);
     fetchCartData();
     fetchTotalIngr();
     fetchPromoCart();
@@ -324,7 +327,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   ราคารวม
                 </Text>
                 <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
-                  {subTotal || 0} บาท
+                  {subTotal} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
@@ -332,7 +335,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   ส่วนลด
                 </Text>
                 <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
-                  {totalDiscount || 0} บาท
+                  {totalDiscount} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
@@ -485,7 +488,11 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                     type: ALERT_TYPE.DANGER,
                     textBody: "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
                   });
-                if (!ordType || (ordType == "delivery" && !platformId)) {
+                if (
+                  !ordType ||
+                  (ordType == "delivery" &&
+                    (platformId == null || platformId == ""))
+                ) {
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,
                     textBody: "กรุณาทำรายการอีกครั้ง",

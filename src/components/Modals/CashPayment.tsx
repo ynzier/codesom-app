@@ -115,6 +115,7 @@ const CashPayment = ({
                 setIsCash(false);
                 setIsOpen(false);
                 setIsConfirm(true);
+                setPreSendData([]);
               })
               .catch((error) => {
                 const resMessage =
@@ -132,7 +133,6 @@ const CashPayment = ({
         }, 2000);
       })
     );
-    setPreSendData([]);
   };
 
   return (
