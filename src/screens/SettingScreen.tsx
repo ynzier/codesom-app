@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Text, StatusBar, View } from "react-native";
+import { Text, StatusBar, Dimensions } from "react-native";
 import { Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
 import Constants from "expo-constants";
@@ -43,6 +43,14 @@ const SettingScreen: React.FC<Props> = ({ children }) => {
                 LOGOUT
               </Text>
               <Text>{Constants?.manifest?.version}</Text>
+              <Text>
+                {Dimensions.get("window").height}x
+                {Dimensions.get("window").width}
+              </Text>
+              <Text>
+                {Dimensions.get("screen").height}x
+                {Dimensions.get("screen").width}
+              </Text>
             </VStack>
           </VStack>
 
