@@ -13,6 +13,7 @@ export { default as IngrList } from "./Lists/IngrList";
 export { default as StuffList } from "./Lists/StuffList";
 
 export { default as CashPayment } from "./Modals/CashPayment";
+export { default as QRPayment } from "./Modals/QRPayment";
 export { default as CartCheckOut } from "./Modals/CartCheckOut";
 export { default as ReceiptModal } from "./Modals/ReceiptModal";
 export { default as RequisitionModal } from "./Modals/RequisitionModal";

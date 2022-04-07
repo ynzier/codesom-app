@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
 import CashPayment from "../Modals/CashPayment";
+import QRPayment from "../Modals/QRPayment";
 
 interface Props {
   setOrderData: (a: any) => void;
@@ -26,6 +27,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   const [isQR, setIsQR] = useState(false);
   const [isCash, setIsCash] = useState(false);
   const [showCashModal, setCashModal] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
   const [totalDiscount, setTotalDiscount] = useState<string>("0.00");
   const [preSendData, setPreSendData] = useState<any>([]);
   const [subTotal, setSubtotal] = useState<string>("0.00");
@@ -165,6 +167,26 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     setPreSendData(data);
     setCashModal(true);
   };
+  const postQROrder = () => {
+    const ordHeader: any = {
+      ordItems: cartData && cartData.length,
+      ordTotal: parseFloat(total).toFixed(2),
+      ordDiscount: parseFloat(totalDiscount).toFixed(2),
+      ordSubTotal: parseFloat(subTotal.toString()).toFixed(2),
+      ordType: ordType,
+      platformId: platformId,
+      ordRefNo: ordRefNo,
+      ordStatus: "0",
+    };
+    const data = {
+      ordHeader: ordHeader,
+      ordItems: cartData,
+      orderIngr: totalIngr,
+      orderPromo: promoCart,
+    };
+    setPreSendData(data);
+    setShowQRModal(true);
+  };
   const handleCancel = async () => {
     setIsCash(false);
     setIsQR(false);
@@ -202,6 +224,25 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           totalVat={totalVat}
           isCash={isCash}
           setIsCash={setIsCash}
+          setTotalIngr={setTotalIngr}
+          ordTotal={parseFloat(total).toFixed(2)}
+          setPromoCart={setPromoCart}
+          fetchPromoCart={fetchPromoCart}
+        />
+      )}
+      {showQRModal && (
+        <QRPayment
+          showModal={showQRModal}
+          setShowModal={setShowQRModal}
+          fetchCartData={fetchCartData}
+          fetchTotalIngr={fetchTotalIngr}
+          cartData={cartData}
+          setCartData={setCartData}
+          preSendData={preSendData}
+          setPreSendData={setPreSendData}
+          totalVat={totalVat}
+          isQR={isQR}
+          setIsQR={setIsQR}
           setTotalIngr={setTotalIngr}
           ordTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
@@ -510,6 +551,9 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   });
                 if (isCash) {
                   postOrder();
+                }
+                if (isQR) {
+                  postQROrder();
                 }
               }}
             >

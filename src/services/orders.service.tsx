@@ -27,9 +27,34 @@ const getReceiptByOrderId = async (ordId: any) => {
     params: { ordId: ordId },
   });
 };
+const getQR = async (data: any) => {
+  const xToken = await authHeader();
+  return http.post(prefix + "/getQRCode", data, {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
+const checkCompleteCharge = async (id: string) => {
+  const xToken = await authHeader();
+  return http.post(
+    prefix + "/checkCompleteCharge",
+    { chrgId: id },
+    {
+      headers: { "x-access-token": JSON.parse(xToken) as string },
+    }
+  );
+};
+const createOrderOmise = async (data: any) => {
+  const xToken = await authHeader();
+  return http.post(prefix + "/createOrderOmise", data, {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 export default {
   createOrderApp,
   listOrderApp,
   updateOrderStatus,
   getReceiptByOrderId,
+  getQR,
+  checkCompleteCharge,
+  createOrderOmise,
 };
