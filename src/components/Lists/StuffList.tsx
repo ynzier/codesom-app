@@ -4,10 +4,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo, StyleSheet } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { storageService } from "services";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/th"; // ES 2015
+import StuffWithdraw from "../Modals/StuffWithdraw";
 dayjs.extend(localizedFormat);
 
 interface stuffData {
@@ -27,6 +28,7 @@ const StuffList = ({ keyword }: { keyword: string }) => {
   });
   const [productArray, setProductArray] = useState<stuffData[]>([]);
   const [filterData, setfilterData] = useState<stuffData[]>([]);
+  const [showRequest, setShowRequest] = useState(false);
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
       storageService
@@ -75,112 +77,128 @@ const StuffList = ({ keyword }: { keyword: string }) => {
   );
 
   return (
-    <VStack
-      w="100%"
-      flex="12"
-      px={4}
-      py={2}
-      mt="2"
-      borderWidth={1}
-      borderRadius={5}
-    >
-      <HStack
-        borderBottomWidth={1}
-        h="12"
-        justifyContent="center"
-        alignItems="center"
-        mb="4"
+    <>
+      {showRequest && (
+        <StuffWithdraw
+          showRequest={showRequest}
+          setShowRequest={setShowRequest}
+        />
+      )}
+      <VStack
+        w="100%"
+        flex="12"
+        px={4}
+        py={2}
+        mt="2"
+        borderWidth={1}
+        borderRadius={5}
       >
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
+        <HStack
+          borderBottomWidth={1}
+          h="12"
+          justifyContent="center"
+          alignItems="center"
+          mb="4"
         >
-          รหัสวัตถุดิบ
-        </Text>
-        <Text
-          flex="2"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
-          ชื่อวัตถุดิบ
-        </Text>
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
-          คงเหลือ
-        </Text>
-        <Text
-          flex="2"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
-          อัพเดทล่าสุด
-        </Text>
-      </HStack>
-      <FlatList
-        data={filterData == null ? productArray : filterData}
-        refreshing={promiseInProgress}
-        onRefresh={() => {
-          fetchProductData(true);
-        }}
-        keyExtractor={(item: any) => item.stuffId}
-        renderItem={({ item }: ListRenderItemInfo<stuffData>) => {
-          return (
-            <HStack
-              key={item.stuffId}
-              w="100%"
-              justifyContent="center"
-              alignItems="center"
-              h="12"
-            >
-              <Text
-                flex="1"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-                textDecorationLine="underline"
-                onPress={() => {}}
+          <Text
+            flex="1"
+            textAlign="center"
+            fontSize={{ md: "md", sm: "12" }}
+            fontWeight={600}
+            letterSpacing="xl"
+          >
+            รหัสวัตถุดิบ
+          </Text>
+          <Text
+            flex="2"
+            textAlign="center"
+            fontSize={{ md: "md", sm: "12" }}
+            fontWeight={600}
+            letterSpacing="xl"
+          >
+            ชื่อวัตถุดิบ
+          </Text>
+          <Text
+            flex="1"
+            textAlign="center"
+            fontSize={{ md: "md", sm: "12" }}
+            fontWeight={600}
+            letterSpacing="xl"
+          >
+            คงเหลือ
+          </Text>
+          <Text
+            flex="2"
+            textAlign="center"
+            fontSize={{ md: "md", sm: "12" }}
+            fontWeight={600}
+            letterSpacing="xl"
+          >
+            อัพเดทล่าสุด
+          </Text>
+        </HStack>
+        <FlatList
+          data={filterData == null ? productArray : filterData}
+          refreshing={promiseInProgress}
+          onRefresh={() => {
+            fetchProductData(true);
+          }}
+          keyExtractor={(item: any) => item.stuffId}
+          renderItem={({ item }: ListRenderItemInfo<stuffData>) => {
+            return (
+              <HStack
+                key={item.stuffId}
+                w="100%"
+                justifyContent="center"
+                alignItems="center"
+                h="12"
               >
-                {item.stuffId}
-              </Text>
-              <Text
-                flex="2"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-              >
-                {item.stuff.stuffName}
-              </Text>
-              <Text
-                flex="1"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-              >
-                {item.itemRemain} {item.stuff.stuffUnit}
-              </Text>
-              <Text
-                flex="2"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-              >
-                {dayjs(item.updatedAt)
-                  .locale("th")
-                  .format("D MMMM YYYY เวลา HH:mm")}
-              </Text>
-            </HStack>
-          );
-        }}
-      />
-    </VStack>
+                <Text
+                  flex="1"
+                  textAlign="center"
+                  fontSize={{ md: "md", sm: "12" }}
+                  textDecorationLine="underline"
+                  onPress={() => {}}
+                >
+                  {item.stuffId}
+                </Text>
+                <Text
+                  flex="2"
+                  textAlign="center"
+                  fontSize={{ md: "md", sm: "12" }}
+                >
+                  {item.stuff.stuffName}
+                </Text>
+                <Text
+                  flex="1"
+                  textAlign="center"
+                  fontSize={{ md: "md", sm: "12" }}
+                >
+                  {item.itemRemain} {item.stuff.stuffUnit}{" "}
+                  <AntDesign
+                    name="export"
+                    size={24}
+                    color="black"
+                    onPress={() => {
+                      setShowRequest(true);
+                    }}
+                  />
+                </Text>
+                <Text
+                  flex="2"
+                  textAlign="center"
+                  fontSize={{ md: "md", sm: "12" }}
+                >
+                  {dayjs(item.updatedAt)
+                    .locale("th")
+                    .format("D MMMM YYYY เวลา HH:mm")}
+                </Text>
+              </HStack>
+            );
+          }}
+        />
+      </VStack>
+    </>
   );
 };
 

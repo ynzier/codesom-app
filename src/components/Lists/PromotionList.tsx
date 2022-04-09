@@ -211,7 +211,6 @@ const PromotionList = ({
         <Box style={styles.textBox}>
           <Text
             fontWeight={700}
-            fontSize={{ md: 14, xl: 18 }}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
@@ -220,7 +219,6 @@ const PromotionList = ({
           <Text
             ellipsizeMode="tail"
             numberOfLines={2}
-            fontSize={{ md: 12, xl: 16 }}
           >
             {item.promoDetail}
           </Text>

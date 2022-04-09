@@ -3,13 +3,16 @@
     "name": "codesomApp",
     "slug": "codesomApp",
     "owner": "miloteam",
-    "version": "1.0.41",
+    "version": "1.0.42",
     "orientation": "landscape",
     "icon": "./src/assets/icon.png",
     "splash": {
       "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "androidNavigationBar": {
+      "visible": "sticky-immersive"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +25,7 @@
     },
     "android": {
       "package": "com.miloteam.codesom",
-      "versionCode": 41,
+      "versionCode": 42,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

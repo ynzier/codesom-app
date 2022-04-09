@@ -3,6 +3,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar, Box, Center, HStack, VStack } from "native-base";
 import { Navigation } from "../hooks/navigation";
 import { CartSidebar, MainMenuTab, ProductList } from "components";
+
 interface Props {
   navigation: Navigation;
   children?: JSX.Element;
@@ -20,6 +21,7 @@ const MainMenuScreen: React.FC<Props> = ({
   setPromoCart,
 }) => {
   const [tabIndex, setTabIndex] = useState<number>(-1);
+
   useEffect(() => {
     navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault();

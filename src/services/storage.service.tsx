@@ -43,6 +43,12 @@ const checkRecipeCartAvailable = async (cartData: any) => {
     }
   );
 };
+const getAllStuffForWithdraw = async () => {
+  const xToken = await authHeader();
+  return http.get(prefix + "/getAllStuffForWithdraw", {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 export default {
   getAllProductInStorage,
   getAllIngrInStorage,
@@ -50,4 +56,5 @@ export default {
   getRemainOnlyProductId,
   getItemMakeRequest,
   checkRecipeCartAvailable,
+  getAllStuffForWithdraw,
 };

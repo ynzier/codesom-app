@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import IconCart from "../IconCart";
 import CashPayment from "../Modals/CashPayment";
 import QRPayment from "../Modals/QRPayment";
+import WalletPayment from "../Modals/WalletPayment";
 
 interface Props {
   setOrderData: (a: any) => void;
@@ -25,9 +26,11 @@ interface Props {
 const OrderSidebar: React.FC<Props> = ({ route }) => {
   const { ordType, ordRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
+  const [isWallet, setIsWallet] = useState(false);
   const [isCash, setIsCash] = useState(false);
   const [showCashModal, setCashModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const [totalDiscount, setTotalDiscount] = useState<string>("0.00");
   const [preSendData, setPreSendData] = useState<any>([]);
   const [subTotal, setSubtotal] = useState<string>("0.00");
@@ -187,6 +190,26 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     setPreSendData(data);
     setShowQRModal(true);
   };
+  const postWalletOrder = () => {
+    const ordHeader: any = {
+      ordItems: cartData && cartData.length,
+      ordTotal: parseFloat(total).toFixed(2),
+      ordDiscount: parseFloat(totalDiscount).toFixed(2),
+      ordSubTotal: parseFloat(subTotal.toString()).toFixed(2),
+      ordType: ordType,
+      platformId: platformId,
+      ordRefNo: ordRefNo,
+      ordStatus: "0",
+    };
+    const data = {
+      ordHeader: ordHeader,
+      ordItems: cartData,
+      orderIngr: totalIngr,
+      orderPromo: promoCart,
+    };
+    setPreSendData(data);
+    setShowWalletModal(true);
+  };
   const handleCancel = async () => {
     setIsCash(false);
     setIsQR(false);
@@ -243,6 +266,25 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           totalVat={totalVat}
           isQR={isQR}
           setIsQR={setIsQR}
+          setTotalIngr={setTotalIngr}
+          ordTotal={parseFloat(total).toFixed(2)}
+          setPromoCart={setPromoCart}
+          fetchPromoCart={fetchPromoCart}
+        />
+      )}
+      {showWalletModal && (
+        <WalletPayment
+          showModal={showWalletModal}
+          setShowModal={setShowWalletModal}
+          fetchCartData={fetchCartData}
+          fetchTotalIngr={fetchTotalIngr}
+          cartData={cartData}
+          setCartData={setCartData}
+          preSendData={preSendData}
+          setPreSendData={setPreSendData}
+          totalVat={totalVat}
+          isWallet={isWallet}
+          setIsWallet={setIsWallet}
           setTotalIngr={setTotalIngr}
           ordTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
@@ -427,10 +469,10 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   เลือกวิธีการชำระเงิน
                 </Text>
               </HStack>
-              <HStack px="4" space={2}>
+              <HStack px="4" justifyContent={"space-between"}>
                 <Pressable
-                  w={{ md: "70px", xl: "100px" }}
-                  h={{ md: "70px", xl: "100px" }}
+                  w={{ sm: "40px", md: "70px" }}
+                  h={{ sm: "40px", md: "70px" }}
                   borderRadius={100}
                   borderWidth={1}
                   borderColor="light.200"
@@ -445,6 +487,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                       setIsCash(false);
                     } else {
                       setIsQR(false);
+                      setIsWallet(false);
                       setIsCash(true);
                     }
                   }}
@@ -452,7 +495,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   {({ isPressed }) => (
                     <>
                       <Text
-                        fontSize={{ md: 12, xl: 16 }}
+                        fontSize={{ sm: 8, md: 12 }}
                         color={isPressed || isCash ? "#fffdfa" : "black"}
                       >
                         เงินสด
@@ -460,15 +503,15 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                       <Icon
                         as={Ionicons}
                         name="cash-outline"
-                        size={{ md: 8, xl: 12 }}
+                        fontSize={{ sm: 8, md: 12 }}
                         color={isPressed || isCash ? "#fffdfa" : "black"}
                       />
                     </>
                   )}
                 </Pressable>
                 <Pressable
-                  w={{ md: "70px", xl: "100px" }}
-                  h={{ md: "70px", xl: "100px" }}
+                  w={{ sm: "40px", md: "70px" }}
+                  h={{ sm: "40px", md: "70px" }}
                   bg={isQR ? "emerald.500" : "#FFFDFA"}
                   borderRadius={100}
                   borderWidth={1}
@@ -483,6 +526,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                       setIsQR(false);
                     } else {
                       setIsCash(false);
+                      setIsWallet(false);
                       setIsQR(true);
                     }
                   }}
@@ -490,7 +534,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   {({ isPressed }) => (
                     <>
                       <Text
-                        fontSize={{ md: 12, xl: 16 }}
+                        fontSize={{ sm: 8, md: 12 }}
                         color={isPressed || isQR ? "#fffdfa" : "black"}
                       >
                         QR Code
@@ -498,8 +542,47 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                       <Icon
                         as={Ionicons}
                         name="qr-code-outline"
-                        size={{ md: 8, xl: 12 }}
+                        fontSize={{ sm: 8, md: 12 }}
                         color={isPressed || isQR ? "#fffdfa" : "black"}
+                      />
+                    </>
+                  )}
+                </Pressable>
+                <Pressable
+                  w={{ sm: "40px", md: "70px" }}
+                  h={{ sm: "40px", md: "70px" }}
+                  bg={isWallet ? "emerald.500" : "#FFFDFA"}
+                  borderRadius={100}
+                  borderWidth={1}
+                  borderColor="light.200"
+                  justifyContent="center"
+                  alignItems="center"
+                  _pressed={{
+                    bg: "emerald.600",
+                  }}
+                  onPress={() => {
+                    if (isWallet) {
+                      setIsWallet(false);
+                    } else {
+                      setIsCash(false);
+                      setIsQR(false);
+                      setIsWallet(true);
+                    }
+                  }}
+                >
+                  {({ isPressed }) => (
+                    <>
+                      <Text
+                        fontSize={{ sm: 8, md: 12 }}
+                        color={isPressed || isWallet ? "#fffdfa" : "black"}
+                      >
+                        Wallet
+                      </Text>
+                      <Icon
+                        as={Ionicons}
+                        name="wallet-outline"
+                        fontSize={{ sm: 8, md: 12 }}
+                        color={isPressed || isWallet ? "#fffdfa" : "black"}
                       />
                     </>
                   )}
@@ -544,7 +627,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                     textBody: "กรุณาทำรายการอีกครั้ง",
                   });
                 }
-                if (!isQR && !isCash)
+                if (!isQR && !isCash && !isWallet)
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,
                     textBody: "กรุณาเลือกวิธีการชำระเงิน",
@@ -555,6 +638,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 if (isQR) {
                   postQROrder();
                 }
+                if (isWallet) postWalletOrder();
               }}
             >
               ชำระเงิน
