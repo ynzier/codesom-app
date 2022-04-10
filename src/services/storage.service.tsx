@@ -49,6 +49,12 @@ const getAllStuffForWithdraw = async () => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
+const createWithdrawStuff = async (data: any) => {
+  const xToken = await authHeader();
+  return http.post(prefix + "/createWithdrawStuff", data, {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 export default {
   getAllProductInStorage,
   getAllIngrInStorage,
@@ -57,4 +63,5 @@ export default {
   getItemMakeRequest,
   checkRecipeCartAvailable,
   getAllStuffForWithdraw,
+  createWithdrawStuff,
 };

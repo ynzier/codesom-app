@@ -134,43 +134,43 @@ const StuffWithdraw = ({
   };
 
   const postData = () => {
-    // const sendData = {
-    //   reqHeader: {
-    //     creatorId: creator,
-    //     itemCount: itemList.length,
-    //   },
-    //   requisitionItems: itemList,
-    // };
-    // void trackPromise(
-    //   new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //       resolve(
-    //         requisitionService
-    //           .createReqApp(sendData)
-    //           .then((res) => {
-    //             if (res) {
-    //               setError("");
-    //               cleanUp();
-    //               Toast.show({
-    //                 type: ALERT_TYPE.SUCCESS,
-    //                 textBody: "ทำรายการสำเร็จ",
-    //               });
-    //               setShowRequest(false);
-    //             }
-    //           })
-    //           .catch((error) => {
-    //             const resMessage =
-    //               (error.response &&
-    //                 error.response.data &&
-    //                 error.response.data.message) ||
-    //               error.message ||
-    //               error.toString();
-    //             setError(resMessage);
-    //           })
-    //       );
-    //     }, 2000);
-    //   })
-    // );
+    const sendData = {
+      reqHeader: {
+        creatorId: creator,
+        itemCount: itemList.length,
+      },
+      withDrawItems: itemList,
+    };
+    void trackPromise(
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(
+            storageService
+              .createWithdrawStuff(sendData)
+              .then((res) => {
+                if (res) {
+                  setError("");
+                  cleanUp();
+                  Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    textBody: "ทำรายการสำเร็จ",
+                  });
+                  setShowRequest(false);
+                }
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                setError(resMessage);
+              })
+          );
+        }, 2000);
+      })
+    );
   };
   const renderEmpItem = (item: any) => {
     return (
@@ -206,7 +206,7 @@ const StuffWithdraw = ({
                 fontWeight={700}
                 fontSize="lg"
               >
-                เพิ่ม
+                เบิกสินค้า
               </Text>
             </Box>
             {promiseInProgress ? (
@@ -226,7 +226,7 @@ const StuffWithdraw = ({
                     />
                   </Pressable>
                 </HStack>
-                <ScrollView h="380">
+                <ScrollView _ios={{ height: 380 }} _android={{ height: 300 }}>
                   <MultiSelect
                     style={styles.dropdown}
                     placeholderStyle={styles.placeholderStyle}
@@ -307,6 +307,7 @@ const StuffWithdraw = ({
                       iconStyle={styles.iconStyle}
                       data={empList}
                       search
+                      dropdownPosition="top"
                       maxHeight={300}
                       labelField="label"
                       valueField="value"

@@ -72,12 +72,12 @@ const QRPayment = ({
           console.log(err);
         });
     };
-    if (ordTotal) {
+    if (ordTotal && !finishState) {
       void trackPromise(getQR());
     }
 
     return () => {};
-  }, [ordTotal, preSendData]);
+  }, [finishState, ordTotal, preSendData]);
 
   useEffect(() => {
     const createOrder = () => {
@@ -151,37 +151,37 @@ const QRPayment = ({
       }
     };
     const checkStatus = setInterval(() => {
-      if (base64 != "")
-        if (breaker == 0)
+      if (base64 != "" && chrgId != "")
+        if (breaker == 0) {
           orderService
             .checkCompleteCharge(chrgId)
             .then((res) => {
-              if (res.data.message == "not done") {
-                console.log("not done");
-              }
               if (res.data.message == "successful") {
-                console.log("paid");
                 setBreaker(breaker + 1);
               }
             })
             .catch((error) => {
-              const resMessage =
+              let resMessage =
                 (error.response &&
                   error.response.data &&
                   error.response.data.message) ||
                 error.message ||
                 error.toString();
               clearInterval(checkStatus);
+              if (resMessage == "payment rejected")
+                resMessage = "การชำระเงินถูกปฏิเสธ";
               Toast.show({
                 type: ALERT_TYPE.DANGER,
                 textBody: resMessage,
               });
+              setShowModal(false);
             });
-      if (breaker == 1) {
+        }
+      if (breaker == 1 && !finishState) {
         clearInterval(checkStatus);
         createOrder();
       }
-    }, 5000);
+    }, 2000);
     return () => {
       clearInterval(checkStatus);
     };
@@ -192,6 +192,7 @@ const QRPayment = ({
     fetchCartData,
     fetchPromoCart,
     fetchTotalIngr,
+    finishState,
     isQR,
     omiseNet,
     preSendData,
@@ -199,6 +200,7 @@ const QRPayment = ({
     setIsQR,
     setPreSendData,
     setPromoCart,
+    setShowModal,
     setTotalIngr,
   ]);
 
