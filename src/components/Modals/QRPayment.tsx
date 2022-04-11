@@ -208,7 +208,7 @@ const QRPayment = ({
     <Center>
       <Modal
         avoidKeyboard
-        isOpen={showModal}
+        isOpen={showModal && !(finishState && showReceipt)}
         onClose={() => {
           setShowModal(false);
         }}
@@ -266,6 +266,7 @@ const QRPayment = ({
           setShowReceipt={setShowReceipt}
           ordId={orderId}
           setOrdId={setOrderId}
+          setShowModal={setShowModal}
         />
       )}
     </Center>

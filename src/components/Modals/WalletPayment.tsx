@@ -166,7 +166,7 @@ const WalletPayment = ({
         setTimeout(() => {
           resolve(
             orderService
-              .createOrderOmise(sendData)
+              .createOrderEwallet(sendData)
               .then((res) => {
                 setOrderId(res.data.orderId);
                 AsyncStorage.removeItem("cartData")
@@ -227,7 +227,7 @@ const WalletPayment = ({
       />
       <Modal
         avoidKeyboard
-        isOpen={showModal}
+        isOpen={showModal && !(finishState && showReceipt)}
         onClose={() => {
           setWallet("");
           setShowModal(false);
@@ -309,6 +309,7 @@ const WalletPayment = ({
           setShowReceipt={setShowReceipt}
           ordId={orderId}
           setOrdId={setOrderId}
+          setShowModal={setShowModal}
         />
       )}
     </Center>

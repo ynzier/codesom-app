@@ -128,7 +128,7 @@ const PromotionList = ({
   const fetchPromo = (isSubscribed: boolean) => {
     void trackPromise(
       promotionService
-        .getCurrentPromotion()
+        .getCurrentPromotionBranch()
         .then((res) => {
           if (isSubscribed) {
             if (res) {
@@ -209,17 +209,10 @@ const PromotionList = ({
           />
         </Box>
         <Box style={styles.textBox}>
-          <Text
-            fontWeight={700}
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
+          <Text fontWeight={700} ellipsizeMode="tail" numberOfLines={1}>
             {item.promoName}
           </Text>
-          <Text
-            ellipsizeMode="tail"
-            numberOfLines={2}
-          >
+          <Text ellipsizeMode="tail" numberOfLines={2}>
             {item.promoDetail}
           </Text>
           <Text color="light.500" fontSize={{ md: 12, xl: 16 }}>

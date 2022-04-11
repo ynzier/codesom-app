@@ -32,11 +32,13 @@ const ReceiptModal = ({
   setShowReceipt,
   ordId,
   setOrdId,
+  setShowModal,
 }: {
   showReceipt: boolean;
   setShowReceipt: (boolean: boolean) => void;
   ordId: string;
   setOrdId: (any: string) => void;
+  setShowModal?: (any: boolean) => void;
   props?: any;
 }) => {
   const { promiseInProgress } = usePromiseTracker();
@@ -47,6 +49,7 @@ const ReceiptModal = ({
 
   const handleClose = () => {
     setShowReceipt(false);
+    if (setShowModal) setShowModal(false);
     setOrderItems([]);
     setReceiptData({});
     setOrderDetail({});
