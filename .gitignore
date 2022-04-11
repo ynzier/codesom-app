@@ -13,3 +13,5 @@ web-build/
 # macOS
 .DS_Store
 http-common.tsx
+yarn.lock
+package.json
