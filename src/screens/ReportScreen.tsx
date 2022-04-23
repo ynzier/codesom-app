@@ -25,7 +25,7 @@ export type Props = {
   children: any;
 };
 type totalReport = {
-  deliveryCost: number;
+  deliveryFare: number;
   subTotal: number;
   totalVat: number;
   finalTotal: number;
@@ -50,7 +50,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
   const { promiseInProgress } = usePromiseTracker();
   const [topSale, setTopSale] = useState<any[]>([]);
   const [totalReport, setTotalReport] = useState<totalReport>({
-    deliveryCost: 0,
+    deliveryFare: 0,
     subTotal: 0,
     totalVat: 0,
     finalTotal: 0,
@@ -354,7 +354,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                           <HStack>
                             <Text flex="2">ยอดค่าจัดส่ง</Text>
                             <NumberFormat
-                              value={totalReport.deliveryCost}
+                              value={totalReport.deliveryFare}
                               displayType={"text"}
                               thousandSeparator={true}
                               decimalScale={2}
