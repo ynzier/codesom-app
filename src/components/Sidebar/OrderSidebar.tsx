@@ -24,7 +24,7 @@ interface Props {
   route: any;
 }
 const OrderSidebar: React.FC<Props> = ({ route }) => {
-  const { ordType, ordRefNo, platformId } = route || "";
+  const { orderType, orderRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isWallet, setIsWallet] = useState(false);
   const [isCash, setIsCash] = useState(false);
@@ -53,8 +53,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       let discount = 0;
       const sum: number = cartData
         .map(
-          (item: { prPrice: number; prCount: number; promoId: number }) =>
-            !item.promoId && item.prPrice * item.prCount
+          (item: { productPrice: number; prCount: number; promoId: number }) =>
+            !item.promoId && item.productPrice * item.prCount
         )
         .reduce((prev: any, curr: any) => prev + curr, 0);
       if (promoCart.length > 0) {
@@ -120,7 +120,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       });
   };
   useEffect(() => {
-    if (!ordType) {
+    if (!orderType) {
       AsyncStorage.removeItem("cartData")
         .then(() => {
           setCartData([]);
@@ -148,22 +148,22 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     fetchPromoCart();
 
     return () => {};
-  }, [ordType, route]);
+  }, [orderType, route]);
 
   const postOrder = () => {
     const ordHeader: any = {
-      ordItems: cartData && cartData.length,
-      ordTotal: parseFloat(total).toFixed(2),
-      ordDiscount: parseFloat(totalDiscount).toFixed(2),
-      ordSubTotal: parseFloat(subTotal.toString()).toFixed(2),
-      ordType: ordType,
+      orderItems: cartData && cartData.length,
+      orderTotal: parseFloat(total).toFixed(2),
+      orderDiscount: parseFloat(totalDiscount).toFixed(2),
+      orderSubTotal: parseFloat(subTotal.toString()).toFixed(2),
+      orderType: orderType,
       platformId: platformId,
-      ordRefNo: ordRefNo,
-      ordStatus: "0",
+      orderRefNo: orderRefNo,
+      orderStatus: "0",
     };
     const data = {
       ordHeader: ordHeader,
-      ordItems: cartData,
+      orderItems: cartData,
       orderIngr: totalIngr,
       orderPromo: promoCart,
     };
@@ -172,18 +172,18 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   };
   const postQROrder = () => {
     const ordHeader: any = {
-      ordItems: cartData && cartData.length,
-      ordTotal: parseFloat(total).toFixed(2),
-      ordDiscount: parseFloat(totalDiscount).toFixed(2),
-      ordSubTotal: parseFloat(subTotal.toString()).toFixed(2),
-      ordType: ordType,
+      orderItems: cartData && cartData.length,
+      orderTotal: parseFloat(total).toFixed(2),
+      orderDiscount: parseFloat(totalDiscount).toFixed(2),
+      orderSubTotal: parseFloat(subTotal.toString()).toFixed(2),
+      orderType: orderType,
       platformId: platformId,
-      ordRefNo: ordRefNo,
-      ordStatus: "0",
+      orderRefNo: orderRefNo,
+      orderStatus: "0",
     };
     const data = {
       ordHeader: ordHeader,
-      ordItems: cartData,
+      orderItems: cartData,
       orderIngr: totalIngr,
       orderPromo: promoCart,
     };
@@ -192,18 +192,18 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   };
   const postWalletOrder = () => {
     const ordHeader: any = {
-      ordItems: cartData && cartData.length,
-      ordTotal: parseFloat(total).toFixed(2),
-      ordDiscount: parseFloat(totalDiscount).toFixed(2),
-      ordSubTotal: parseFloat(subTotal.toString()).toFixed(2),
-      ordType: ordType,
+      orderItems: cartData && cartData.length,
+      orderTotal: parseFloat(total).toFixed(2),
+      orderDiscount: parseFloat(totalDiscount).toFixed(2),
+      orderSubTotal: parseFloat(subTotal.toString()).toFixed(2),
+      orderType: orderType,
       platformId: platformId,
-      ordRefNo: ordRefNo,
-      ordStatus: "0",
+      orderRefNo: orderRefNo,
+      orderStatus: "0",
     };
     const data = {
       ordHeader: ordHeader,
-      ordItems: cartData,
+      orderItems: cartData,
       orderIngr: totalIngr,
       orderPromo: promoCart,
     };
@@ -248,7 +248,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           isCash={isCash}
           setIsCash={setIsCash}
           setTotalIngr={setTotalIngr}
-          ordTotal={parseFloat(total).toFixed(2)}
+          orderTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
           fetchPromoCart={fetchPromoCart}
         />
@@ -267,7 +267,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           isQR={isQR}
           setIsQR={setIsQR}
           setTotalIngr={setTotalIngr}
-          ordTotal={parseFloat(total).toFixed(2)}
+          orderTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
           fetchPromoCart={fetchPromoCart}
         />
@@ -286,7 +286,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           isWallet={isWallet}
           setIsWallet={setIsWallet}
           setTotalIngr={setTotalIngr}
-          ordTotal={parseFloat(total).toFixed(2)}
+          orderTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
           fetchPromoCart={fetchPromoCart}
         />
@@ -361,8 +361,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   renderItem={(data: {
                     item: {
                       key: number;
-                      prName: string;
-                      prPrice: number;
+                      productName: string;
+                      productPrice: number;
                       prCount: number;
                     };
                     index: string | number;
@@ -374,7 +374,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                           fontSize={{ md: 12, xl: 18 }}
                           noOfLines={2}
                         >
-                          • {data.item.prName}
+                          • {data.item.productName}
                         </Text>
                         <Text
                           textAlign="right"
@@ -389,7 +389,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                           textAlign="right"
                           fontSize={{ md: 12, xl: 18 }}
                         >
-                          {data.item.prPrice.toFixed(2)}
+                          {data.item.productPrice.toFixed(2)}
                         </Text>
                       </Box>
                     );
@@ -613,7 +613,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                     textBody: "เลือกสินค้าใส่ตะกร้าก่อนทำรายการ",
                   });
                 if (
-                  ordType == "delivery" &&
+                  orderType == "delivery" &&
                   !(
                     platformId == "1" ||
                     platformId == "2" ||

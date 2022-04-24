@@ -22,14 +22,14 @@ interface productData {
   itemRemain: number;
   updatedAt: string;
   product: {
-    prId: number;
-    prName: string;
-    prPrice: number;
-    prImg?: number;
+    productId: number;
+    productName: string;
+    productPrice: number;
+    productImg?: number;
     prCount?: number;
-    prType?: number;
-    prStatus?: string;
-    prDetail?: string;
+    productType?: number;
+    productStatus?: string;
+    productDetail?: string;
     needProcess?: number;
     product_type?: {
       typeId: number;
@@ -62,8 +62,8 @@ const ProductList = ({
   const isInCart = (itemId: number) => {
     if (
       cartData.filter(
-        (e: { prId: number; promoId: number }) =>
-          e.prId === itemId && !e.promoId
+        (e: { productId: number; promoId: number }) =>
+          e.productId === itemId && !e.promoId
       ).length > 0
     ) {
       return true;
@@ -115,7 +115,7 @@ const ProductList = ({
     const getFilter = (value: number) => {
       if (value && value != -1) {
         const filterTable = productArray.filter(
-          (productArray) => productArray.product.prType == value
+          (productArray) => productArray.product.productType == value
         );
         setfilterData(filterTable);
       } else {
@@ -176,7 +176,7 @@ const ProductList = ({
                 <Button
                   colorScheme="greenalt"
                   position={
-                    isInCart(item.product.prId) ? "relative" : "absolute"
+                    isInCart(item.product.productId) ? "relative" : "absolute"
                   }
                   shadow={4}
                   zIndex={4}
@@ -185,17 +185,17 @@ const ProductList = ({
                   alignSelf="center"
                   size={{ md: 10, xl: 60 }}
                   borderRadius="80"
-                  disabled={isInCart(item.product.prId)}
-                  display={isInCart(item.product.prId) ? "none" : "flex"}
+                  disabled={isInCart(item.product.productId)}
+                  display={isInCart(item.product.productId) ? "none" : "flex"}
                   onPress={() => {
                     if (item.product.needProcess)
                       return addToCart({
                         key:
-                          item.product.prId +
+                          item.product.productId +
                           Math.floor(Math.random() * (100000 - 1) + 1) * 100,
-                        prId: item.product.prId,
-                        prName: item.product.prName,
-                        prPrice: item.product.prPrice,
+                        productId: item.product.productId,
+                        productName: item.product.productName,
+                        productPrice: item.product.productPrice,
                         prCount: 1,
                         needProcess: item.product.needProcess,
                       });
@@ -205,14 +205,14 @@ const ProductList = ({
                         textBody: "สินค้าในคลังไม่เพียงพอ",
                       });
                     }
-                    if (item.itemRemain > 0 && !isInCart(item.product.prId)) {
+                    if (item.itemRemain > 0 && !isInCart(item.product.productId)) {
                       return addToCart({
                         key:
-                          item.product.prId +
+                          item.product.productId +
                           Math.floor(Math.random() * (100000 - 1) + 1) * 100,
-                        prId: item.product.prId,
-                        prName: item.product.prName,
-                        prPrice: item.product.prPrice,
+                        productId: item.product.productId,
+                        productName: item.product.productName,
+                        productPrice: item.product.productPrice,
                         prCount: 1,
                       });
                     }
@@ -242,11 +242,11 @@ const ProductList = ({
                       fontSize={{ md: 12, xl: 18 }}
                       flexWrap="wrap"
                     >
-                      {item.product.prName}
+                      {item.product.productName}
                     </Text>
 
                     <NumberFormat
-                      value={item.product.prPrice}
+                      value={item.product.productPrice}
                       displayType={"text"}
                       thousandSeparator={true}
                       decimalScale={2}

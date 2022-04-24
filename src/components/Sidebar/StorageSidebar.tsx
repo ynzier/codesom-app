@@ -9,6 +9,7 @@ import {
   VStack,
   Divider,
   FlatList,
+  View,
 } from "native-base";
 import { StyleSheet } from "react-native";
 import { requisitionService } from "services";
@@ -30,20 +31,28 @@ const StorageSidebar: React.FC = () => {
   const [showRequest, setShowRequest] = useState(false);
   const [listData, setListData] = useState([]);
   const [reqId, setReqId] = useState(0);
-  const fecthHistory = () => {
+
+  const fecthHistory = (isSubscribed: boolean) => {
     void trackPromise(
       requisitionService
         .listReqApp()
-        .then((res) => setListData(res.data))
+        .then((res) => {
+          if (isSubscribed) setListData(res.data);
+        })
         .catch((error) => console.log(error)),
       "sidebar"
     );
   };
   useFocusEffect(
     useCallback(() => {
-      fecthHistory();
+      let isSubscribed = true;
 
-      return () => {};
+      fecthHistory(isSubscribed);
+
+      return () => {
+        setListData([]);
+        isSubscribed = false;
+      };
     }, [])
   );
 
@@ -82,12 +91,12 @@ const StorageSidebar: React.FC = () => {
               data={listData}
               refreshing={promiseInProgress}
               onRefresh={() => {
-                fecthHistory();
+                fecthHistory(true);
               }}
               keyExtractor={(item: any) => item.requisitionId}
-              renderItem={({ item }) => {
+              renderItem={({ item }: any) => {
                 return (
-                  <>
+                  <View key={item.requisitionId}>
                     <Box style={styles.container}>
                       <HStack>
                         <VStack flex="1">
@@ -138,7 +147,7 @@ const StorageSidebar: React.FC = () => {
                       width="90%"
                       bg="light.200"
                     />
-                  </>
+                  </View>
                 );
               }}
             />

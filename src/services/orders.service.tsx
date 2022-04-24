@@ -20,11 +20,11 @@ const updateOrderStatus = async (data: any) => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
-const getReceiptByOrderId = async (ordId: any) => {
+const getReceiptByOrderId = async (orderId: any) => {
   const xToken = await authHeader();
   return http.get(prefix + "/getReceiptByOrderId", {
     headers: { "x-access-token": JSON.parse(xToken) as string },
-    params: { ordId: ordId },
+    params: { orderId: orderId },
   });
 };
 const getQR = async (data: any) => {

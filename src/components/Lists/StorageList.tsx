@@ -12,14 +12,14 @@ interface productData {
   itemRemain: number;
   updatedAt: string;
   product: {
-    prId: number;
-    prName: string;
-    prPrice: number;
-    prImg?: number;
+    productId: number;
+    productName: string;
+    productPrice: number;
+    productImg?: number;
     prCount?: number;
-    prType?: number;
-    prStatus?: string;
-    prDetail?: string;
+    productType?: number;
+    productStatus?: string;
+    productDetail?: string;
     recipeId?: number;
     product_type?: {
       typeId: number;
@@ -148,11 +148,11 @@ const StorageList = ({ keyword }: { keyword: string }) => {
         onRefresh={() => {
           fetchProductData(true);
         }}
-        keyExtractor={(item: any) => item.product.prId}
+        keyExtractor={(item: any) => item.product.productId}
         renderItem={({ item }: ListRenderItemInfo<productData>) => {
           return (
             <HStack
-              key={item.product.prId}
+              key={item.product.productId}
               w="100%"
               justifyContent="center"
               alignItems="center"
@@ -165,7 +165,7 @@ const StorageList = ({ keyword }: { keyword: string }) => {
                 textDecorationLine="underline"
                 onPress={() => {}}
               >
-                {item.product.prId}
+                {item.product.productId}
               </Text>
 
               <Text
@@ -173,10 +173,10 @@ const StorageList = ({ keyword }: { keyword: string }) => {
                 textAlign="center"
                 fontSize={{ md: "md", xl: "xl" }}
               >
-                {item.product.prName}
+                {item.product.productName}
               </Text>
               <NumberFormat
-                value={item.product.prPrice}
+                value={item.product.productPrice}
                 displayType={"text"}
                 thousandSeparator={true}
                 decimalScale={2}

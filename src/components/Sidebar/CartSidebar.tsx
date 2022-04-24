@@ -54,8 +54,8 @@ const CartSidebar: React.FC<Props> = ({
           .catch((error) => console.log(error));
         const sum: number = cartData
           .map(
-            (item: { prPrice: number; prCount: number; promoId: number }) =>
-              !item.promoId && item.prPrice * item.prCount
+            (item: { productPrice: number; prCount: number; promoId: number }) =>
+              !item.promoId && item.productPrice * item.prCount
           )
           .reduce((prev: any, curr: any) => prev + curr, 0);
         const sumPromo: number = promoCart
@@ -121,9 +121,9 @@ const CartSidebar: React.FC<Props> = ({
     data: {
       item: {
         key: number;
-        prId: number;
-        prName: string;
-        prPrice: string;
+        productId: number;
+        productName: string;
+        productPrice: string;
         prCount: number;
         needProcess: number | null;
         promoId: number | null;
@@ -168,7 +168,7 @@ const CartSidebar: React.FC<Props> = ({
               color="#FFF"
               numberOfLines={1}
             >
-              {data.item.prName}
+              {data.item.productName}
             </Text>
             <Text
               fontFamily="mono"
@@ -176,7 +176,7 @@ const CartSidebar: React.FC<Props> = ({
               color="#FFF"
               numberOfLines={1}
             >
-              {data.item.prPrice} บาท/รายการ
+              {data.item.productPrice} บาท/รายการ
             </Text>
           </VStack>
           <Box
@@ -247,7 +247,7 @@ const CartSidebar: React.FC<Props> = ({
                   let prCount: number = parseInt(onlyDigits);
                   if (text == "") prCount = 1;
                   const checkIndex = storageData.findIndex(
-                    (product: any) => product.productId === data.item.prId
+                    (product: any) => product.productId === data.item.productId
                   );
                   const max: number = storageData[checkIndex].itemRemain;
                   if (prCount <= max || data.item.needProcess)
@@ -276,7 +276,7 @@ const CartSidebar: React.FC<Props> = ({
                   let temp = data.item.prCount;
                   temp = temp + 1;
                   const checkIndex = storageData.findIndex(
-                    (product: any) => product.productId === data.item.prId
+                    (product: any) => product.productId === data.item.productId
                   );
                   const max: number = storageData[checkIndex].itemRemain;
                   if (temp <= max || data.item.needProcess) {

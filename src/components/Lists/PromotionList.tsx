@@ -39,7 +39,7 @@ const PromotionList = ({
 
   // const isInCart = (itemId: number) => {
   //   if (
-  //     cartData.filter((e: { prId: number }) => e.prId === itemId).length > 0
+  //     cartData.filter((e: { productId: number }) => e.productId === itemId).length > 0
   //   ) {
   //     return true;
   //   } else {
@@ -61,9 +61,9 @@ const PromotionList = ({
 
     const keyArray: any[] = [];
     cartData.forEach(
-      (e: { promoId: number; key: number; prId: number }, index: any) => {
+      (e: { promoId: number; key: number; productId: number }, index: any) => {
         if (e.promoId === promo.promoId) {
-          keyArray.push({ key: e.key, index: index, prId: e.prId });
+          keyArray.push({ key: e.key, index: index, productId: e.productId });
         }
       }
     );
@@ -71,7 +71,7 @@ const PromotionList = ({
       const tempCart = cartData;
       keyArray.forEach((element) => {
         items.forEach((entry: { count: any; productId: number }) => {
-          if (element.prId == entry.productId) {
+          if (element.productId == entry.productId) {
             console.log(tempCart[element.index]);
             const temp = tempCart[element.index].prCount + entry.count;
             tempCart[element.index].prCount = temp;
@@ -83,7 +83,7 @@ const PromotionList = ({
       items.forEach(
         (entry: {
           productId: any;
-          product: { prName: string; prPrice: any; needProcess?: any };
+          product: { productName: string; productPrice: any; needProcess?: any };
           count: any;
         }) => {
           {
@@ -91,9 +91,9 @@ const PromotionList = ({
               key:
                 promo.promoId +
                 Math.floor(Math.random() * (100000 - 1) + 1) * 100,
-              prId: entry.productId,
-              prName: "*" + entry.product.prName,
-              prPrice: entry.product.prPrice,
+              productId: entry.productId,
+              productName: "*" + entry.product.productName,
+              productPrice: entry.product.productPrice,
               prCount: entry.count,
               needProcess: entry.product.needProcess,
               promoId: promo.promoId,

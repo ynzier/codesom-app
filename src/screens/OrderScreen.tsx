@@ -30,24 +30,24 @@ interface Props {
 }
 interface orderData {
   key?: number;
-  ordId: number;
-  brId: number;
-  ordItems: number;
-  ordTotal: number;
-  ordDiscount: number;
+  orderId: number;
+  branchId: number;
+  orderItems: number;
+  orderTotal: number;
+  orderDiscount: number;
   ordTax: number;
   paidType: string;
-  ordType: string;
+  orderType: string;
   platformId: number;
-  ordRefNo: string;
-  ordStatus: string;
+  orderRefNo: string;
+  orderStatus: string;
   createTimestamp: Date;
 }
 const OrderScreen: React.FC<Props> = ({ route, children }) => {
   const { promiseInProgress } = usePromiseTracker();
   const [orderData, setOrderData] = useState<orderData[]>([]);
   const [showReceipt, setShowReceipt] = useState(false);
-  const [ordId, setOrdId] = useState("");
+  const [orderId, setOrderId] = useState("");
   const fetchOrderList = (isMounted: boolean) => {
     void trackPromise(
       orderService
@@ -75,10 +75,10 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
     );
   };
 
-  const updateOrderStatus = (updateOrdId: any, updateStatus: number) => {
+  const updateOrderStatus = (updateOrderId: any, updateStatus: number) => {
     const data = {
       status: updateStatus,
-      ordId: updateOrdId,
+      orderId: updateOrderId,
     };
     orderService
       .updateOrderStatus(data)
@@ -122,8 +122,8 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
       <ReceiptModal
         showReceipt={showReceipt}
         setShowReceipt={setShowReceipt}
-        ordId={ordId}
-        setOrdId={setOrdId}
+        orderId={orderId}
+        setOrderId={setOrderId}
       />
       <Box safeAreaTop bg="coolGray.500" />
       <Center flex="1" bg="#FFF">
@@ -218,13 +218,13 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                     fetchOrderList(true);
                   }}
                   refreshing={promiseInProgress}
-                  keyExtractor={(item: any) => item.ordId.toString()}
+                  keyExtractor={(item: any) => item.orderId.toString()}
                   renderItem={({ item }: ListRenderItemInfo<orderData>) => {
-                    if (item.ordType == "takeaway") item.ordType = "รับกลับ";
-                    if (item.ordType == "delivery") item.ordType = "เดลิเวอรี่";
+                    if (item.orderType == "takeaway") item.orderType = "รับกลับ";
+                    if (item.orderType == "delivery") item.orderType = "เดลิเวอรี่";
                     return (
                       <HStack
-                        key={item.ordId.toString()}
+                        key={item.orderId.toString()}
                         w="100%"
                         justifyContent="center"
                         alignItems="center"
@@ -235,14 +235,14 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           textAlign="center"
                           fontSize="md"
                           textDecorationLine={
-                            item.ordStatus == "2" ? "none" : "underline"
+                            item.orderStatus == "2" ? "none" : "underline"
                           }
                           onPress={() => {
-                            setOrdId(item.ordId.toString());
+                            setOrderId(item.orderId.toString());
                             setShowReceipt(true);
                           }}
                         >
-                          {item.ordId}
+                          {item.orderId}
                         </Text>
 
                         <Text flex="2" textAlign="center" fontSize="md">
@@ -252,10 +252,10 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                         </Text>
 
                         <Text flex="1" textAlign="center" fontSize="md">
-                          {item.ordType}
+                          {item.orderType}
                         </Text>
                         <NumberFormat
-                          value={item.ordTotal}
+                          value={item.orderTotal}
                           displayType={"text"}
                           thousandSeparator={true}
                           decimalScale={2}
@@ -280,15 +280,15 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                             data={statusData}
                             search={false}
                             disable={
-                              item.ordStatus == "1" || item.ordStatus == "2"
+                              item.orderStatus == "1" || item.orderStatus == "2"
                             }
                             maxHeight={200}
                             labelField="label"
                             activeColor="#F9DCC2"
                             valueField="value"
-                            value={item.ordStatus}
+                            value={item.orderStatus}
                             onChange={(e) => {
-                              updateOrderStatus(item.ordId, e.value);
+                              updateOrderStatus(item.orderId, e.value);
                             }}
                           />
                         </Box>

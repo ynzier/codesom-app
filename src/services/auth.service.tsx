@@ -10,8 +10,8 @@ const signInApp = async (userName: string, password: string) => {
       resolve(
         http
           .post<AccessToken>("/auth/signinApp", {
-            brUserName: userName.toLowerCase(),
-            brPassword: password,
+            branchUsername: userName.toLowerCase(),
+            branchPassword: password,
           })
           .then(async (response) => {
             console.log(response.data.accessToken);

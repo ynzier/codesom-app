@@ -5,12 +5,12 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 
 type IBranchObj = {
-  brId: number | null;
-  brName: string;
-  brAddr: string;
-  brTel: string;
-  brStatus: string;
-  brImg: string;
+  branchId: number | null;
+  branchName: string;
+  branchAddr: string;
+  branchTel: string;
+  branchStatus: string;
+  branchImg: string;
   image: {
     imgId: number;
     imgObj: string;
@@ -24,7 +24,7 @@ const Topbar = () => {
   useFocusEffect(
     useCallback(() => {
       let isSubscribed = true;
-      if (branchData.brId == null)
+      if (branchData.branchId == null)
         branchService
           .getCurrentBranch()
           .then((res) => (isSubscribed ? setBranchData(res.data) : null))
@@ -32,7 +32,7 @@ const Topbar = () => {
       return () => {
         isSubscribed = false;
       };
-    }, [branchData.brId])
+    }, [branchData.branchId])
   );
   return (
     <HStack
@@ -59,7 +59,7 @@ const Topbar = () => {
           fontWeight={600}
           mx="4"
         >
-          {branchData.brName}
+          {branchData.branchName}
         </Text>
         <Avatar
           size={{

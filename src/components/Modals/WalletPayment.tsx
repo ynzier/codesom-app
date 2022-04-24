@@ -122,7 +122,7 @@ const WalletPayment = ({
   fetchTotalIngr,
   isWallet,
   setIsWallet,
-  ordTotal,
+  orderTotal,
   setPromoCart,
   fetchPromoCart,
 }: {
@@ -137,7 +137,7 @@ const WalletPayment = ({
   totalVat: any;
   isWallet: any;
   setIsWallet: (value: boolean) => void;
-  ordTotal: any;
+  orderTotal: any;
   props?: any;
   setTotalIngr: (value: any) => void;
   setPromoCart: (value: any) => void;
@@ -154,10 +154,10 @@ const WalletPayment = ({
   const createOrder = () => {
     const pushData = {
       paidType: wallet,
-      total: ordTotal,
-      cash: ordTotal,
-      tax: (ordTotal * 0.07).toFixed(2),
-      net: (ordTotal * 0.07).toFixed(2),
+      total: orderTotal,
+      cash: orderTotal,
+      tax: (orderTotal * 0.07).toFixed(2),
+      net: (orderTotal * 0.07).toFixed(2),
       change: "0.0",
     };
     const sendData = { orderData: preSendData, receiptData: pushData };
@@ -242,7 +242,7 @@ const WalletPayment = ({
           <Modal.Body _scrollview={{ scrollEnabled: false }}>
             <VStack>
               <NumberFormat
-                value={ordTotal}
+                value={orderTotal}
                 displayType={"text"}
                 thousandSeparator={true}
                 decimalScale={2}
@@ -307,8 +307,8 @@ const WalletPayment = ({
         <ReceiptModal
           showReceipt={showReceipt}
           setShowReceipt={setShowReceipt}
-          ordId={orderId}
-          setOrdId={setOrderId}
+          orderId={orderId}
+          setOrderId={setOrderId}
           setShowModal={setShowModal}
         />
       )}

@@ -253,7 +253,7 @@ const CartCheckOut = ({
                   setPromoCart([]);
                   setIsTakeAway(false);
                   navigation.navigate("OrderScreen", {
-                    ordType: "takeaway",
+                    orderType: "takeaway",
                   });
                 } else if (isDelivery) {
                   if (
@@ -270,8 +270,8 @@ const CartCheckOut = ({
 
                     setIsDelivery(false);
                     navigation.navigate("OrderScreen", {
-                      ordType: "delivery",
-                      ordRefNo: refNo,
+                      orderType: "delivery",
+                      orderRefNo: refNo,
                       platformId: selected,
                     });
                     setIsDelivery(false);

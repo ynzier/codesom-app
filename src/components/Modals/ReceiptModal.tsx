@@ -19,25 +19,25 @@ import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { branchService, orderService } from "services";
 dayjs.extend(localizedFormat);
 type IBranchObj = {
-  brId: number | null;
-  brName: string;
-  brAddr: string;
-  brTel: string;
-  brStatus: string;
-  brImg: string;
+  branchId: number | null;
+  branchName: string;
+  branchAddr: string;
+  branchTel: string;
+  branchStatus: string;
+  branchImg: string;
 };
 
 const ReceiptModal = ({
   showReceipt,
   setShowReceipt,
-  ordId,
-  setOrdId,
+  orderId,
+  setOrderId,
   setShowModal,
 }: {
   showReceipt: boolean;
   setShowReceipt: (boolean: boolean) => void;
-  ordId: string;
-  setOrdId: (any: string) => void;
+  orderId: string;
+  setOrderId: (any: string) => void;
   setShowModal?: (any: boolean) => void;
   props?: any;
 }) => {
@@ -53,11 +53,11 @@ const ReceiptModal = ({
     setOrderItems([]);
     setReceiptData({});
     setOrderDetail({});
-    setOrdId("");
+    setOrderId("");
   };
 
   useEffect(() => {
-    if (ordId != "") {
+    if (orderId != "") {
       void trackPromise(
         new Promise((resolve, reject) => {
           setTimeout(() => {
@@ -73,7 +73,7 @@ const ReceiptModal = ({
             );
             resolve(
               orderService
-                .getReceiptByOrderId(ordId)
+                .getReceiptByOrderId(orderId)
                 .then((res) => {
                   const receiveData = res.data;
                   setOrderItems(receiveData.orderItems);
@@ -100,7 +100,7 @@ const ReceiptModal = ({
     }
 
     return () => {};
-  }, [ordId]);
+  }, [orderId]);
 
   return (
     <Center>
@@ -124,17 +124,17 @@ const ReceiptModal = ({
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        {branchData.brName || ""}
+                        {branchData.branchName || ""}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignSelf="center" mx="2">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        {branchData.brAddr || ""}
+                        {branchData.branchAddr || ""}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
                       <Text fontSize="lg" flex="1" textAlign="center">
-                        เบอร์โทรศัพท์: {branchData.brTel || ""}
+                        เบอร์โทรศัพท์: {branchData.branchTel || ""}
                       </Text>
                     </HStack>
                     <HStack
@@ -157,8 +157,8 @@ const ReceiptModal = ({
                         (
                           item: {
                             key: number;
-                            product: { prName: string };
-                            prPrice: number;
+                            product: { productName: string };
+                            productPrice: number;
                             prCount: number;
                           },
                           index: any
@@ -167,12 +167,12 @@ const ReceiptModal = ({
                             <HStack px="8">
                               <VStack flex="1">
                                 <Text fontSize="lg" flex="1">
-                                  {item.product.prName}
+                                  {item.product.productName}
                                 </Text>
                               </VStack>
                               <VStack flex="1">
                                 <NumberFormat
-                                  value={item.prPrice * item.prCount}
+                                  value={item.productPrice * item.prCount}
                                   displayType={"text"}
                                   thousandSeparator={true}
                                   decimalScale={2}
@@ -194,7 +194,7 @@ const ReceiptModal = ({
                                 <Text fontWeight="light" fontSize="lg" flex="1">
                                   {item.prCount} x {}
                                   <NumberFormat
-                                    value={item.prPrice}
+                                    value={item.productPrice}
                                     displayType={"text"}
                                     thousandSeparator={true}
                                     fixedDecimalScale
@@ -224,7 +224,7 @@ const ReceiptModal = ({
                         </VStack>
                         <VStack flex="1">
                           <NumberFormat
-                            value={orderDetail?.ordDiscount}
+                            value={orderDetail?.orderDiscount}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}

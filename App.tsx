@@ -123,9 +123,9 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
   const window = useWindowDimensions();
   type ICartArray = {
     key: number;
-    prId: string;
-    prName: string;
-    prPrice: string;
+    productId: string;
+    productName: string;
+    productPrice: string;
     prCount: number;
     [name: string]: any;
   };
@@ -365,8 +365,8 @@ const App: React.FC<Props> = () => {
         let userToken;
         await http
           .post<AccessToken>("/auth/signinApp", {
-            brUserName: userName.toLowerCase(),
-            brPassword: password,
+            branchUsername: userName.toLowerCase(),
+            branchPassword: password,
           })
           .then(async (response) => {
             await deviceStorage.deleteJWT();

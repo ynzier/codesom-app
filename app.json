@@ -3,7 +3,7 @@
     "name": "codesomApp",
     "slug": "codesomApp",
     "owner": "miloteam",
-    "version": "1.0.45",
+    "version": "1.0.46",
     "orientation": "landscape",
     "icon": "./src/assets/icon.png",
     "splash": {

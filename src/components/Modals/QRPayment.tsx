@@ -30,7 +30,7 @@ const QRPayment = ({
   fetchTotalIngr,
   isQR,
   setIsQR,
-  ordTotal,
+  orderTotal,
   setPromoCart,
   fetchPromoCart,
 }: {
@@ -45,7 +45,7 @@ const QRPayment = ({
   totalVat: any;
   isQR: any;
   setIsQR: (value: boolean) => void;
-  ordTotal: any;
+  orderTotal: any;
   props?: any;
   setTotalIngr: (value: any) => void;
   setPromoCart: (value: any) => void;
@@ -62,7 +62,7 @@ const QRPayment = ({
   useEffect(() => {
     const getQR = async () => {
       await orderService
-        .getQR({ orderData: preSendData, amount: ordTotal })
+        .getQR({ orderData: preSendData, amount: orderTotal })
         .then((res) => {
           setOmiseNet(res.data.net / 100);
           setChrgId(res.data.chrgId);
@@ -72,12 +72,12 @@ const QRPayment = ({
           console.log(err);
         });
     };
-    if (ordTotal && !finishState) {
+    if (orderTotal && !finishState) {
       void trackPromise(getQR());
     }
 
     return () => {};
-  }, [finishState, ordTotal, preSendData]);
+  }, [finishState, orderTotal, preSendData]);
 
   useEffect(() => {
     const createOrder = () => {
@@ -231,7 +231,7 @@ const QRPayment = ({
             ) : (
               <Box>
                 <NumberFormat
-                  value={ordTotal}
+                  value={orderTotal}
                   displayType={"text"}
                   thousandSeparator={true}
                   decimalScale={2}
@@ -264,8 +264,8 @@ const QRPayment = ({
         <ReceiptModal
           showReceipt={showReceipt}
           setShowReceipt={setShowReceipt}
-          ordId={orderId}
-          setOrdId={setOrderId}
+          orderId={orderId}
+          setOrderId={setOrderId}
           setShowModal={setShowModal}
         />
       )}

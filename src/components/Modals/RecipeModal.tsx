@@ -60,7 +60,7 @@ const RecipeModal = ({
             <Box my="4">
               <Text style={styles.headerText}>การผสม</Text>
               <Text style={styles.description}>
-                ชื่อสินค้า: {recipeData && recipeData.prName}
+                ชื่อสินค้า: {recipeData && recipeData.productName}
               </Text>
               <Text mt={2} style={styles.description}>
                 คำอธิบาย: {recipeData && recipeData.description}

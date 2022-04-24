@@ -30,7 +30,7 @@ const CashPayment = ({
   isCash,
   setIsCash,
   totalVat,
-  ordTotal,
+  orderTotal,
   setPromoCart,
   fetchPromoCart,
 }: {
@@ -45,7 +45,7 @@ const CashPayment = ({
   totalVat: any;
   isCash: any;
   setIsCash: (value: boolean) => void;
-  ordTotal: any;
+  orderTotal: any;
   props?: any;
   setTotalIngr: (value: any) => void;
   setPromoCart: (value: any) => void;
@@ -70,14 +70,14 @@ const CashPayment = ({
     return paid - needed >= 0;
   };
   const createOrder = () => {
-    setTotalValue(ordTotal);
+    setTotalValue(orderTotal);
     const pushData = {
       paidType: isCash && "cash",
-      total: parseFloat(ordTotal).toFixed(2),
+      total: parseFloat(orderTotal).toFixed(2),
       cash: parseFloat(cash).toFixed(2),
       tax: parseFloat(totalVat).toFixed(2),
-      net: (ordTotal - totalVat).toFixed(2),
-      change: (parseFloat(cash) - ordTotal).toFixed(2),
+      net: (orderTotal - totalVat).toFixed(2),
+      change: (parseFloat(cash) - orderTotal).toFixed(2),
     };
     const sendData = { orderData: preSendData, receiptData: pushData };
     void trackPromise(
@@ -192,7 +192,7 @@ const CashPayment = ({
                   <Button
                     colorScheme="emerald"
                     onPress={() => {
-                      if (isEnough(ordTotal, parseFloat(cash))) setIsOpen(true);
+                      if (isEnough(orderTotal, parseFloat(cash))) setIsOpen(true);
                       else setAlertOpen(true);
                     }}
                   >
@@ -310,8 +310,8 @@ const CashPayment = ({
         <ReceiptModal
           showReceipt={showReceipt}
           setShowReceipt={setShowReceipt}
-          ordId={orderId}
-          setOrdId={setOrderId}
+          orderId={orderId}
+          setOrderId={setOrderId}
         />
       )}
     </Center>
