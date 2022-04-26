@@ -74,34 +74,6 @@ const Topbar = () => {
                 : ErrorImg,
           }}
         />
-        <MaterialIcons
-          name="notifications"
-          color="white"
-          size={48}
-          style={{
-            transform: [
-              {
-                rotate: "10deg",
-              },
-            ],
-          }}
-        />
-        <Badge // bg="red.400"
-          colorScheme="danger"
-          rounded="full"
-          mb={4}
-          ml="-12"
-          mr={8}
-          zIndex={1}
-          variant="solid"
-          _text={{
-            fontSize: 12,
-          }}
-          borderWidth="2"
-          borderColor="white"
-        >
-          2
-        </Badge>
       </HStack>
     </HStack>
   );

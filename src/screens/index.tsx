@@ -5,3 +5,4 @@ export { default as PromotionScreen } from "./PromotionScreen";
 export { default as SettingScreen } from "./SettingScreen";
 export { default as ReportScreen } from "./ReportScreen";
 export { default as StorageScreen } from "./StorageScreen";
+export { default as DeliveryScreen } from "./DeliveryScreen";

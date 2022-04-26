@@ -4,11 +4,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme, Badge, VStack } from "native-base";
 import { Root as AlertProvider } from "alert-toast-react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { authService, deviceStorage } from "services";
+import { authService, lalamoveService, deviceStorage } from "services";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import {
@@ -19,6 +19,7 @@ import {
   StorageScreen,
   SettingScreen,
   ReportScreen,
+  DeliveryScreen,
 } from "./src/screens";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
@@ -26,6 +27,7 @@ import { useWindowDimensions } from "react-native";
 import Topbar from "./src/components/Topbar";
 import http from "./src/http-common";
 import { AuthContext } from "./src/context/AuthContext";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -131,6 +133,19 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
   };
   const [cartData, setCartData] = useState<ICartArray[]>([]);
   const [promoCart, setPromoCart] = useState<any[]>([]);
+  const [notifCount, setNotifCount] = useState(0);
+
+  useEffect(() => {
+    const notifCheck = setInterval(() => {
+      void lalamoveService
+        .getAppNotifCount()
+        .then((res) => setNotifCount(res.data.waitingCount))
+        .catch((err) => console.log(err.message));
+    }, 30000);
+    return () => {
+      clearInterval(notifCheck);
+    };
+  }, []);
 
   return (
     <Tab.Navigator
@@ -219,23 +234,52 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       <Tab.Screen
         name="DeliveryScreen"
         options={{
-          tabBarLabel: "เดลิเวอรี่",
+          tabBarLabel: "เดลิเวอรี",
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="delivery-dining" color={color} size={size} />
+            <>
+              {notifCount ? (
+                <VStack>
+                  <Badge // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 8,
+                    }}
+                    w={5}
+                    h={5}
+                    justifyContent="center"
+                    p={0}
+                    borderWidth={1}
+                    borderColor="white"
+                    mb={-3}
+                    mr={-3}
+                    zIndex={1}
+                  >
+                    {notifCount}
+                  </Badge>
+                  <MaterialIcons
+                    name="delivery-dining"
+                    color={color}
+                    size={size}
+                  />
+                </VStack>
+              ) : (
+                <MaterialIcons
+                  name="delivery-dining"
+                  color={color}
+                  size={size}
+                />
+              )}
+            </>
           ),
         }}
       >
         {(props) => (
-          <MainMenuScreen
-            setPromoCart={function (value: any): void {
-              throw new Error("Function not implemented.");
-            }}
-            cartData={cartData}
-            setCartData={setCartData}
-            {...props}
-          >
+          <DeliveryScreen notifCount={notifCount} {...props}>
             <Topbar />
-          </MainMenuScreen>
+          </DeliveryScreen>
         )}
       </Tab.Screen>
       <Tab.Screen

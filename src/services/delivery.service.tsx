@@ -8,7 +8,6 @@ const getAllPlatform = async () => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
-
 export default {
   getAllPlatform,
 };

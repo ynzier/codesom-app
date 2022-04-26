@@ -7,6 +7,7 @@ export { default as employeeService } from "./employee.service";
 export { default as orderService } from "./orders.service";
 export { default as productService } from "./product.service";
 export { default as receiptService } from "./receipt.service";
+export { default as lalamoveService } from "./lalamove.service";
 export { default as storageService } from "./storage.service";
 export { default as requisitionService } from "./requisition.service";
 export { default as promotionService } from "./promotion.service";
