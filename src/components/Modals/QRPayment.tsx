@@ -26,8 +26,6 @@ const QRPayment = ({
   setCartData,
   preSendData,
   setPreSendData,
-  setTotalIngr,
-  fetchTotalIngr,
   isQR,
   setIsQR,
   orderTotal,
@@ -37,7 +35,7 @@ const QRPayment = ({
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
   fetchCartData: () => void;
-  fetchTotalIngr: () => void;
+
   cartData: any;
   setCartData: (a: any) => void;
   preSendData: any;
@@ -47,7 +45,7 @@ const QRPayment = ({
   setIsQR: (value: boolean) => void;
   orderTotal: any;
   props?: any;
-  setTotalIngr: (value: any) => void;
+
   setPromoCart: (value: any) => void;
   fetchPromoCart: () => void;
 }) => {
@@ -105,11 +103,6 @@ const QRPayment = ({
                         setCartData([]);
                       })
                       .catch((e) => console.log(e));
-                    AsyncStorage.removeItem("totalIngr")
-                      .then(() => {
-                        setTotalIngr([]);
-                      })
-                      .catch((e) => console.log(e));
                     AsyncStorage.removeItem("promoCart")
                       .then(() => {
                         setPromoCart([]);
@@ -119,7 +112,7 @@ const QRPayment = ({
                       });
                     fetchPromoCart();
                     fetchCartData();
-                    fetchTotalIngr();
+
                     Toast.show({
                       type: ALERT_TYPE.SUCCESS,
                       textBody: res.data.message,
@@ -191,7 +184,7 @@ const QRPayment = ({
     chrgId,
     fetchCartData,
     fetchPromoCart,
-    fetchTotalIngr,
+
     finishState,
     isQR,
     omiseNet,
@@ -201,7 +194,6 @@ const QRPayment = ({
     setPreSendData,
     setPromoCart,
     setShowModal,
-    setTotalIngr,
   ]);
 
   return (

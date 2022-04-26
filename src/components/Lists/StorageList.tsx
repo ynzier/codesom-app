@@ -3,6 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { storageService } from "services";
 import NumberFormat from "react-number-format";
 interface productData {
@@ -16,7 +17,7 @@ interface productData {
     productName: string;
     productPrice: number;
     productImg?: number;
-    prCount?: number;
+    quantity?: number;
     productType?: number;
     productStatus?: string;
     productDetail?: string;
@@ -33,42 +34,48 @@ interface productData {
   };
 }
 const StorageList = ({ keyword }: { keyword: string }) => {
-  const { promiseInProgress } = usePromiseTracker({
-    area: "list",
+  const { promiseInProgress: storageList } = usePromiseTracker({
+    area: "storageList",
   });
   const [productArray, setProductArray] = useState<productData[]>([]);
+  const [fetched, setFetched] = useState(false);
   const [filterData, setfilterData] = useState<productData[]>([]);
-  const fetchProductData = (isSubscribed: boolean) => {
-    void trackPromise(
+  const fetchProductData = async (isSubscribed: boolean) => {
+    await trackPromise(
       storageService
         .getAllProductInStorage()
         .then((res) => {
           if (isSubscribed) {
-            if (res) {
-              const recData = res.data;
-              setProductArray(recData);
-            }
+            const recData = res.data;
+            setFetched(true);
+            setProductArray(recData);
           }
         })
-        .catch((err) => {
-          if (isSubscribed) {
-            console.log(err);
-          }
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            textBody: resMessage,
+          });
         }),
-      "list"
+      "storageList"
     );
   };
 
   useFocusEffect(
     useCallback(() => {
       let isSubscribed = true;
-      fetchProductData(isSubscribed);
+      if (!fetched) void fetchProductData(isSubscribed);
 
       return () => {
-        setProductArray([]);
         isSubscribed = false;
       };
-    }, [])
+    }, [fetched])
   );
   useFocusEffect(
     useCallback(() => {
@@ -144,9 +151,9 @@ const StorageList = ({ keyword }: { keyword: string }) => {
       </HStack>
       <FlatList
         data={filterData == null ? productArray : filterData}
-        refreshing={promiseInProgress}
+        refreshing={storageList}
         onRefresh={() => {
-          fetchProductData(true);
+          void fetchProductData(true);
         }}
         keyExtractor={(item: any) => item.product.productId}
         renderItem={({ item }: ListRenderItemInfo<productData>) => {

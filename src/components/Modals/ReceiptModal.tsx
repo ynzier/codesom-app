@@ -41,18 +41,19 @@ const ReceiptModal = ({
   setShowModal?: (any: boolean) => void;
   props?: any;
 }) => {
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress: loadingReceipt } = usePromiseTracker({
+    area: "loadingReceipt",
+  });
   const [branchData, setBranchData] = useState<IBranchObj>({} as IBranchObj);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [receiptData, setReceiptData] = useState<any>({});
-  const [orderDetail, setOrderDetail] = useState<any>({});
 
   const handleClose = () => {
     setShowReceipt(false);
     if (setShowModal) setShowModal(false);
     setOrderItems([]);
     setReceiptData({});
-    setOrderDetail({});
+
     setOrderId("");
   };
 
@@ -78,7 +79,6 @@ const ReceiptModal = ({
                   const receiveData = res.data;
                   setOrderItems(receiveData.orderItems);
                   setReceiptData(receiveData.receipt);
-                  setOrderDetail(receiveData.orderDetail);
                 })
                 .catch((error) => {
                   const resMessage =
@@ -95,7 +95,8 @@ const ReceiptModal = ({
                 })
             );
           }, 2000);
-        })
+        }),
+        "loadingReceipt"
       );
     }
 
@@ -106,7 +107,7 @@ const ReceiptModal = ({
     <Center>
       <Modal isOpen={showReceipt} onClose={handleClose} size="lg">
         <Modal.Content h="700" maxWidth="450" justifyContent="center">
-          {promiseInProgress ? (
+          {loadingReceipt ? (
             <Spinner size="lg" color="cream" />
           ) : (
             <>
@@ -159,7 +160,7 @@ const ReceiptModal = ({
                             key: number;
                             product: { productName: string };
                             productPrice: number;
-                            prCount: number;
+                            quantity: number;
                           },
                           index: any
                         ) => (
@@ -172,7 +173,7 @@ const ReceiptModal = ({
                               </VStack>
                               <VStack flex="1">
                                 <NumberFormat
-                                  value={item.productPrice * item.prCount}
+                                  value={item.productPrice * item.quantity}
                                   displayType={"text"}
                                   thousandSeparator={true}
                                   decimalScale={2}
@@ -192,7 +193,7 @@ const ReceiptModal = ({
                             <HStack>
                               <VStack px={10}>
                                 <Text fontWeight="light" fontSize="lg" flex="1">
-                                  {item.prCount} x {}
+                                  {item.quantity} x {}
                                   <NumberFormat
                                     value={item.productPrice}
                                     displayType={"text"}
@@ -224,7 +225,7 @@ const ReceiptModal = ({
                         </VStack>
                         <VStack flex="1">
                           <NumberFormat
-                            value={orderDetail?.orderDiscount}
+                            value={receiptData?.receiptDiscount}
                             displayType={"text"}
                             thousandSeparator={true}
                             decimalScale={2}
@@ -258,7 +259,7 @@ const ReceiptModal = ({
                         ราคารวม :
                       </Text>
                       <NumberFormat
-                        value={receiptData.total - receiptData.tax}
+                        value={receiptData.receiptNet}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -275,7 +276,7 @@ const ReceiptModal = ({
                         ภาษี (7%) :
                       </Text>
                       <NumberFormat
-                        value={receiptData.tax}
+                        value={receiptData.receiptTax}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -309,7 +310,7 @@ const ReceiptModal = ({
                         ราคาสุทธิ :
                       </Text>
                       <NumberFormat
-                        value={receiptData.total}
+                        value={receiptData.receiptTotal}
                         displayType={"text"}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -364,7 +365,7 @@ const ReceiptModal = ({
                         เงินสด :
                       </Text>
                       <NumberFormat
-                        value={receiptData.cash}
+                        value={receiptData.receiptCash}
                         displayType={"text"}
                         thousandSeparator={true}
                         fixedDecimalScale
@@ -381,7 +382,7 @@ const ReceiptModal = ({
                         เงินทอน :
                       </Text>
                       <NumberFormat
-                        value={receiptData.change}
+                        value={receiptData.receiptChange}
                         displayType={"text"}
                         thousandSeparator={true}
                         fixedDecimalScale

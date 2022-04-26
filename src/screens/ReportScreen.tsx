@@ -25,7 +25,7 @@ export type Props = {
   children: any;
 };
 type totalReport = {
-  deliveryFare: number;
+  lalaFare: number;
   subTotal: number;
   totalVat: number;
   finalTotal: number;
@@ -33,6 +33,10 @@ type totalReport = {
   totalCash: number;
   paidQR: number;
   totalQR: number;
+  paidDolphin: number;
+  totalDolphin: number;
+  paidShopee: number;
+  totalShopee: number;
   takeAway: number;
   totalTakeAway: number;
   deliveryLineman: number;
@@ -45,12 +49,16 @@ type totalReport = {
   totalETC: number;
   deliveryOff: number;
   totalOff: number;
+  deliveryOnline: number;
+  totalOnline: number;
 };
 const ReportScreen: React.FC<Props> = ({ children }) => {
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress: loadingReport } = usePromiseTracker({
+    area: "loadingReport",
+  });
   const [topSale, setTopSale] = useState<any[]>([]);
   const [totalReport, setTotalReport] = useState<totalReport>({
-    deliveryFare: 0,
+    lalaFare: 0,
     subTotal: 0,
     totalVat: 0,
     finalTotal: 0,
@@ -58,6 +66,10 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
     totalCash: 0,
     paidQR: 0,
     totalQR: 0,
+    paidDolphin: 0,
+    totalDolphin: 0,
+    paidShopee: 0,
+    totalShopee: 0,
     takeAway: 0,
     totalTakeAway: 0,
     deliveryLineman: 0,
@@ -70,6 +82,8 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
     totalETC: 0,
     deliveryOff: 0,
     totalOff: 0,
+    deliveryOnline: 0,
+    totalOnline: 0,
   });
 
   const fetchReport = () => {
@@ -90,7 +104,8 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
               .catch((err) => console.log(err))
           );
         }, 2000);
-      })
+      }),
+      "loadingReport"
     );
   };
   useEffect(() => {
@@ -142,7 +157,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                     color="gray"
                   />
                 </Box>
-                {promiseInProgress ? (
+                {loadingReport ? (
                   <HStack flex="1" space={3}>
                     <Spinner size="sm" color="altred.500" />
                   </HStack>
@@ -201,6 +216,46 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                             </Text>
                             <NumberFormat
                               value={totalReport.totalQR}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                              decimalScale={2}
+                              fixedDecimalScale
+                              renderText={(formattedValue) => (
+                                <Text flex="3" textAlign={"right"}>
+                                  {formattedValue} บาท
+                                </Text>
+                              )}
+                            />
+                          </HStack>
+                          <HStack>
+                            <Text flex="2" numberOfLines={1}>
+                              Dolphin
+                            </Text>
+                            <Text flex="1" textAlign={"center"}>
+                              {totalReport.paidDolphin}
+                            </Text>
+                            <NumberFormat
+                              value={totalReport.totalDolphin}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                              decimalScale={2}
+                              fixedDecimalScale
+                              renderText={(formattedValue) => (
+                                <Text flex="3" textAlign={"right"}>
+                                  {formattedValue} บาท
+                                </Text>
+                              )}
+                            />
+                          </HStack>
+                          <HStack>
+                            <Text flex="2" numberOfLines={1}>
+                              Shopee
+                            </Text>
+                            <Text flex="1" textAlign={"center"}>
+                              {totalReport.paidShopee}
+                            </Text>
+                            <NumberFormat
+                              value={totalReport.totalShopee}
                               displayType={"text"}
                               thousandSeparator={true}
                               decimalScale={2}
@@ -315,6 +370,26 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                           </HStack>
                           <HStack>
                             <Text flex="2" numberOfLines={1}>
+                              Online Store
+                            </Text>
+                            <Text flex="1" textAlign={"center"}>
+                              {totalReport.deliveryOnline}
+                            </Text>
+                            <NumberFormat
+                              value={totalReport.totalOnline}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                              decimalScale={2}
+                              fixedDecimalScale
+                              renderText={(formattedValue) => (
+                                <Text flex="3" textAlign={"right"}>
+                                  {formattedValue} บาท
+                                </Text>
+                              )}
+                            />
+                          </HStack>
+                          <HStack>
+                            <Text flex="2" numberOfLines={1}>
                               อื่นๆ
                             </Text>
                             <Text flex="1" textAlign={"center"}>
@@ -354,7 +429,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                           <HStack>
                             <Text flex="2">ยอดค่าจัดส่ง</Text>
                             <NumberFormat
-                              value={totalReport.deliveryFare}
+                              value={totalReport.lalaFare}
                               displayType={"text"}
                               thousandSeparator={true}
                               decimalScale={2}

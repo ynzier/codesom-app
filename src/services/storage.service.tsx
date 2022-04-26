@@ -33,11 +33,17 @@ const getItemMakeRequest = async () => {
   });
 };
 
-const checkRecipeCartAvailable = async (cartData: any) => {
+const checkRecipeCartAvailable = async (data: any) => {
+  const xToken = authHeader();
+  return http.post(prefix + "/checkRecipeCartAvailable", data, {
+    headers: { "x-access-token": JSON.parse(await xToken) as string },
+  });
+};
+const checkRemainProductAvailable = async (cartData: any) => {
   const xToken = authHeader();
   return http.post(
-    prefix + "/checkRecipeCartAvailable",
-    { needProcess: cartData },
+    prefix + "/checkRemainProductAvailable",
+    { cartData: cartData },
     {
       headers: { "x-access-token": JSON.parse(await xToken) as string },
     }
@@ -64,4 +70,5 @@ export default {
   checkRecipeCartAvailable,
   getAllStuffForWithdraw,
   createWithdrawStuff,
+  checkRemainProductAvailable,
 };

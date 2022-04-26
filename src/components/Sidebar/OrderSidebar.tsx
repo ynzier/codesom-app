@@ -37,8 +37,9 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   const [totalVat, setTotalVat] = useState<string>("0.00");
   const [total, setTotal] = useState<string>("0.00");
   const [cartData, setCartData] = useState<any[]>();
+  const [preConfirm, setPreConfirm] = useState<any[]>([]);
   const [totalIngr, setTotalIngr] = useState<any[]>([]);
-  const [promoCart, setPromoCart] = useState<any[]>([]);
+  const [promoCart, setPromoCart] = useState<any>();
 
   useEffect(() => {
     if (cartData && cartData.length < 1) {
@@ -47,25 +48,15 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       setTotalDiscount("0.00");
       setSubtotal("0.00");
     }
-    if (cartData && cartData.length > 0) {
-      let sumPromo = 0;
-      let sumPromoPrice = 0;
+    if (preConfirm && preConfirm.length > 0) {
       let discount = 0;
-      const sum: number = cartData
+      const sum: number = preConfirm
         .map(
-          (item: { productPrice: number; prCount: number; promoId: number }) =>
-            !item.promoId && item.productPrice * item.prCount
+          (item: { productPrice: number; total: number }) =>
+            item.productPrice * item.total
         )
         .reduce((prev: any, curr: any) => prev + curr, 0);
       if (promoCart.length > 0) {
-        sumPromo = promoCart
-          .map((item: any) => item.promoCost * item.promoCount)
-          .reduce((prev: any, curr: any) => prev + curr, 0);
-
-        sumPromoPrice = promoCart
-          .map((item: any) => item.promoPrice * item.promoCount)
-          .reduce((prev: any, curr: any) => prev + curr, 0);
-
         discount = promoCart
           .map(
             (item: any) =>
@@ -74,10 +65,10 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           )
           .reduce((prev: any, curr: any) => prev + curr, 0);
       }
-      const forSumAll = sum + sumPromo;
+      const forSumAll = sum;
 
       setTotalDiscount(discount.toFixed(2));
-      const forTotal = sum + sumPromoPrice;
+      const forTotal = sum - discount;
       setTotal(forTotal.toFixed(2));
 
       setSubtotal(forSumAll.toFixed(2));
@@ -87,12 +78,32 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       );
     }
     return () => {};
-  }, [cartData, promoCart, total, totalDiscount]);
+  }, [cartData, preConfirm, promoCart, total, totalDiscount]);
   const fetchCartData = () => {
     AsyncStorage.getItem("cartData")
       .then((data: any) => {
         const tempCart: any = JSON.parse(data);
         setCartData(tempCart);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  const fetchPreConfirm = () => {
+    AsyncStorage.getItem("preConfirm")
+      .then((data: any) => {
+        const tempCart: any = JSON.parse(data);
+        setPreConfirm(tempCart);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  const fetchTotalIngr = () => {
+    AsyncStorage.getItem("totalIngr")
+      .then((data: any) => {
+        const tempCart: any = JSON.parse(data);
+        setTotalIngr(tempCart);
       })
       .catch((e) => {
         console.log(e);
@@ -104,16 +115,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       .then((data: any) => {
         const tempCart: any = JSON.parse(data);
         if (tempCart) setPromoCart(tempCart);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-  const fetchTotalIngr = () => {
-    AsyncStorage.getItem("totalIngrCart")
-      .then((data: any) => {
-        const tempCart: any = JSON.parse(data);
-        if (tempCart) setTotalIngr(tempCart);
       })
       .catch((e) => {
         console.log(e);
@@ -134,18 +135,15 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
         .catch((e) => {
           console.log(e);
         });
-      AsyncStorage.removeItem("totalIngrCart")
-        .then(() => {
-          setTotalIngr([]);
-        })
-        .catch((e) => console.log(e));
     }
     setPromoCart([]);
-    setTotalIngr([]);
+    setPreConfirm([]);
     setCartData([]);
+    setTotalIngr([]);
     fetchCartData();
-    fetchTotalIngr();
+    fetchPreConfirm();
     fetchPromoCart();
+    fetchTotalIngr();
 
     return () => {};
   }, [orderType, route]);
@@ -163,8 +161,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     };
     const data = {
       ordHeader: ordHeader,
-      orderItems: cartData,
-      orderIngr: totalIngr,
+      orderItems: preConfirm,
+      totalIngr: totalIngr,
       orderPromo: promoCart,
     };
     setPreSendData(data);
@@ -183,8 +181,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     };
     const data = {
       ordHeader: ordHeader,
-      orderItems: cartData,
-      orderIngr: totalIngr,
+      orderItems: preConfirm,
+      totalIngr: totalIngr,
       orderPromo: promoCart,
     };
     setPreSendData(data);
@@ -203,8 +201,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     };
     const data = {
       ordHeader: ordHeader,
-      orderItems: cartData,
-      orderIngr: totalIngr,
+      orderItems: preConfirm,
+      totalIngr: totalIngr,
       orderPromo: promoCart,
     };
     setPreSendData(data);
@@ -213,24 +211,41 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
   const handleCancel = async () => {
     setIsCash(false);
     setIsQR(false);
-    await AsyncStorage.removeItem("cartData")
-      .then(() => {
+    setIsWallet(false);
+    try {
+      await AsyncStorage.removeItem("cartData").then(() => {
         setCartData([]);
-      })
-      .catch((e) => console.log(e));
-
-    await AsyncStorage.removeItem("promoCart")
-      .then(() => {
-        setPromoCart([]);
-      })
-      .catch((e) => {
-        console.log(e);
       });
-    await AsyncStorage.removeItem("totalIngrCart")
-      .then(() => {
+      await AsyncStorage.removeItem("promoCart").then(() => {
+        setPromoCart([]);
+      });
+      await AsyncStorage.removeItem("totalIngr").then(() => {
         setTotalIngr([]);
-      })
-      .catch((e) => console.log(e));
+      });
+      await AsyncStorage.removeItem("preConfirm").then(() => {
+        setPreConfirm([]);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const resetStorage = () => {
+    try {
+      void AsyncStorage.removeItem("cartData").then(() => {
+        setCartData([]);
+      });
+      void AsyncStorage.removeItem("promoCart").then(() => {
+        setPromoCart([]);
+      });
+      void AsyncStorage.removeItem("totalIngr").then(() => {
+        setTotalIngr([]);
+      });
+      void AsyncStorage.removeItem("preConfirm").then(() => {
+        setPreConfirm([]);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -238,19 +253,13 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
         <CashPayment
           showModal={showCashModal}
           setShowModal={setCashModal}
-          fetchCartData={fetchCartData}
-          fetchTotalIngr={fetchTotalIngr}
-          cartData={cartData}
-          setCartData={setCartData}
           preSendData={preSendData}
           setPreSendData={setPreSendData}
           totalVat={totalVat}
           isCash={isCash}
           setIsCash={setIsCash}
-          setTotalIngr={setTotalIngr}
           orderTotal={parseFloat(total).toFixed(2)}
-          setPromoCart={setPromoCart}
-          fetchPromoCart={fetchPromoCart}
+          resetStorage={resetStorage}
         />
       )}
       {showQRModal && (
@@ -258,7 +267,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           showModal={showQRModal}
           setShowModal={setShowQRModal}
           fetchCartData={fetchCartData}
-          fetchTotalIngr={fetchTotalIngr}
           cartData={cartData}
           setCartData={setCartData}
           preSendData={preSendData}
@@ -266,7 +274,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           totalVat={totalVat}
           isQR={isQR}
           setIsQR={setIsQR}
-          setTotalIngr={setTotalIngr}
           orderTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
           fetchPromoCart={fetchPromoCart}
@@ -277,7 +284,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           showModal={showWalletModal}
           setShowModal={setShowWalletModal}
           fetchCartData={fetchCartData}
-          fetchTotalIngr={fetchTotalIngr}
           cartData={cartData}
           setCartData={setCartData}
           preSendData={preSendData}
@@ -285,7 +291,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           totalVat={totalVat}
           isWallet={isWallet}
           setIsWallet={setIsWallet}
-          setTotalIngr={setTotalIngr}
           orderTotal={parseFloat(total).toFixed(2)}
           setPromoCart={setPromoCart}
           fetchPromoCart={fetchPromoCart}
@@ -311,8 +316,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   fontSize: 32,
                 }}
                 name="cancel"
-                onPress={async () => {
-                  await handleCancel();
+                onPress={() => {
+                  void handleCancel();
                 }}
               />
             </VStack>
@@ -356,18 +361,11 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 </Text>
               </HStack>
               <VStack flex="8">
-                <FlatList
-                  data={cartData}
-                  renderItem={(data: {
-                    item: {
-                      key: number;
-                      productName: string;
-                      productPrice: number;
-                      prCount: number;
-                    };
-                    index: string | number;
-                  }) => {
-                    return (
+                {preConfirm && (
+                  <FlatList
+                    data={preConfirm}
+                    keyExtractor={(item: any) => item.productId}
+                    renderItem={(data: any) => (
                       <Box mb="2" w="100%" flexDirection="row">
                         <Text
                           flex="5"
@@ -381,7 +379,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                           flex="2"
                           fontSize={{ md: 12, xl: 18 }}
                         >
-                          {data.item.prCount}
+                          {data.item.total}
                         </Text>
                         <Text
                           flex="3"
@@ -392,9 +390,9 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                           {data.item.productPrice.toFixed(2)}
                         </Text>
                       </Box>
-                    );
-                  }}
-                />
+                    )}
+                  />
+                )}
               </VStack>
             </VStack>
             <Divider
@@ -572,16 +570,12 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 >
                   {({ isPressed }) => (
                     <>
-                      <Text
-                        fontSize={{ sm: 8, md: 12 }}
-                        color={isPressed || isWallet ? "#fffdfa" : "black"}
-                      >
+                      <Text color={isPressed || isWallet ? "#fffdfa" : "black"}>
                         Wallet
                       </Text>
                       <Icon
                         as={Ionicons}
                         name="wallet-outline"
-                        fontSize={{ sm: 8, md: 12 }}
                         color={isPressed || isWallet ? "#fffdfa" : "black"}
                       />
                     </>

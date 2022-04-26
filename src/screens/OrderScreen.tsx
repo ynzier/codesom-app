@@ -42,9 +42,12 @@ interface orderData {
   orderRefNo: string;
   orderStatus: string;
   createTimestamp: Date;
+  receipt: { receiptTotal: number };
 }
 const OrderScreen: React.FC<Props> = ({ route, children }) => {
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress: loadingOrders } = usePromiseTracker({
+    area: "loadingOrders",
+  });
   const [orderData, setOrderData] = useState<orderData[]>([]);
   const [showReceipt, setShowReceipt] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -71,7 +74,8 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
             title: "พบข้อผิดพลาด!",
             textBody: resMessage,
           });
-        })
+        }),
+      "loadingOrders"
     );
   };
 
@@ -217,11 +221,13 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                   onRefresh={() => {
                     fetchOrderList(true);
                   }}
-                  refreshing={promiseInProgress}
+                  refreshing={loadingOrders}
                   keyExtractor={(item: any) => item.orderId.toString()}
                   renderItem={({ item }: ListRenderItemInfo<orderData>) => {
-                    if (item.orderType == "takeaway") item.orderType = "รับกลับ";
-                    if (item.orderType == "delivery") item.orderType = "เดลิเวอรี่";
+                    if (item.orderType == "takeaway")
+                      item.orderType = "รับกลับ";
+                    if (item.orderType == "delivery")
+                      item.orderType = "เดลิเวอรี";
                     return (
                       <HStack
                         key={item.orderId.toString()}
@@ -255,7 +261,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           {item.orderType}
                         </Text>
                         <NumberFormat
-                          value={item.orderTotal}
+                          value={item.receipt.receiptTotal}
                           displayType={"text"}
                           thousandSeparator={true}
                           decimalScale={2}

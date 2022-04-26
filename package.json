@@ -45,10 +45,12 @@
     "react-native-display-keyboard": "^0.2.0",
     "react-native-element-textinput": "^1.4.6",
     "react-native-elements": "^3.4.2",
+    "react-native-external-display": "^0.5.16",
     "react-native-fade-in-out": "^1.0.6",
     "react-native-form-select-picker": "^0.0.12",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal-selector": "^2.1.0",
+    "react-native-numeric-input": "^1.9.1",
     "react-native-numpad": "^0.3.0",
     "react-native-paper": "^4.11.2",
     "react-native-safe-area-context": "3.3.2",
@@ -70,7 +72,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/jest": "^27.0.3",
-    "@types/react": "^17.0.37",
+    "@types/react": "^17.0.41",
     "@types/react-native": "^0.66.9",
     "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
@@ -81,6 +83,9 @@
     "react-native-virtual-keyboard": "^1.2.0",
     "release-it": "^14.12.5",
     "typescript": "^4.5.4"
+  },
+  "resolutions": {
+    "@types/react": "17.0.43"
   },
   "private": true,
   "repository": "https://github.com/ynzier/codesom-app.git",

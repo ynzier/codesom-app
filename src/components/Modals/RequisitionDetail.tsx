@@ -31,7 +31,7 @@ const RequisitionDetail = ({
 }: {
   showDetail: boolean;
   setShowDetail: (boolean: boolean) => void;
-  reqId: number;
+  reqId: number | undefined;
   props?: any;
 }) => {
   const { promiseInProgress } = usePromiseTracker();
@@ -126,7 +126,7 @@ const RequisitionDetail = ({
                   console.log(e);
                 })
             );
-          }, 2000);
+          }, 1000);
         })
       );
     }
@@ -157,7 +157,9 @@ const RequisitionDetail = ({
             <>
               <Modal.CloseButton />
               <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
-                <Text fontSize="lg">ใบเบิกคลังสินค้า</Text>
+                <Text fontSize="lg" fontWeight={600}>
+                  ใบเบิกคลังสินค้า
+                </Text>
               </Modal.Header>
               <Modal.Body>
                 <ScrollView>
@@ -205,9 +207,9 @@ const RequisitionDetail = ({
                       {productList.length > 0 &&
                         productList.map((item: any) => (
                           <HStack key={item.prodId}>
-                            <Text flex="1">- {item.prodName}</Text>
+                            <Text flex="1">- {item.productName}</Text>
                             <Text textAlign="center" flex="1">
-                              {item.quantity} {item.prodUnit}
+                              {item.quantity} {item.productUnit}
                             </Text>
                           </HStack>
                         ))}
@@ -262,16 +264,17 @@ const RequisitionDetail = ({
                       )}
                     </VStack>
                   </Box>
+                  <Divider w="80%" alignSelf={"center"} mb="4" />
                   <HStack>
                     <VStack flex="1" alignItems="center">
-                      <Text>
+                      <Text fontWeight={500}>
                         {requisitData.creator && requisitData.creator.firstName}{" "}
                         {requisitData.creator && requisitData.creator.lastName}
                       </Text>
                       <Text>ผู้ทำรายการ</Text>
                     </VStack>
                     <VStack flex="1" alignItems="center">
-                      <Text>
+                      <Text fontWeight={500}>
                         {requisitData.approver &&
                           requisitData.approver.firstName}{" "}
                         {requisitData.approver &&
@@ -281,7 +284,7 @@ const RequisitionDetail = ({
                     </VStack>
                   </HStack>
                   <VStack flex="1" alignItems="center">
-                    <Text>
+                    <Text fontWeight={500}>
                       {requisitData.validator &&
                         requisitData.validator.firstName}{" "}
                       {requisitData.validator &&

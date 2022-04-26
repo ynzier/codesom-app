@@ -10,7 +10,6 @@ import {
   AlertDialog,
   Spinner,
 } from "native-base";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import VirtualKeyboard from "react-native-virtual-keyboard";
 import NumberFormat from "react-number-format";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
@@ -21,39 +20,30 @@ import ReceiptModal from "./ReceiptModal";
 const CashPayment = ({
   showModal,
   setShowModal,
-  fetchCartData,
-  setCartData,
   preSendData,
   setPreSendData,
-  setTotalIngr,
-  fetchTotalIngr,
   isCash,
   setIsCash,
   totalVat,
   orderTotal,
-  setPromoCart,
-  fetchPromoCart,
+  resetStorage,
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
-  fetchCartData: () => void;
-  fetchTotalIngr: () => void;
-  cartData: any;
-  setCartData: (a: any) => void;
   preSendData: any;
   setPreSendData: (a: any) => void;
   totalVat: any;
   isCash: any;
   setIsCash: (value: boolean) => void;
   orderTotal: any;
+  resetStorage: () => void;
   props?: any;
-  setTotalIngr: (value: any) => void;
-  setPromoCart: (value: any) => void;
-  fetchPromoCart: () => void;
 }) => {
   const [finishState, setFinishState] = useState(false);
   const [orderId, setOrderId] = useState<any>("");
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress: loadingTransaction } = usePromiseTracker({
+    area: "loadingTransaction",
+  });
   const [totalValue, setTotalValue] = useState("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
@@ -88,26 +78,9 @@ const CashPayment = ({
               .createOrderApp(sendData)
               .then((res) => {
                 setOrderId(res.data.orderId);
-                AsyncStorage.removeItem("cartData")
-                  .then(() => {
-                    setCartData([]);
-                  })
-                  .catch((e) => console.log(e));
-                AsyncStorage.removeItem("totalIngr")
-                  .then(() => {
-                    setTotalIngr([]);
-                  })
-                  .catch((e) => console.log(e));
-                AsyncStorage.removeItem("promoCart")
-                  .then(() => {
-                    setPromoCart([]);
-                  })
-                  .catch((e) => {
-                    console.log(e);
-                  });
-                fetchPromoCart();
-                fetchCartData();
-                fetchTotalIngr();
+
+                resetStorage();
+
                 Toast.show({
                   type: ALERT_TYPE.SUCCESS,
                   textBody: res.data.message,
@@ -131,7 +104,8 @@ const CashPayment = ({
               })
           );
         }, 2000);
-      })
+      }),
+      "loadingTransaction"
     );
   };
 
@@ -141,6 +115,7 @@ const CashPayment = ({
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         createOrder={createOrder}
+        loadingTransaction={loadingTransaction}
       />
       <NotEnoughAlert isAlertOpen={isAlertOpen} setAlertOpen={setAlertOpen} />
       <Modal
@@ -154,7 +129,7 @@ const CashPayment = ({
         size="lg"
       >
         <Modal.Content maxWidth="500">
-          {!isConfirm && <Modal.CloseButton />}
+          {finishState && <Modal.CloseButton />}
           <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
             <Text fontSize="lg">{!isConfirm ? "เงินสด" : "บันทึกยอด"}</Text>
           </Modal.Header>
@@ -192,7 +167,8 @@ const CashPayment = ({
                   <Button
                     colorScheme="emerald"
                     onPress={() => {
-                      if (isEnough(orderTotal, parseFloat(cash))) setIsOpen(true);
+                      if (isEnough(orderTotal, parseFloat(cash)))
+                        setIsOpen(true);
                       else setAlertOpen(true);
                     }}
                   >
@@ -221,7 +197,7 @@ const CashPayment = ({
                     <Text fontSize="lg" flex="1">
                       จ่ายเงินสด
                     </Text>
-                    {!promiseInProgress && (
+                    {!loadingTransaction && (
                       <Text fontSize="lg" textAlign="right" flex="1">
                         เลขที่ออเดอร์: {orderId}
                       </Text>
@@ -287,13 +263,13 @@ const CashPayment = ({
                       size="lg"
                       colorScheme="altred"
                       variant="subtle"
-                      disabled={promiseInProgress}
+                      disabled={loadingTransaction}
                       onPress={() => {
                         setFinishState(true);
                         setShowReceipt(true);
                       }}
                     >
-                      {promiseInProgress ? (
+                      {loadingTransaction ? (
                         <Spinner size="sm" color="altred.500" />
                       ) : (
                         "พิมพ์ใบเสร็จ"
@@ -356,10 +332,12 @@ const ConfirmDialog = ({
   isOpen,
   setIsOpen,
   createOrder,
+  loadingTransaction,
 }: {
   isOpen: boolean;
   setIsOpen: (any: boolean) => void;
   createOrder: () => void;
+  loadingTransaction: boolean;
 }) => {
   const onClose = () => {
     setIsOpen(false);
@@ -368,7 +346,6 @@ const ConfirmDialog = ({
     createOrder(); /////// <<<<<
   };
 
-  const { promiseInProgress } = usePromiseTracker();
   const cancelRef = useRef(null);
   return (
     <Center>
@@ -394,7 +371,7 @@ const ConfirmDialog = ({
                 ยกเลิก
               </Button>
               <Button colorScheme="emerald" onPress={onConfirm}>
-                {promiseInProgress ? (
+                {loadingTransaction ? (
                   <Spinner size="sm" color="altred.500" />
                 ) : (
                   "ตกลง"

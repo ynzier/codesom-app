@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import {
   Box,
@@ -12,61 +12,29 @@ import {
   View,
 } from "native-base";
 import { StyleSheet } from "react-native";
-import { requisitionService } from "services";
-import RequisitionModal from "../Modals/RequisitionModal";
-import RequisitionDetail from "../Modals/RequisitionDetail";
-// import AlertToast from "../AlertToast";
-import { useFocusEffect } from "@react-navigation/native";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/th"; // ES 2015
 
 dayjs.extend(localizedFormat);
 
-const StorageSidebar: React.FC = () => {
-  const { promiseInProgress } = usePromiseTracker({
+const StorageSidebarComponent = ({
+  listData,
+  handleFetch,
+  handleShowRequest,
+  handleShowDetail,
+}: {
+  listData: any[];
+  handleFetch: () => void;
+  handleShowDetail: (s: number | undefined) => void;
+  handleShowRequest: () => void;
+}) => {
+  const { promiseInProgress: storageSidebar } = usePromiseTracker({
     area: "sidebar",
   });
-  const [showDetail, setShowDetail] = useState(false);
-  const [showRequest, setShowRequest] = useState(false);
-  const [listData, setListData] = useState([]);
-  const [reqId, setReqId] = useState(0);
-
-  const fecthHistory = (isSubscribed: boolean) => {
-    void trackPromise(
-      requisitionService
-        .listReqApp()
-        .then((res) => {
-          if (isSubscribed) setListData(res.data);
-        })
-        .catch((error) => console.log(error)),
-      "sidebar"
-    );
-  };
-  useFocusEffect(
-    useCallback(() => {
-      let isSubscribed = true;
-
-      fecthHistory(isSubscribed);
-
-      return () => {
-        setListData([]);
-        isSubscribed = false;
-      };
-    }, [])
-  );
 
   return (
     <>
-      <RequisitionModal
-        showRequest={showRequest}
-        setShowRequest={setShowRequest}
-      />
-      <RequisitionDetail
-        showDetail={showDetail}
-        setShowDetail={setShowDetail}
-        reqId={reqId}
-      />
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
           <Box
@@ -89,10 +57,8 @@ const StorageSidebar: React.FC = () => {
             />
             <FlatList
               data={listData}
-              refreshing={promiseInProgress}
-              onRefresh={() => {
-                fecthHistory(true);
-              }}
+              refreshing={storageSidebar}
+              onRefresh={handleFetch}
               keyExtractor={(item: any) => item.requisitionId}
               renderItem={({ item }: any) => {
                 return (
@@ -132,10 +98,7 @@ const StorageSidebar: React.FC = () => {
                         <Text
                           fontSize={{ md: 12, xl: 16 }}
                           style={styles.lookup}
-                          onPress={() => {
-                            setReqId(item.requisitionId);
-                            setShowDetail(true);
-                          }}
+                          onPress={() => handleShowDetail(item.requisitionId)}
                         >
                           ดูรายการ
                         </Text>
@@ -168,7 +131,7 @@ const StorageSidebar: React.FC = () => {
               w="100%"
               h="75%"
               _text={{ fontSize: 20, color: "white" }}
-              onPress={() => setShowRequest(true)}
+              onPress={handleShowRequest}
             >
               สร้างคำขอ
             </Button>
@@ -178,8 +141,8 @@ const StorageSidebar: React.FC = () => {
     </>
   );
 };
-
-export default StorageSidebar;
+const StorageSidebar = memo(StorageSidebarComponent);
+export { StorageSidebar };
 
 const styles = StyleSheet.create({
   container: { padding: 12, marginBottom: 2 },

@@ -23,22 +23,22 @@ interface stuffData {
   };
 }
 const StuffList = ({ keyword }: { keyword: string }) => {
-  const { promiseInProgress } = usePromiseTracker({
-    area: "list",
+  const { promiseInProgress: stuffList } = usePromiseTracker({
+    area: "stuffList",
   });
-  const [productArray, setProductArray] = useState<stuffData[]>([]);
+  const [stuffData, setStuffData] = useState<stuffData[]>([]);
   const [filterData, setfilterData] = useState<stuffData[]>([]);
   const [showRequest, setShowRequest] = useState(false);
-  const fetchProductData = (isSubscribed: boolean) => {
-    void trackPromise(
+  const [fetched, setFetched] = useState(false);
+  const fetchProductData = async (isSubscribed: boolean) => {
+    await trackPromise(
       storageService
         .getAllStuffInStorage()
         .then((res) => {
           if (isSubscribed) {
-            if (res) {
-              const recData = res.data;
-              setProductArray(recData);
-            }
+            setFetched(true);
+            const recData = res.data;
+            setStuffData(recData);
           }
         })
         .catch((err) => {
@@ -46,25 +46,24 @@ const StuffList = ({ keyword }: { keyword: string }) => {
             console.log(err);
           }
         }),
-      "list"
+      "stuffList"
     );
   };
 
   useFocusEffect(
     useCallback(() => {
       let isSubscribed = true;
-      fetchProductData(isSubscribed);
+      if (!fetched) void fetchProductData(isSubscribed);
 
       return () => {
-        setProductArray([]);
         isSubscribed = false;
       };
-    }, [])
+    }, [fetched])
   );
   useFocusEffect(
     useCallback(() => {
       const search = (value: string) => {
-        const filterTable = productArray.filter((o: any) =>
+        const filterTable = stuffData.filter((o: any) =>
           Object.keys(o).some((k: any) =>
             String(o[k]).toLowerCase().includes(value.toLowerCase())
           )
@@ -73,7 +72,7 @@ const StuffList = ({ keyword }: { keyword: string }) => {
       };
       search(keyword);
       return () => {};
-    }, [keyword, productArray])
+    }, [keyword, stuffData])
   );
 
   return (
@@ -138,10 +137,10 @@ const StuffList = ({ keyword }: { keyword: string }) => {
           </Text>
         </HStack>
         <FlatList
-          data={filterData == null ? productArray : filterData}
-          refreshing={promiseInProgress}
+          data={filterData == null ? stuffData : filterData}
+          refreshing={stuffList}
           onRefresh={() => {
-            fetchProductData(true);
+            void fetchProductData(true);
           }}
           keyExtractor={(item: any) => item.stuffId}
           renderItem={({ item }: ListRenderItemInfo<stuffData>) => {

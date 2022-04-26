@@ -39,8 +39,8 @@ const theme = extendTheme({
       baseStyle: {
         lineHeight: { lg: "xl" },
         fontSize: {
-          lg: "14",
-          xl: "18",
+          lg: 14,
+          xl: 18,
         },
       },
     },
@@ -126,7 +126,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
     productId: string;
     productName: string;
     productPrice: string;
-    prCount: number;
+    quantity: number;
     [name: string]: any;
   };
   const [cartData, setCartData] = useState<ICartArray[]>([]);

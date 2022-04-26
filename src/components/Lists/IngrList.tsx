@@ -3,6 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { ListRenderItemInfo, StyleSheet } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { storageService } from "services";
 import { Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
@@ -22,47 +23,53 @@ interface ingrData {
   };
 }
 const IngrList = ({ keyword }: { keyword: string }) => {
-  const { promiseInProgress } = usePromiseTracker({
-    area: "list",
+  const { promiseInProgress: loadingIngr } = usePromiseTracker({
+    area: "loadingIngr",
   });
-  const [productArray, setProductArray] = useState<ingrData[]>([]);
+  const [ingrArray, setIngrArray] = useState<ingrData[]>([]);
   const [filterData, setfilterData] = useState<ingrData[]>([]);
-  const fetchProductData = (isSubscribed: boolean) => {
-    void trackPromise(
+  const [fetched, setFetched] = useState(false);
+  const fetchProductData = async (isSubscribed: boolean) => {
+    await trackPromise(
       storageService
         .getAllIngrInStorage()
         .then((res) => {
           if (isSubscribed) {
-            if (res) {
-              const recData = res.data;
-              setProductArray(recData);
-            }
+            setFetched(true);
+            const recData = res.data;
+            setIngrArray(recData);
           }
         })
-        .catch((err) => {
-          if (isSubscribed) {
-            console.log(err);
-          }
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            textBody: resMessage,
+          });
         }),
-      "list"
+      "loadingIngr"
     );
   };
 
   useFocusEffect(
     useCallback(() => {
       let isSubscribed = true;
-      fetchProductData(isSubscribed);
+      if (!fetched) void fetchProductData(isSubscribed);
 
       return () => {
-        setProductArray([]);
         isSubscribed = false;
       };
-    }, [])
+    }, [fetched])
   );
   useFocusEffect(
     useCallback(() => {
       const search = (value: string) => {
-        const filterTable = productArray.filter((o: any) =>
+        const filterTable = ingrArray.filter((o: any) =>
           Object.keys(o).some((k: any) =>
             String(o[k]).toLowerCase().includes(value.toLowerCase())
           )
@@ -71,7 +78,7 @@ const IngrList = ({ keyword }: { keyword: string }) => {
       };
       search(keyword);
       return () => {};
-    }, [keyword, productArray])
+    }, [keyword, ingrArray])
   );
 
   return (
@@ -129,10 +136,10 @@ const IngrList = ({ keyword }: { keyword: string }) => {
         </Text>
       </HStack>
       <FlatList
-        data={filterData == null ? productArray : filterData}
-        refreshing={promiseInProgress}
+        data={filterData == null ? ingrArray : filterData}
+        refreshing={loadingIngr}
         onRefresh={() => {
-          fetchProductData(true);
+          void fetchProductData(true);
         }}
         keyExtractor={(item: any) => item.ingrId}
         renderItem={({ item }: ListRenderItemInfo<ingrData>) => {

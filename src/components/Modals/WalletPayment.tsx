@@ -118,8 +118,6 @@ const WalletPayment = ({
   setCartData,
   preSendData,
   setPreSendData,
-  setTotalIngr,
-  fetchTotalIngr,
   isWallet,
   setIsWallet,
   orderTotal,
@@ -129,7 +127,7 @@ const WalletPayment = ({
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
   fetchCartData: () => void;
-  fetchTotalIngr: () => void;
+
   cartData: any;
   setCartData: (a: any) => void;
   preSendData: any;
@@ -139,13 +137,15 @@ const WalletPayment = ({
   setIsWallet: (value: boolean) => void;
   orderTotal: any;
   props?: any;
-  setTotalIngr: (value: any) => void;
+
   setPromoCart: (value: any) => void;
   fetchPromoCart: () => void;
 }) => {
   const [finishState, setFinishState] = useState(false);
   const [orderId, setOrderId] = useState<any>("");
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress: createWalletOrder } = usePromiseTracker({
+    area: "createWalletOrder",
+  });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [wallet, setWallet] = useState("");
   const [showReceipt, setShowReceipt] = useState(false);
@@ -174,11 +174,6 @@ const WalletPayment = ({
                     setCartData([]);
                   })
                   .catch((e) => console.log(e));
-                AsyncStorage.removeItem("totalIngr")
-                  .then(() => {
-                    setTotalIngr([]);
-                  })
-                  .catch((e) => console.log(e));
                 AsyncStorage.removeItem("promoCart")
                   .then(() => {
                     setPromoCart([]);
@@ -188,7 +183,6 @@ const WalletPayment = ({
                   });
                 fetchPromoCart();
                 fetchCartData();
-                fetchTotalIngr();
                 Toast.show({
                   type: ALERT_TYPE.SUCCESS,
                   textBody: res.data.message,
@@ -214,7 +208,8 @@ const WalletPayment = ({
               })
           );
         }, 2000);
-      })
+      }),
+      "createWalletOrder"
     );
   };
 
@@ -224,6 +219,7 @@ const WalletPayment = ({
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         createOrder={createOrder}
+        createWalletOrder={createWalletOrder}
       />
       <Modal
         avoidKeyboard
@@ -320,10 +316,12 @@ const ConfirmDialog = ({
   isOpen,
   setIsOpen,
   createOrder,
+  createWalletOrder,
 }: {
   isOpen: boolean;
   setIsOpen: (any: boolean) => void;
   createOrder: () => void;
+  createWalletOrder: boolean;
 }) => {
   const onClose = () => {
     setIsOpen(false);
@@ -332,7 +330,6 @@ const ConfirmDialog = ({
     createOrder(); /////// <<<<<
   };
 
-  const { promiseInProgress } = usePromiseTracker();
   const cancelRef = useRef(null);
   return (
     <Center>
@@ -358,7 +355,7 @@ const ConfirmDialog = ({
                 ยกเลิก
               </Button>
               <Button colorScheme="emerald" onPress={onConfirm}>
-                {promiseInProgress ? (
+                {createWalletOrder ? (
                   <Spinner size="sm" color="altred.500" />
                 ) : (
                   "ตกลง"
