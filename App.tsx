@@ -431,7 +431,6 @@ const App: React.FC<Props> = () => {
       <AppLoading
         startAsync={LoadFonts}
         onFinish={() => {
-          console.log("load done");
           SetIsReady(true);
         }}
         onError={() => {}}

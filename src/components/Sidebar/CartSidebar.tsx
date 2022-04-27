@@ -83,7 +83,6 @@ const CartSidebar: React.FC<Props> = ({
           error.response.data.message) ||
         error.message ||
         error.toString();
-      console.log(resMessage);
       return Toast.show({
         type: ALERT_TYPE.DANGER,
         textBody: resMessage,
@@ -237,7 +236,7 @@ const CartSidebar: React.FC<Props> = ({
               }}
               totalWidth={100}
               totalHeight={40}
-              minValue={0}
+              minValue={1}
               maxValue={99}
               initValue={data.item.quantity}
               step={1}

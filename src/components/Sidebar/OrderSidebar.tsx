@@ -266,34 +266,26 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
         <QRPayment
           showModal={showQRModal}
           setShowModal={setShowQRModal}
-          fetchCartData={fetchCartData}
-          cartData={cartData}
-          setCartData={setCartData}
+          resetStorage={resetStorage}
           preSendData={preSendData}
           setPreSendData={setPreSendData}
           totalVat={totalVat}
           isQR={isQR}
           setIsQR={setIsQR}
           orderTotal={parseFloat(total).toFixed(2)}
-          setPromoCart={setPromoCart}
-          fetchPromoCart={fetchPromoCart}
         />
       )}
       {showWalletModal && (
         <WalletPayment
           showModal={showWalletModal}
           setShowModal={setShowWalletModal}
-          fetchCartData={fetchCartData}
-          cartData={cartData}
-          setCartData={setCartData}
           preSendData={preSendData}
           setPreSendData={setPreSendData}
+          resetStorage={resetStorage}
           totalVat={totalVat}
           isWallet={isWallet}
           setIsWallet={setIsWallet}
           orderTotal={parseFloat(total).toFixed(2)}
-          setPromoCart={setPromoCart}
-          fetchPromoCart={fetchPromoCart}
         />
       )}
       <HStack w="100%" flex="1" bg="#FFF0D9">

@@ -71,7 +71,7 @@ const DeliverySidebar = ({
               รายการสินค้า
             </Text>
             {loadingDeliverySidebar ? (
-              <Spinner size={"lg"} color="cream" />
+              <Spinner flex="1" size={"lg"} color="cream" />
             ) : (
               <FlatList
                 data={itemList}

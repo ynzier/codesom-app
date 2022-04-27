@@ -415,6 +415,7 @@ const ReceiptModal = ({
                   colorScheme="emerald"
                   onPress={() => {
                     setShowReceipt(false);
+                    if (setShowModal) setShowModal(false);
                   }}
                 >
                   เสร็จสิ้น

@@ -16,9 +16,6 @@ const deviceStorage = {
       await AsyncStorage.getItem("accessToken", (error: any, result: any) => {
         if (result) {
           return JSON.stringify(result);
-        } else {
-          console.log("error1:", JSON.stringify(error));
-          return;
         }
       });
     } catch (error) {
@@ -26,22 +23,11 @@ const deviceStorage = {
     }
   },
   async deleteJWT() {
-    try {
-      await AsyncStorage.removeItem("accessToken").then(() => {
-        console.log("log out");
-      });
-    } catch (error) {
-      console.log("AsyncStorage Error: " + error);
-      throw error;
-    }
+    await AsyncStorage.removeItem("accessToken");
   },
   async setBranchInfo(value: string): Promise<void> {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("branchInfo", jsonValue);
-    } catch (e) {
-      console.log("AsyncStorage Error: " + e);
-    }
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem("branchInfo", jsonValue);
   },
 };
 

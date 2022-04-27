@@ -12,7 +12,6 @@ import {
   Image,
 } from "native-base";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import NumberFormat from "react-number-format";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
@@ -22,32 +21,23 @@ import ReceiptModal from "./ReceiptModal";
 const QRPayment = ({
   showModal,
   setShowModal,
-  fetchCartData,
-  setCartData,
   preSendData,
   setPreSendData,
   isQR,
   setIsQR,
   orderTotal,
-  setPromoCart,
-  fetchPromoCart,
+  resetStorage,
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
-  fetchCartData: () => void;
-
-  cartData: any;
-  setCartData: (a: any) => void;
   preSendData: any;
   setPreSendData: (a: any) => void;
   totalVat: any;
+  resetStorage: () => void;
   isQR: any;
   setIsQR: (value: boolean) => void;
   orderTotal: any;
   props?: any;
-
-  setPromoCart: (value: any) => void;
-  fetchPromoCart: () => void;
 }) => {
   const [finishState, setFinishState] = useState(false);
   const [orderId, setOrderId] = useState<any>("");
@@ -98,21 +88,7 @@ const QRPayment = ({
                   .createOrderOmise(sendData)
                   .then((res) => {
                     setOrderId(res.data.orderId);
-                    AsyncStorage.removeItem("cartData")
-                      .then(() => {
-                        setCartData([]);
-                      })
-                      .catch((e) => console.log(e));
-                    AsyncStorage.removeItem("promoCart")
-                      .then(() => {
-                        setPromoCart([]);
-                      })
-                      .catch((e) => {
-                        console.log(e);
-                      });
-                    fetchPromoCart();
-                    fetchCartData();
-
+                    resetStorage();
                     Toast.show({
                       type: ALERT_TYPE.SUCCESS,
                       textBody: res.data.message,
@@ -182,17 +158,13 @@ const QRPayment = ({
     base64,
     breaker,
     chrgId,
-    fetchCartData,
-    fetchPromoCart,
-
     finishState,
     isQR,
     omiseNet,
     preSendData,
-    setCartData,
+    resetStorage,
     setIsQR,
     setPreSendData,
-    setPromoCart,
     setShowModal,
   ]);
 

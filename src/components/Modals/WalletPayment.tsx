@@ -114,32 +114,23 @@ const Dolphin = ({
 const WalletPayment = ({
   showModal,
   setShowModal,
-  fetchCartData,
-  setCartData,
   preSendData,
   setPreSendData,
   isWallet,
   setIsWallet,
   orderTotal,
-  setPromoCart,
-  fetchPromoCart,
+  resetStorage,
 }: {
   showModal: boolean;
   setShowModal: (boolean: boolean) => void;
-  fetchCartData: () => void;
-
-  cartData: any;
-  setCartData: (a: any) => void;
   preSendData: any;
   setPreSendData: (a: any) => void;
   totalVat: any;
   isWallet: any;
   setIsWallet: (value: boolean) => void;
   orderTotal: any;
+  resetStorage: () => void;
   props?: any;
-
-  setPromoCart: (value: any) => void;
-  fetchPromoCart: () => void;
 }) => {
   const [finishState, setFinishState] = useState(false);
   const [orderId, setOrderId] = useState<any>("");
@@ -169,20 +160,7 @@ const WalletPayment = ({
               .createOrderEwallet(sendData)
               .then((res) => {
                 setOrderId(res.data.orderId);
-                AsyncStorage.removeItem("cartData")
-                  .then(() => {
-                    setCartData([]);
-                  })
-                  .catch((e) => console.log(e));
-                AsyncStorage.removeItem("promoCart")
-                  .then(() => {
-                    setPromoCart([]);
-                  })
-                  .catch((e) => {
-                    console.log(e);
-                  });
-                fetchPromoCart();
-                fetchCartData();
+                resetStorage();
                 Toast.show({
                   type: ALERT_TYPE.SUCCESS,
                   textBody: res.data.message,
