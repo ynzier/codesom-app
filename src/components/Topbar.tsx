@@ -37,7 +37,7 @@ const Topbar = () => {
   return (
     <HStack
       w="100%"
-      flex="1"
+      height={16}
       bg="browntheme.500"
       justifyContent="center"
       alignItems="center"

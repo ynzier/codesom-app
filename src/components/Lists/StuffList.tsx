@@ -89,50 +89,27 @@ const StuffList = ({ keyword }: { keyword: string }) => {
         px={4}
         py={2}
         mt="2"
-        borderWidth={1}
-        borderRadius={5}
+        borderTopWidth={1}
+        borderColor="light.300"
       >
         <HStack
           borderBottomWidth={1}
+          borderColor="light.300"
           h="12"
           justifyContent="center"
           alignItems="center"
           mb="4"
         >
-          <Text
-            flex="1"
-            textAlign="center"
-            fontSize={{ md: "md", sm: "12" }}
-            fontWeight={600}
-            letterSpacing="xl"
-          >
+          <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
             รหัสวัตถุดิบ
           </Text>
-          <Text
-            flex="2"
-            textAlign="center"
-            fontSize={{ md: "md", sm: "12" }}
-            fontWeight={600}
-            letterSpacing="xl"
-          >
+          <Text flex="2" textAlign="center" fontWeight={600} letterSpacing="xl">
             ชื่อวัตถุดิบ
           </Text>
-          <Text
-            flex="1"
-            textAlign="center"
-            fontSize={{ md: "md", sm: "12" }}
-            fontWeight={600}
-            letterSpacing="xl"
-          >
+          <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
             คงเหลือ
           </Text>
-          <Text
-            flex="2"
-            textAlign="center"
-            fontSize={{ md: "md", sm: "12" }}
-            fontWeight={600}
-            letterSpacing="xl"
-          >
+          <Text flex="2" textAlign="center" fontWeight={600} letterSpacing="xl">
             อัพเดทล่าสุด
           </Text>
         </HStack>
@@ -152,26 +129,16 @@ const StuffList = ({ keyword }: { keyword: string }) => {
                 alignItems="center"
                 h="12"
               >
-                <Text
-                  flex="1"
-                  textAlign="center"
-                  fontSize={{ md: "md", sm: "12" }}
-                  textDecorationLine="underline"
-                  onPress={() => {}}
-                >
+                <Text flex="1" textAlign="center">
                   {item.stuffId}
                 </Text>
-                <Text
-                  flex="2"
-                  textAlign="center"
-                  fontSize={{ md: "md", sm: "12" }}
-                >
+                <Text flex="2" textAlign="center">
                   {item.stuff.stuffName}
                 </Text>
                 <Text
                   flex="1"
                   textAlign="center"
-                  fontSize={{ md: "md", sm: "12" }}
+                  color={item.itemRemain < 20 ? "red.500" : "light.900"}
                 >
                   {item.itemRemain} {item.stuff.stuffUnit}{" "}
                   <AntDesign
@@ -183,11 +150,7 @@ const StuffList = ({ keyword }: { keyword: string }) => {
                     }}
                   />
                 </Text>
-                <Text
-                  flex="2"
-                  textAlign="center"
-                  fontSize={{ md: "md", sm: "12" }}
-                >
+                <Text flex="2" textAlign="center">
                   {dayjs(item.updatedAt)
                     .locale("th")
                     .format("D MMMM YYYY เวลา HH:mm")}

@@ -95,16 +95,16 @@ const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              w="95%"
+              w="100%"
               flex="10"
               alignSelf="center"
               alignItems="center"
               mt="4"
-              mb={{ md: "10%", xl: "6%" }}
+              mb="82px"
               justifyContent="center"
             >
               <VStack w="100%" flex="10">
-                <HStack h="20" w="100%" alignItems="center">
+                <HStack h="12" w="100%" alignItems="center">
                   <StorageTab
                     tabIndex={tabIndex}
                     setTabIndex={setTabIndex}

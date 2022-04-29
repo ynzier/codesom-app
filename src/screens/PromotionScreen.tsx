@@ -32,30 +32,20 @@ const PromotionScreen: React.FC<Props> = ({
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              w="95%"
+              w="100%"
               flex="10"
               alignSelf="center"
               alignItems="center"
               mt="4"
-              mb={{ md: "10%", xl: "6%" }}
+              marginBottom={"82px"}
               justifyContent="center"
             >
-              <HStack
-                w="100%"
-                flex="1"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize="xl">โปรโมชัน</Text>
+              <HStack w="100%" alignItems="center" justifyContent="center">
+                <Text fontSize="xl" fontWeight={500}>
+                  โปรโมชัน
+                </Text>
               </HStack>
-              <VStack
-                w="100%"
-                flex="12"
-                px={4}
-                py={2}
-                borderWidth={1}
-                borderRadius={5}
-              >
+              <VStack w="100%" flex="12">
                 <PromotionList
                   cartData={cartData}
                   setCartData={setCartData}

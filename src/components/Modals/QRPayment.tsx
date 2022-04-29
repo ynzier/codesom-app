@@ -47,8 +47,10 @@ const QRPayment = ({
   const [showReceipt, setShowReceipt] = useState(false);
   const [base64, setBase64] = useState("");
   const [breaker, setBreaker] = useState(0);
+  const [fetchQR, setFetchQR] = useState(false);
   useEffect(() => {
     const getQR = async () => {
+      setFetchQR(true);
       await orderService
         .getQR({ orderData: preSendData, amount: orderTotal })
         .then((res) => {
@@ -60,12 +62,14 @@ const QRPayment = ({
           console.log(err);
         });
     };
-    if (orderTotal && !finishState) {
+    if (orderTotal && !finishState && !fetchQR) {
       void trackPromise(getQR());
     }
 
-    return () => {};
-  }, [finishState, orderTotal, preSendData]);
+    return () => {
+      setFetchQR(false);
+    };
+  }, [fetchQR, finishState, orderTotal, preSendData]);
 
   useEffect(() => {
     const createOrder = () => {
@@ -179,8 +183,15 @@ const QRPayment = ({
       >
         <Modal.Content minW={"100%"} minH={"100%"} alignItems="center">
           <Modal.CloseButton />
-          <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
-            <Text fontSize="lg">Thai QR</Text>
+          <Modal.Header
+            mx="4"
+            borderBottomWidth={1}
+            alignItems="center"
+            w="40%"
+          >
+            <Text fontWeight={600} fontSize="md">
+              Thai QR
+            </Text>
           </Modal.Header>
           <Modal.Body>
             {promiseInProgress ? (
@@ -202,8 +213,8 @@ const QRPayment = ({
                   fixedDecimalScale
                   renderText={(formattedValue) => (
                     <Text
-                      fontWeight={400}
-                      fontSize={{ md: 12, xl: 18 }}
+                      fontWeight={600}
+                      fontSize="md"
                       flexWrap="wrap"
                       textAlign={"center"}
                     >

@@ -11,10 +11,11 @@ import {
   Spinner,
 } from "native-base";
 import NumericInput from "react-native-numeric-input";
+import { FontAwesome } from "@expo/vector-icons";
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import IconCart from "../IconCart";
+
 import Feather from "react-native-vector-icons/Feather";
 // import AlertToast from "../AlertToast";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
@@ -166,56 +167,70 @@ const CartSidebar: React.FC<Props> = ({
     },
     rowMap: any
   ) => (
-    <SwipeRow
-      disableRightSwipe
-      rightOpenValue={-60}
-      previewOpenValue={-40}
-      previewRepeatDelay={3000}
-    >
-      <View style={styles.rowBack}>
-        <TouchableOpacity
-          style={[styles.backRightBtn, styles.backRightBtnRight]}
-          onPress={() => deleteRow(rowMap, data.item.key)}
-        >
-          <Feather name="trash-2" color="#000" size={32} />
-        </TouchableOpacity>
-      </View>
-      <Box
-        borderWidth="0"
-        borderRadius="18"
-        bg="altred.500"
-        px="5"
-        py="2"
-        mx="4"
-        my="1"
+    <>
+      <SwipeRow
+        disableRightSwipe
+        rightOpenValue={-60}
+        previewOpenValue={-40}
+        previewRepeatDelay={3000}
       >
-        <HStack space={3} justifyContent="center">
-          <VStack w="100%" flex="6" mr="0">
-            <Text
-              fontFamily="mono"
-              fontWeight={600}
-              fontSize={{
-                md: "lg",
-                xl: "xl",
-              }}
-              color="#FFF"
-              numberOfLines={1}
-            >
+        <View style={styles.rowBack}>
+          <TouchableOpacity
+            style={[styles.backRightBtn, styles.backRightBtnRight]}
+            onPress={() => deleteRow(rowMap, data.item.key)}
+          >
+            <Feather name="trash-2" color="#000" size={32} />
+          </TouchableOpacity>
+        </View>
+        <HStack
+          px="5"
+          bg="#FFF0D9"
+          py="2"
+          borderBottomColor={"light.400"}
+          borderBottomWidth={1}
+        >
+          <VStack flex={1} marginRight={1}>
+            <Text flex="2" numberOfLines={1} fontSize={14} ellipsizeMode="tail">
               {data.item.productName}
             </Text>
-            <Text
-              fontFamily="mono"
-              fontWeight={400}
-              color="#FFF"
-              numberOfLines={1}
-            >
-              {data.item.productPrice} บาท/รายการ
-            </Text>
+            <NumberFormat
+              value={data.item.productPrice}
+              displayType={"text"}
+              thousandSeparator={true}
+              decimalScale={0}
+              fixedDecimalScale
+              renderText={(formattedValue) => (
+                <Text
+                  fontFamily="mono"
+                  fontWeight={400}
+                  numberOfLines={1}
+                  flex="1"
+                >
+                  {formattedValue} บาท/รายการ
+                </Text>
+              )}
+            />
           </VStack>
-          <Box justifyContent={"center"} alignItems={"center"}>
+          <Box justifyContent={"center"}>
             <NumericInput
               value={data.item.quantity}
               onChange={(value) => {
+                if (value > 99) {
+                  setCartData(
+                    Object.values({
+                      ...cartData,
+                      [data.index]: {
+                        ...cartData[data.index],
+                        quantity: 99,
+                      },
+                    })
+                  );
+                  return Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "คำเตือน!",
+                    textBody: "เกินจำนวนสูงสุดแล้ว",
+                  });
+                }
                 setCartData(
                   Object.values({
                     ...cartData,
@@ -234,21 +249,20 @@ const CartSidebar: React.FC<Props> = ({
                     textBody: "ถึงจำนวนสูงสุดแล้ว",
                   });
               }}
-              totalWidth={100}
-              totalHeight={40}
+              totalWidth={70}
               minValue={1}
+              totalHeight={32}
               maxValue={99}
               initValue={data.item.quantity}
               step={1}
               valueType="integer"
               rounded
-              textColor={"white"}
               separatorWidth={1}
             />
           </Box>
         </HStack>
-      </Box>
-    </SwipeRow>
+      </SwipeRow>
+    </>
   );
 
   const renderHiddenPromoItem = (
@@ -270,9 +284,9 @@ const CartSidebar: React.FC<Props> = ({
       area: "setCart",
     });
     return settingCart ? (
-      <Spinner size="lg" color="cream" />
+      <Spinner size="sm" color="cream" />
     ) : (
-      <Text color="white" fontSize={20}>
+      <Text color="white" fontSize={"md"}>
         ชำระเงิน
       </Text>
     );
@@ -297,8 +311,10 @@ const CartSidebar: React.FC<Props> = ({
             justifyContent="center"
             alignItems="center"
           >
-            <Text fontSize={{ md: 32, xl: 46 }}>รายการ</Text>
-            <Text fontSize={{ md: 32, xl: 46 }} marginLeft="10">
+            <Text fontSize={24} fontWeight={600}>
+              รายการ
+            </Text>
+            <Text fontSize={24} fontWeight={600} marginLeft="10">
               {cartData.length}
             </Text>
           </Box>
@@ -306,7 +322,7 @@ const CartSidebar: React.FC<Props> = ({
           <Divider thickness="1" mb={4} width="90%" bg="black" />
           <Box flex="5" w="100%" h="100%" justifyContent="center">
             {!cartData.length ? (
-              <Text alignSelf="center" fontSize={20} color="#837B7F">
+              <Text alignSelf="center" color="#837B7F">
                 ไม่มีรายการสินค้า
               </Text>
             ) : (
@@ -319,76 +335,111 @@ const CartSidebar: React.FC<Props> = ({
               </>
             )}
           </Box>
-          <Box flex="3" w="100%" h="100%" justifyContent="center">
+          <Box flex="4" w="100%" h="100%" justifyContent="center">
             {promoCart[0] == null ? (
-              <Text alignSelf="center" fontSize={20} color="#837B7F">
+              <Text alignSelf="center" color="#837B7F">
                 ไม่มีโปรโมชันที่เลือก
               </Text>
             ) : (
               <>
-                <Text
-                  mb="4"
-                  ml="4"
-                  fontSize={20}
-                  fontWeight={600}
-                  color="coolGray.800"
-                >
+                <Text mb="4" ml="4" fontWeight={600} color="coolGray.800">
                   โปรโมชัน
                 </Text>
                 <SwipeListView
                   data={promoCart}
-                  renderItem={({ item }: { item: any }) => (
-                    <HStack
-                      borderWidth="0"
-                      borderRadius="18"
-                      bg="altred.500"
-                      px="5"
-                      py="2"
-                      mx="4"
-                      my="1"
-                    >
-                      <Text
-                        flex="2"
-                        fontSize="18px"
-                        fontWeight={600}
-                        color="coolGray.200"
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
+                  renderItem={({
+                    item,
+                    index,
+                  }: {
+                    item: any;
+                    index: number;
+                  }) => (
+                    <>
+                      <HStack
+                        px="5"
+                        bg="#FFF0D9"
+                        py="2"
+                        borderBottomColor={"light.400"}
+                        borderBottomWidth={1}
                       >
-                        {item.promoName}
-                      </Text>
-                      <Box mb="2">
-                        <NumberFormat
-                          value={item.promoPrice}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          decimalScale={2}
-                          fixedDecimalScale
-                          renderText={(formattedValue) => (
-                            <Text
-                              fontFamily="mono"
-                              fontWeight={400}
-                              color="#FFF"
-                              numberOfLines={1}
-                              textAlign="right"
-                              flex="1"
-                            >
-                              {formattedValue}.-
-                            </Text>
-                          )}
-                        />
-                        <Text
-                          fontFamily="mono"
-                          fontWeight={400}
-                          color="#FFF"
-                          numberOfLines={1}
-                          textAlign="right"
-                          flex="1"
-                        >
-                          {item.promoCount} รายการ
-                        </Text>
-                      </Box>
-                    </HStack>
+                        <VStack flex={1} marginRight={1}>
+                          <Text
+                            flex="2"
+                            numberOfLines={1}
+                            fontSize={14}
+                            ellipsizeMode="tail"
+                          >
+                            {item.promoName}
+                          </Text>
+                          <NumberFormat
+                            value={item.promoPrice}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            decimalScale={0}
+                            fixedDecimalScale
+                            renderText={(formattedValue) => (
+                              <Text
+                                fontFamily="mono"
+                                fontWeight={400}
+                                numberOfLines={1}
+                                flex="1"
+                              >
+                                {formattedValue} บาท/รายการ
+                              </Text>
+                            )}
+                          />
+                        </VStack>
+                        <Box justifyContent={"center"}>
+                          <NumericInput
+                            value={item.promoCount}
+                            onChange={(value) => {
+                              if (value > 99) {
+                                setPromoCart(
+                                  Object.values({
+                                    ...promoCart,
+                                    [index]: {
+                                      ...promoCart[index],
+                                      promoCount: 99,
+                                    },
+                                  })
+                                );
+                                return Toast.show({
+                                  type: ALERT_TYPE.DANGER,
+                                  title: "คำเตือน!",
+                                  textBody: "เกินจำนวนสูงสุดแล้ว",
+                                });
+                              }
+                              setPromoCart(
+                                Object.values({
+                                  ...promoCart,
+                                  [index]: {
+                                    ...promoCart[index],
+                                    promoCount: value,
+                                  },
+                                })
+                              );
+                            }}
+                            onLimitReached={(isMax) => {
+                              if (isMax)
+                                Toast.show({
+                                  type: ALERT_TYPE.DANGER,
+                                  title: "คำเตือน!",
+                                  textBody: "ถึงจำนวนสูงสุดแล้ว",
+                                });
+                            }}
+                            totalWidth={70}
+                            minValue={1}
+                            totalHeight={32}
+                            maxValue={99}
+                            initValue={item.promoCount}
+                            step={1}
+                            valueType="integer"
+                            rounded
+                            separatorWidth={1}
+                          />
+                        </Box>
+                      </HStack>
+                    </>
                   )}
                   renderHiddenItem={renderHiddenPromoItem}
                   rightOpenValue={-60}
@@ -400,14 +451,14 @@ const CartSidebar: React.FC<Props> = ({
               </>
             )}
           </Box>
-          <Box flex="2" w={{ md: "90%", xl: "80%" }} h="100%">
+          <Box flex="2" w="100%" px="4" h="100%">
             <Divider thickness="1" mb={3} width="100%" bg="black" />
             <VStack>
               <HStack>
                 <Text
                   flex="1"
                   textAlign="left"
-                  fontSize="18px"
+                  fontSize={"md"}
                   fontWeight={600}
                 >
                   ราคารวม
@@ -415,7 +466,7 @@ const CartSidebar: React.FC<Props> = ({
                 <Text
                   flex="2"
                   textAlign="right"
-                  fontSize="18px"
+                  fontSize={"md"}
                   fontWeight={600}
                 >
                   {sumAll} บาท
@@ -425,7 +476,7 @@ const CartSidebar: React.FC<Props> = ({
                 <Text
                   flex="1"
                   textAlign="left"
-                  fontSize="18px"
+                  fontSize={"md"}
                   fontWeight={600}
                 >
                   ส่วนลด
@@ -433,7 +484,7 @@ const CartSidebar: React.FC<Props> = ({
                 <Text
                   flex="2"
                   textAlign="right"
-                  fontSize="18px"
+                  fontSize={"md"}
                   fontWeight={600}
                 >
                   {totalDiscount} บาท
@@ -443,7 +494,7 @@ const CartSidebar: React.FC<Props> = ({
                 <Text
                   flex="1"
                   textAlign="left"
-                  fontSize="18px"
+                  fontSize={"md"}
                   fontWeight={600}
                 >
                   ราคาสุทธิ
@@ -451,7 +502,7 @@ const CartSidebar: React.FC<Props> = ({
                 <Text
                   flex="2"
                   textAlign="right"
-                  fontSize="18px"
+                  fontSize={"md"}
                   fontWeight={600}
                 >
                   {total} บาท
@@ -469,11 +520,13 @@ const CartSidebar: React.FC<Props> = ({
           >
             <Button
               borderRadius="xl"
-              colorScheme="greenalt"
+              colorScheme="emerald"
               mx="4"
               w="100%"
               h="75%"
-              startIcon={<Icon as={IconCart} size={5} />}
+              leftIcon={
+                <FontAwesome name="shopping-basket" size={20} color="white" />
+              }
               onPress={() => {
                 void handleCompleteCart();
               }}
@@ -490,12 +543,10 @@ const styles = StyleSheet.create({
   rowBack: {
     alignItems: "center",
     flex: 1,
-    marginLeft: 24,
-    marginTop: 4,
-    marginBottom: 4,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingLeft: 15,
+    backgroundColor: "red",
+    marginBottom: 2,
   },
   backRightBtn: {
     alignItems: "center",
@@ -503,15 +554,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "absolute",
     top: 0,
+    right: 12,
     width: "100%",
-    backgroundColor: "red",
   },
   backRightBtnRight: {
     alignItems: "flex-end",
-    backgroundColor: "red",
-    borderRadius: 24,
-    right: 16,
-    paddingRight: 16,
   },
 });
 

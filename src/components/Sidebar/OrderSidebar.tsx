@@ -14,7 +14,7 @@ import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import IconCart from "../IconCart";
+import { FontAwesome } from "@expo/vector-icons";
 import CashPayment from "../Modals/CashPayment";
 import QRPayment from "../Modals/QRPayment";
 import WalletPayment from "../Modals/WalletPayment";
@@ -169,6 +169,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     setCashModal(true);
   };
   const postQROrder = () => {
+    console.log("first");
     const ordHeader: any = {
       orderItems: cartData && cartData.length,
       orderTotal: parseFloat(total).toFixed(2),
@@ -298,57 +299,51 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
             justifyContent="center"
             px="0"
           >
-            <VStack w="100%" alignItems="center" justifyContent="center">
-              <Text fontSize={{ md: 32, xl: 46 }}>สรุปรายการ</Text>
+            <HStack
+              w="100%"
+              h="100%"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text
+                fontSize={24}
+                fontWeight={600}
+                flex="1"
+                textAlign={"center"}
+              >
+                สรุปรายการ
+              </Text>
               <MaterialIcons
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: 0,
-                  fontSize: 32,
-                }}
+                size={18}
+                style={{ position: "absolute", top: 8, right: 12 }}
                 name="cancel"
                 onPress={() => {
                   void handleCancel();
                 }}
               />
-            </VStack>
+            </HStack>
           </Box>
           {/** Cart Item */}
           <Divider thickness="1" mb={4} width="90%" bg="black" />
           <Box
-            flex="8"
+            flex="10"
             w={{ md: "90%", xl: "90%" }}
             h="100%"
             bg="#FFFDFA"
             borderWidth={1}
+            borderColor="light.300"
             mb="4"
           >
-            <Text
-              my="2"
-              alignSelf="center"
-              fontSize={{
-                md: "24",
-                xl: "xl",
-              }}
-            >
+            <Text my="2" alignSelf="center" fontWeight={600}>
               คำสั่งซื้อ
             </Text>
-            <Divider thickness="1" mb={4} bg="black" />
+            <Divider thickness="1" mb={4} bg="gray.300" />
             <VStack flex="5" px="4">
               <HStack flex="1" mb="2">
-                <Text flex="5" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="4" fontWeight={600}>
                   รายการ
                 </Text>
-                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
-                  จำนวน
-                </Text>
-                <Text
-                  flex="3"
-                  ml="2"
-                  textAlign="right"
-                  fontSize={{ md: 12, xl: 18 }}
-                >
+                <Text flex="2" ml="2" textAlign="right" fontWeight={600}>
                   บาท/หน่วย
                 </Text>
               </HStack>
@@ -359,26 +354,13 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                     keyExtractor={(item: any) => item.productId}
                     renderItem={(data: any) => (
                       <Box mb="2" w="100%" flexDirection="row">
-                        <Text
-                          flex="5"
-                          fontSize={{ md: 12, xl: 18 }}
-                          noOfLines={2}
-                        >
+                        <Text flex="5" noOfLines={1}>
                           • {data.item.productName}
                         </Text>
-                        <Text
-                          textAlign="right"
-                          flex="2"
-                          fontSize={{ md: 12, xl: 18 }}
-                        >
-                          {data.item.total}
+                        <Text textAlign="right" flex="1">
+                          x{data.item.total}
                         </Text>
-                        <Text
-                          flex="3"
-                          ml="2"
-                          textAlign="right"
-                          fontSize={{ md: 12, xl: 18 }}
-                        >
+                        <Text flex="3" textAlign="right">
                           {data.item.productPrice.toFixed(2)}
                         </Text>
                       </Box>
@@ -396,73 +378,60 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
             />
             <VStack flex="2" px="4">
               <HStack flex="1">
-                <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="1" textAlign="left" fontWeight={600}>
                   ราคารวม
                 </Text>
-                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="2" textAlign="right" fontWeight={600}>
                   {subTotal} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
-                <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="1" textAlign="left" fontWeight={600}>
                   ส่วนลด
                 </Text>
-                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="2" textAlign="right" fontWeight={600}>
                   {totalDiscount} บาท
                 </Text>
               </HStack>
               <HStack flex="1">
-                <Text flex="1" textAlign="left" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="1" textAlign="left" fontWeight={600}>
                   ภาษี 7%
                 </Text>
-                <Text flex="2" textAlign="right" fontSize={{ md: 12, xl: 18 }}>
+                <Text flex="2" textAlign="right" fontWeight={600}>
                   {totalVat} บาท
                 </Text>
               </HStack>
             </VStack>
             <Divider
               thickness="1"
-              mb={4}
               mt={2}
               w="5/6"
               alignSelf="center"
               bg="gray.300"
             />
-            <HStack flex="1" px="4">
-              <Text
-                flex="1"
-                textAlign="left"
-                fontSize={{ md: 16, xl: 22 }}
-                fontWeight={600}
-              >
+            <HStack flex="1" h="100%" px="4" alignItems="center">
+              <Text flex="1" textAlign="left" fontWeight={600}>
                 ราคาสุทธิ
               </Text>
-              <Text
-                flex="2"
-                textAlign="right"
-                fontSize={{ md: 16, xl: 22 }}
-                fontWeight={600}
-              >
+              <Text flex="2" textAlign="right" fontWeight={600}>
                 {total || 0} บาท
               </Text>
             </HStack>
             <Divider
               thickness="1"
-              mb={4}
+              mb={2}
               w="5/6"
               alignSelf="center"
               bg="gray.300"
             />
             <VStack flex="2.2" mb="4" justifyContent="center">
               <HStack flex="1" px="4" mb="2">
-                <Text fontSize="16" fontWeight={600}>
-                  เลือกวิธีการชำระเงิน
-                </Text>
+                <Text fontWeight={600}>เลือกวิธีการชำระเงิน</Text>
               </HStack>
-              <HStack px="4" justifyContent={"space-between"}>
+              <HStack px="12px" justifyContent={"space-between"}>
                 <Pressable
-                  w={{ sm: "40px", md: "70px" }}
-                  h={{ sm: "40px", md: "70px" }}
+                  w={70}
+                  h={70}
                   borderRadius={100}
                   borderWidth={1}
                   borderColor="light.200"
@@ -485,7 +454,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   {({ isPressed }) => (
                     <>
                       <Text
-                        fontSize={{ sm: 8, md: 12 }}
+                        fontSize={12}
                         color={isPressed || isCash ? "#fffdfa" : "black"}
                       >
                         เงินสด
@@ -493,15 +462,15 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                       <Icon
                         as={Ionicons}
                         name="cash-outline"
-                        fontSize={{ sm: 8, md: 12 }}
+                        size={6}
                         color={isPressed || isCash ? "#fffdfa" : "black"}
                       />
                     </>
                   )}
                 </Pressable>
                 <Pressable
-                  w={{ sm: "40px", md: "70px" }}
-                  h={{ sm: "40px", md: "70px" }}
+                  w={70}
+                  h={70}
                   bg={isQR ? "emerald.500" : "#FFFDFA"}
                   borderRadius={100}
                   borderWidth={1}
@@ -524,7 +493,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   {({ isPressed }) => (
                     <>
                       <Text
-                        fontSize={{ sm: 8, md: 12 }}
+                        fontSize={12}
                         color={isPressed || isQR ? "#fffdfa" : "black"}
                       >
                         QR Code
@@ -532,15 +501,15 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                       <Icon
                         as={Ionicons}
                         name="qr-code-outline"
-                        fontSize={{ sm: 8, md: 12 }}
+                        size={6}
                         color={isPressed || isQR ? "#fffdfa" : "black"}
                       />
                     </>
                   )}
                 </Pressable>
                 <Pressable
-                  w={{ sm: "40px", md: "70px" }}
-                  h={{ sm: "40px", md: "70px" }}
+                  w={70}
+                  h={70}
                   bg={isWallet ? "emerald.500" : "#FFFDFA"}
                   borderRadius={100}
                   borderWidth={1}
@@ -562,12 +531,16 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 >
                   {({ isPressed }) => (
                     <>
-                      <Text color={isPressed || isWallet ? "#fffdfa" : "black"}>
+                      <Text
+                        color={isPressed || isWallet ? "#fffdfa" : "black"}
+                        fontSize={12}
+                      >
                         Wallet
                       </Text>
                       <Icon
                         as={Ionicons}
                         name="wallet-outline"
+                        size={6}
                         color={isPressed || isWallet ? "#fffdfa" : "black"}
                       />
                     </>
@@ -586,12 +559,13 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
           >
             <Button
               borderRadius="xl"
-              colorScheme="greenalt"
+              colorScheme="emerald"
               mx="4"
               w="100%"
               h="75%"
-              _text={{ fontSize: 20, color: "white" }}
-              startIcon={<Icon as={IconCart} size={5} />}
+              leftIcon={
+                <FontAwesome name="shopping-basket" size={20} color="white" />
+              }
               onPress={() => {
                 if (!cartData)
                   return Toast.show({

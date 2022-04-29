@@ -32,16 +32,10 @@ const SettingScreen: React.FC<Props> = ({ children }) => {
               alignSelf="center"
               alignItems="center"
               mt="4"
-              mb={{ md: "10%", xl: "6%" }}
+              mb="82px"
               justifyContent="center"
             >
-              <Text
-                onPress={() => {
-                  signOut();
-                }}
-              >
-                LOGOUT
-              </Text>
+              <Text onPress={signOut}>LOGOUT</Text>
               <Text>{Constants?.manifest?.version}</Text>
               <Text>
                 {Dimensions.get("window").height}x

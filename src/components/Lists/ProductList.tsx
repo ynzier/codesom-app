@@ -4,13 +4,16 @@ import {
   FlatList,
   Box,
   VStack,
+  Pressable,
   Button,
-  Center,
+  HStack,
+  Image,
+  Spacer,
 } from "native-base";
 import React, { useState, useEffect, useCallback } from "react";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { ListRenderItemInfo } from "react-native";
+import { ListRenderItemInfo, StyleSheet } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { storageService } from "services";
 import RecipeModal from "../Modals/RecipeModal";
@@ -42,6 +45,7 @@ interface productData {
     };
   };
 }
+
 const ProductList = ({
   cartData,
   setCartData,
@@ -155,7 +159,122 @@ const ProductList = ({
     getFilter(tabIndex);
     return () => {};
   }, [productArray, tabIndex]);
+  const formatData = (data: any[]) => {
+    const numberOfFullRows = Math.floor(data.length / 4);
 
+    let numberOfElementsLastRow = data.length - numberOfFullRows * 4;
+    while (numberOfElementsLastRow !== 4 && numberOfElementsLastRow !== 0) {
+      data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
+      numberOfElementsLastRow++;
+    }
+
+    return data;
+  };
+  const renderItem = ({ item }: { item: any }) => {
+    if (item.empty === true) {
+      return <Box style={[styles.item, styles.itemInvisible]} />;
+    }
+    return (
+      <Box style={styles.item} borderColor="light.300">
+        <Image
+          alt={item.product.productName || ""}
+          width={"100%"}
+          h="100%"
+          position={"absolute"}
+          source={{
+            uri: item?.product?.image?.imgObj || ErrorImg,
+          }}
+        />
+
+        <NumberFormat
+          value={item.product.productPrice}
+          displayType={"text"}
+          thousandSeparator={true}
+          decimalScale={0}
+          fixedDecimalScale
+          renderText={(formattedValue) => (
+            <Text
+              bg="red.700"
+              fontWeight={400}
+              numberOfLines={1}
+              paddingLeft={2}
+              paddingRight={2}
+              paddingTop={1}
+              paddingBottom={1}
+              marginBottom={16}
+              color="light.100"
+              alignSelf="flex-end"
+            >
+              {formattedValue}฿
+            </Text>
+          )}
+        />
+
+        <VStack
+          pl={{ md: 18, xl: 8 }}
+          pr={{ md: 2, xl: 4 }}
+          w="100%"
+          position={"absolute"}
+          bottom={0}
+          bg="orange.100"
+          justifyContent="center"
+        >
+          <Text fontWeight={600} flexWrap="wrap">
+            {item.product.productName}
+          </Text>
+
+          <HStack w="100%">
+            {!item.product.needProcess ? (
+              <Text
+                fontWeight={300}
+                flexWrap="wrap"
+                flex="1"
+                numberOfLines={1}
+                fontSize={12}
+                color={item.itemRemain < 1 ? "red.500" : "light.600"}
+              >
+                คงเหลือ {item.itemRemain}
+              </Text>
+            ) : (
+              <Pressable
+                _pressed={{ bg: "amber.400", borderRadius: 2 }}
+                onPress={() => {
+                  setRecipeId(item.productId);
+                  setRecipeOpen(true);
+                }}
+              >
+                <Text
+                  fontWeight={300}
+                  fontSize={12}
+                  flexWrap="wrap"
+                  textDecorationLine="underline"
+                >
+                  การผสม
+                </Text>
+              </Pressable>
+            )}
+            <Spacer />
+            <Pressable
+              _pressed={{ bg: "amber.400", borderRadius: 2 }}
+              display={isInCart(item.productId) ? "none" : "flex"}
+              onPress={() => {
+                handleAdd(item);
+              }}
+            >
+              <Text
+                fontWeight={300}
+                fontSize={12}
+                flexWrap="wrap"
+                textDecorationLine="underline"
+              >
+                เลือก
+              </Text>
+            </Pressable>
+          </HStack>
+        </VStack>
+      </Box>
+    );
+  };
   return (
     <>
       {recipeOpen && (
@@ -165,134 +284,19 @@ const ProductList = ({
           recipeId={recipeId}
         />
       )}
-      <Box alignSelf="center" w="100%">
+      <Box alignSelf="center" w="100%" h="100%">
         <FlatList
-          numColumns={3}
+          numColumns={4}
+          w="100%"
+          h="100%"
           onRefresh={() => {
             fetchProductData(true);
           }}
+          contentContainerStyle={{ paddingTop: 4 }}
           refreshing={loadingProduct}
-          data={filterData == null ? productArray : filterData}
+          data={formatData(filterData == null ? productArray : filterData)}
           keyExtractor={(item: any) => item.productId}
-          renderItem={({ item }: ListRenderItemInfo<productData>) => {
-            return (
-              <Box
-                h={{ md: 140, xl: 260 }}
-                w={{ md: 180, xl: 440 }}
-                flexDirection="row"
-                ml={{ md: 6, xl: 6 }}
-                mr={{ md: 16, xl: 4 }}
-                mt={{ md: 4, xl: 2 }}
-                mb={{ md: 4, xl: 2 }}
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Avatar
-                  bg="#FFFDFA"
-                  shadow={3}
-                  zIndex={3}
-                  alignSelf="center"
-                  position="absolute"
-                  left={0}
-                  size={{ md: 140, xl: 240 }}
-                  source={{
-                    uri:
-                      item.product.image && item.product.image.imgObj
-                        ? item.product.image.imgObj
-                        : ErrorImg,
-                  }}
-                />
-
-                <Button
-                  colorScheme="greenalt"
-                  position={
-                    isInCart(item.product.productId) ? "relative" : "absolute"
-                  }
-                  shadow={4}
-                  zIndex={4}
-                  left={{ md: "50px", xl: 90 }}
-                  bottom={{ md: 1, xl: 25 }}
-                  alignSelf="center"
-                  size={{ md: 10, xl: 60 }}
-                  borderRadius="80"
-                  disabled={isInCart(item.product.productId)}
-                  display={isInCart(item.product.productId) ? "none" : "flex"}
-                  onPress={() => {
-                    void handleAdd(item);
-                  }}
-                >
-                  <Text fontSize={{ md: 24, xl: 38 }} color="white">
-                    +
-                  </Text>
-                </Button>
-                <Box
-                  h={{ md: 110, xl: 170 }}
-                  w={{ md: 170, xl: 250 }}
-                  ml={{ md: 160, xl: 200 }}
-                  pl={{ md: 10, xl: 8 }}
-                  borderRadius={16}
-                  borderWidth={1}
-                  flexDirection="row"
-                >
-                  <VStack
-                    pl={{ md: 18, xl: 8 }}
-                    pr={{ md: 2, xl: 4 }}
-                    justifyContent="center"
-                    fontSize={16}
-                  >
-                    <Text
-                      fontWeight={400}
-                      fontSize={{ md: 12, xl: 18 }}
-                      flexWrap="wrap"
-                    >
-                      {item.product.productName}
-                    </Text>
-
-                    <NumberFormat
-                      value={item.product.productPrice}
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      decimalScale={2}
-                      fixedDecimalScale
-                      renderText={(formattedValue) => (
-                        <Text
-                          fontWeight={400}
-                          fontSize={{ md: 12, xl: 18 }}
-                          flexWrap="wrap"
-                        >
-                          {formattedValue} บาท
-                        </Text>
-                      )}
-                    />
-                    {!item.product.needProcess ? (
-                      <Text
-                        fontWeight={300}
-                        fontSize={{ md: 12, xl: 18 }}
-                        flexWrap="wrap"
-                        color={item.itemRemain < 1 ? "red.500" : "#ABBBC2"}
-                      >
-                        คงเหลือ {item.itemRemain}
-                      </Text>
-                    ) : (
-                      <Text
-                        fontWeight={300}
-                        fontSize={{ md: 12, xl: 18 }}
-                        flexWrap="wrap"
-                        color="#ABBBC2"
-                        textDecorationLine="underline"
-                        onPress={() => {
-                          setRecipeId(item.productId);
-                          setRecipeOpen(true);
-                        }}
-                      >
-                        ดูส่วนผสม
-                      </Text>
-                    )}
-                  </VStack>
-                </Box>
-              </Box>
-            );
-          }}
+          renderItem={renderItem}
         />
       </Box>
     </>
@@ -300,3 +304,19 @@ const ProductList = ({
 };
 
 export default ProductList;
+const styles = StyleSheet.create({
+  item: {
+    alignItems: "center",
+    flexDirection: "row-reverse",
+    flex: 1,
+    aspectRatio: 1,
+    width: "100%",
+    height: "100%",
+    borderWidth: 1,
+    margin: 0.5,
+  },
+  itemInvisible: {
+    backgroundColor: "transparent",
+    borderWidth: 0,
+  },
+});

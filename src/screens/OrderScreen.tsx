@@ -135,30 +135,20 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              w="95%"
+              w="100%"
               flex="10"
               alignSelf="center"
               alignItems="center"
               mt="4"
-              mb={{ md: "10%", xl: "6%" }}
               justifyContent="center"
+              marginBottom={"82px"}
             >
-              <HStack
-                w="100%"
-                flex="1"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize="xl">ประวัติคำสั่งซื้อ</Text>
+              <HStack w="100%" alignItems="center" justifyContent="center">
+                <Text fontSize="xl" fontWeight={500}>
+                  ประวัติคำสั่งซื้อ
+                </Text>
               </HStack>
-              <VStack
-                w="100%"
-                flex="12"
-                px={4}
-                py={2}
-                borderWidth={1}
-                borderRadius={5}
-              >
+              <VStack w="100%" flex="12" px={4} py={2}>
                 <HStack
                   borderBottomWidth={1}
                   h="12"
@@ -169,7 +159,6 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -179,7 +168,6 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                   <Text
                     flex="2"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -189,7 +177,6 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -199,7 +186,6 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -209,7 +195,6 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -239,7 +224,6 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                         <Text
                           flex="1"
                           textAlign="center"
-                          fontSize="md"
                           textDecorationLine={
                             item.orderStatus == "2" ? "none" : "underline"
                           }
@@ -251,13 +235,13 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           {item.orderId}
                         </Text>
 
-                        <Text flex="2" textAlign="center" fontSize="md">
+                        <Text flex="2" textAlign="center">
                           {dayjs(item.createTimestamp)
                             .locale("th")
                             .format("D MMMM YYYY เวลา HH:mm")}
                         </Text>
 
-                        <Text flex="1" textAlign="center" fontSize="md">
+                        <Text flex="1" textAlign="center">
                           {item.orderType}
                         </Text>
                         <NumberFormat
@@ -267,11 +251,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                           decimalScale={2}
                           fixedDecimalScale
                           renderText={(formattedValue) => (
-                            <Text
-                              flex="1"
-                              textAlign="center"
-                              fontSize={{ md: "md", xl: "xl" }}
-                            >
+                            <Text flex="1" textAlign="center">
                               {formattedValue}
                             </Text>
                           )}

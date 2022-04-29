@@ -103,30 +103,20 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              w="95%"
+              w="100%"
               flex="10"
               alignSelf="center"
               alignItems="center"
               mt="4"
-              mb={{ md: "10%", xl: "6%" }}
+              mb="82px"
               justifyContent="center"
             >
-              <HStack
-                w="100%"
-                flex="1"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize="xl">รายการเดลิเวอรี</Text>
+              <HStack w="100%" alignItems="center" justifyContent="center">
+                <Text fontSize="xl" fontWeight={500}>
+                  รายการเดลิเวอรี
+                </Text>
               </HStack>
-              <VStack
-                w="100%"
-                flex="12"
-                px={4}
-                py={2}
-                borderWidth={1}
-                borderRadius={5}
-              >
+              <VStack w="100%" flex="12" px={4} py={2}>
                 <HStack
                   borderBottomWidth={1}
                   h="12"
@@ -137,7 +127,6 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -147,7 +136,6 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                   <Text
                     flex="2"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -157,7 +145,6 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                   <Text
                     flex="2"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -167,7 +154,6 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -177,7 +163,6 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                   <Text
                     flex="1"
                     textAlign="center"
-                    fontSize="md"
                     fontWeight={600}
                     letterSpacing="xl"
                   >
@@ -203,7 +188,6 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                         <Text
                           flex="1"
                           textAlign="center"
-                          fontSize="md"
                           textDecorationLine={"underline"}
                           onPress={() => {
                             setOrderId(item.orderId.toString());
@@ -212,26 +196,20 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
                         >
                           {item.orderId}
                         </Text>
-                        <Text flex="2" textAlign="center" fontSize="md">
+                        <Text flex="2" textAlign="center">
                           {dayjs(item.createTimestamp)
                             .locale("th")
                             .format("D MMMM YYYY เวลา HH:mm")}
                         </Text>
-                        <Text flex="2" textAlign="center" fontSize="md">
+                        <Text flex="2" textAlign="center">
                           {item.recipientTel}
                         </Text>
-                        <Text
-                          flex="1"
-                          textAlign="center"
-                          fontSize="md"
-                          onPress={() => {}}
-                        >
+                        <Text flex="1" textAlign="center">
                           {item.transportStatus}
                         </Text>
                         <Text
                           flex="1"
                           textAlign="center"
-                          fontSize="md"
                           textDecorationLine={"underline"}
                           onPress={() => {
                             setItemId(item.orderId.toString());

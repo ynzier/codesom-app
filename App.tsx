@@ -40,10 +40,6 @@ const theme = extendTheme({
     Text: {
       baseStyle: {
         lineHeight: { lg: "xl" },
-        fontSize: {
-          lg: 14,
-          xl: 18,
-        },
       },
     },
   },
@@ -152,21 +148,20 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: "#9D7463",
-        tabBarInactiveTintColor: "#CFCFCF",
+        tabBarInactiveTintColor: "#a8a29e",
         tabBarLabelStyle: {
           fontFamily: "Prompt-Regular",
           fontSize: 14,
-          marginBottom: 10,
+          marginBottom: 4,
         },
         tabBarLabelPosition: "below-icon",
         tabBarStyle: {
-          paddingTop: 0,
           marginTop: 0,
           borderTopWidth: 0,
-          backgroundColor: "white",
+
           height: 80,
           width: "auto",
-          paddingHorizontal: window.width < 1280 ? "10%" : "20%",
+          paddingHorizontal: "10%",
           marginRight: window.width < 1280 ? "25%" : "20%",
           position: "absolute",
           elevation: 0,

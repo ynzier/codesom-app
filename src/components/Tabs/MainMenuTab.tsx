@@ -16,7 +16,8 @@ const MainMenuTab = ({
 }) => {
   const [productType, setProductType] = useState<productType[]>([]);
   const fetchProductType = (isSubscribed: boolean) => {
-    productService.getAllProductTypes()
+    productService
+      .getAllProductTypes()
       .then((res) => {
         if (isSubscribed) {
           if (res) {
@@ -40,17 +41,14 @@ const MainMenuTab = ({
     <ScrollView
       showsHorizontalScrollIndicator={false}
       horizontal={true}
-      ml="2"
-      borderBottomWidth={1}
-      mr="2"
+      mx={3}
       borderColor="#B4B4B4"
     >
       <Box
         alignItems="center"
-        p="4"
-        zIndex={2}
+        paddingTop={2}
         width="40"
-        borderBottomWidth={tabIndex == -1 ? 3 : 0}
+        borderBottomWidth={tabIndex == -1 ? 2 : 0}
         borderBottomColor={tabIndex == -1 ? "#9D7463" : "#B4B4B4"}
       >
         <Pressable
@@ -61,11 +59,11 @@ const MainMenuTab = ({
           <Animated.Text
             style={{
               color: "#000",
-              fontSize: 18,
+
               fontFamily: tabIndex == -1 ? "Prompt-Medium" : "Prompt-Regular",
             }}
           >
-            สินค้าขายดี
+            สินค้าทั้งหมด
           </Animated.Text>
         </Pressable>
       </Box>
@@ -76,10 +74,10 @@ const MainMenuTab = ({
             <Box
               key={item.typeId}
               alignItems="center"
-              p="4"
+              paddingTop={2}
               zIndex={2}
               width="40"
-              borderBottomWidth={tabIndex == item.typeId ? 3 : 0}
+              borderBottomWidth={tabIndex == item.typeId ? 2 : 0}
               borderBottomColor={borderColor}
             >
               <Pressable
@@ -90,7 +88,6 @@ const MainMenuTab = ({
                 <Animated.Text
                   style={{
                     color: "#000",
-                    fontSize: 18,
                     fontFamily:
                       tabIndex == item.typeId
                         ? "Prompt-Medium"

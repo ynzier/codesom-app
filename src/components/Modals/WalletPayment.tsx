@@ -34,7 +34,7 @@ const Shopee = ({
   return (
     <Pressable
       w="100"
-      bg={wallet === "shopee" ? "orange.500" : "#FFFDFA"}
+      bg={wallet === "shopee" ? "orange.500" : "transparent"}
       _pressed={{
         bg: "orange.700",
       }}
@@ -79,7 +79,7 @@ const Dolphin = ({
   return (
     <Pressable
       w="100"
-      bg={wallet === "dolphin" ? "emerald.500" : "#FFFDFA"}
+      bg={wallet === "dolphin" ? "emerald.500" : "transparent"}
       _pressed={{
         bg: "emerald.600",
       }}
@@ -222,17 +222,12 @@ const WalletPayment = ({
                 decimalScale={2}
                 fixedDecimalScale
                 renderText={(formattedValue) => (
-                  <Text
-                    fontWeight={400}
-                    fontSize={{ md: 12, xl: 18 }}
-                    flexWrap="wrap"
-                    textAlign={"center"}
-                  >
+                  <Text fontWeight={600} flexWrap="wrap" textAlign={"center"}>
                     ยอดทั้งหมด: {formattedValue} บาท
                   </Text>
                 )}
               />
-              <HStack space="3">
+              <HStack space="3" mt={2}>
                 <Box
                   alignItems="flex-end"
                   shadow="4"
@@ -259,7 +254,7 @@ const WalletPayment = ({
             <Divider my="4" />
             <Button
               isDisabled={wallet === ""}
-              colorScheme="success"
+              colorScheme="emerald"
               _disabled={{ backgroundColor: "gray.400" }}
               onPress={() => {
                 if (isWallet != "") {

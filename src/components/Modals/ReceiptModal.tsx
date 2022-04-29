@@ -115,39 +115,48 @@ const ReceiptModal = ({
               <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
                 <Text fontSize="lg">ใบเสร็จ</Text>
               </Modal.Header>
-              <Modal.Body h="550">
+              <Modal.Body py={4}>
                 <ScrollView minH="400">
-                  <Box borderWidth={1} mx="4" w="400" alignSelf="center">
+                  <Box borderWidth={1} pt={4} mx="4" w="400" alignSelf="center">
                     <HStack justifyContent="center" alignItems="center">
-                      <Text fontSize="lg" flex="1" textAlign="center">
+                      <Text
+                        fontSize="md"
+                        fontWeight={600}
+                        flex="1"
+                        textAlign="center"
+                      >
                         CODESOM
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
-                      <Text fontSize="lg" flex="1" textAlign="center">
+                      <Text
+                        fontSize="md"
+                        fontWeight={600}
+                        flex="1"
+                        textAlign="center"
+                      >
                         {branchData.branchName || ""}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignSelf="center" mx="2">
-                      <Text fontSize="lg" flex="1" textAlign="center">
+                      <Text flex="1" textAlign="center" numberOfLines={2}>
                         {branchData.branchAddr || ""}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center">
-                      <Text fontSize="lg" flex="1" textAlign="center">
+                      <Text flex="1" textAlign="center">
                         เบอร์โทรศัพท์: {branchData.branchTel || ""}
                       </Text>
                     </HStack>
                     <HStack
                       justifyContent="center"
                       alignItems="center"
-                      px="4"
+                      px={4}
                       mb={4}
                     >
                       <Text
                         ellipsizeMode="clip"
                         numberOfLines={1}
-                        fontSize="lg"
                         letterSpacing={1}
                       >
                         --------------------------------------------------------------------------------
@@ -167,7 +176,7 @@ const ReceiptModal = ({
                           <VStack key={index} justifyContent="center">
                             <HStack px="8">
                               <VStack flex="1">
-                                <Text fontSize="lg" flex="1">
+                                <Text flex="1" numberOfLines={1}>
                                   {item.product.productName}
                                 </Text>
                               </VStack>
@@ -179,11 +188,7 @@ const ReceiptModal = ({
                                   decimalScale={2}
                                   fixedDecimalScale
                                   renderText={(formattedValue) => (
-                                    <Text
-                                      fontSize="lg"
-                                      textAlign="right"
-                                      flex="1"
-                                    >
+                                    <Text textAlign="right">
                                       {formattedValue} บาท
                                     </Text>
                                   )}
@@ -192,7 +197,7 @@ const ReceiptModal = ({
                             </HStack>
                             <HStack>
                               <VStack px={10}>
-                                <Text fontWeight="light" fontSize="lg" flex="1">
+                                <Text flex="1">
                                   {item.quantity} x {}
                                   <NumberFormat
                                     value={item.productPrice}
@@ -201,11 +206,7 @@ const ReceiptModal = ({
                                     fixedDecimalScale
                                     decimalScale={2}
                                     renderText={(formattedValue) => (
-                                      <Text
-                                        fontSize="lg"
-                                        textAlign="right"
-                                        flex="1"
-                                      >
+                                      <Text textAlign="right">
                                         {formattedValue} บาท
                                       </Text>
                                     )}
@@ -219,24 +220,19 @@ const ReceiptModal = ({
                     <VStack justifyContent="center">
                       <HStack px="8">
                         <VStack flex="1">
-                          <Text fontSize="lg" flex="1">
-                            ส่วนลด
-                          </Text>
+                          <Text flex="1">ส่วนลด</Text>
                         </VStack>
-                        <VStack flex="1">
-                          <NumberFormat
-                            value={receiptData?.receiptDiscount}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            decimalScale={2}
-                            fixedDecimalScale
-                            renderText={(formattedValue) => (
-                              <Text fontSize="lg" textAlign="right" flex="1">
-                                {formattedValue} บาท
-                              </Text>
-                            )}
-                          />
-                        </VStack>
+
+                        <NumberFormat
+                          value={receiptData?.receiptDiscount}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          decimalScale={2}
+                          fixedDecimalScale
+                          renderText={(formattedValue) => (
+                            <Text textAlign="right">{formattedValue} บาท</Text>
+                          )}
+                        />
                       </HStack>
                     </VStack>
                     <HStack
@@ -248,14 +244,13 @@ const ReceiptModal = ({
                       <Text
                         ellipsizeMode="clip"
                         numberOfLines={1}
-                        fontSize="lg"
                         letterSpacing={1}
                       >
                         --------------------------------------------------------------------------------
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mx="8">
-                      <Text fontSize="lg" flex="1" textAlign="right">
+                      <Text fontWeight={600} flex="1" textAlign="right">
                         ราคารวม :
                       </Text>
                       <NumberFormat
@@ -265,14 +260,14 @@ const ReceiptModal = ({
                         decimalScale={2}
                         fixedDecimalScale
                         renderText={(formattedValue) => (
-                          <Text fontSize="lg" textAlign="right" flex="1">
+                          <Text fontWeight={600} textAlign="right" flex="1">
                             {formattedValue} บาท
                           </Text>
                         )}
                       />
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mx="8">
-                      <Text fontSize="lg" flex="1" textAlign="right">
+                      <Text fontWeight={600} flex="1" textAlign="right">
                         ภาษี (7%) :
                       </Text>
                       <NumberFormat
@@ -282,7 +277,7 @@ const ReceiptModal = ({
                         decimalScale={2}
                         fixedDecimalScale
                         renderText={(formattedValue) => (
-                          <Text fontSize="lg" textAlign="right" flex="1">
+                          <Text fontWeight={600} textAlign="right" flex="1">
                             {formattedValue} บาท
                           </Text>
                         )}
@@ -298,7 +293,6 @@ const ReceiptModal = ({
                         ellipsizeMode="clip"
                         flex="1"
                         numberOfLines={1}
-                        fontSize="md"
                         letterSpacing={1}
                         textAlign="right"
                       >
@@ -306,7 +300,7 @@ const ReceiptModal = ({
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mx="8">
-                      <Text fontSize="lg" flex="1" textAlign="right">
+                      <Text fontWeight={600} flex="1" textAlign="right">
                         ราคาสุทธิ :
                       </Text>
                       <NumberFormat
@@ -316,7 +310,7 @@ const ReceiptModal = ({
                         decimalScale={2}
                         fixedDecimalScale
                         renderText={(formattedValue) => (
-                          <Text fontSize="lg" textAlign="right" flex="1">
+                          <Text fontWeight={600} textAlign="right" flex="1">
                             {formattedValue} บาท
                           </Text>
                         )}
@@ -332,12 +326,11 @@ const ReceiptModal = ({
                         ellipsizeMode="clip"
                         flex="1"
                         numberOfLines={2}
-                        fontSize="md"
                         letterSpacing={1}
                         textAlign="right"
                         lineHeight="xs"
                       >
-                        -------------------------------------------
+                        -------------------------------------------------
                       </Text>
                     </HStack>
                     <HStack
@@ -349,7 +342,6 @@ const ReceiptModal = ({
                       <Text
                         ellipsizeMode="clip"
                         numberOfLines={1}
-                        fontSize="lg"
                         letterSpacing={1}
                       >
                         --------------------------------------------------------------------------------
@@ -361,7 +353,7 @@ const ReceiptModal = ({
                       mx="8"
                       mt="4"
                     >
-                      <Text fontSize="lg" flex="1" textAlign="right">
+                      <Text fontWeight={600} flex="1" textAlign="right">
                         เงินสด :
                       </Text>
                       <NumberFormat
@@ -371,14 +363,14 @@ const ReceiptModal = ({
                         fixedDecimalScale
                         decimalScale={2}
                         renderText={(formattedValue) => (
-                          <Text fontSize="lg" textAlign="right" flex="1">
+                          <Text fontWeight={600} textAlign="right" flex="1">
                             {formattedValue} บาท
                           </Text>
                         )}
                       />
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mx="8">
-                      <Text fontSize="lg" flex="1" textAlign="right">
+                      <Text fontWeight={600} flex="1" textAlign="right">
                         เงินทอน :
                       </Text>
                       <NumberFormat
@@ -388,19 +380,19 @@ const ReceiptModal = ({
                         fixedDecimalScale
                         decimalScale={2}
                         renderText={(formattedValue) => (
-                          <Text fontSize="lg" textAlign="right" flex="1">
+                          <Text fontWeight={600} textAlign="right" flex="1">
                             {formattedValue} บาท
                           </Text>
                         )}
                       />
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mt="8">
-                      <Text fontSize="lg" flex="1" textAlign="center">
+                      <Text flex="1" textAlign="center">
                         เลขที่ใบเสร็จ {receiptData.receiptId}
                       </Text>
                     </HStack>
                     <HStack justifyContent="center" alignItems="center" mb="8">
-                      <Text fontSize="lg" flex="1" textAlign="center">
+                      <Text flex="1" textAlign="center">
                         {dayjs(receiptData.recTimestamp)
                           .locale("th")
                           .format("D MMMM YYYY เวลา HH:mm")}

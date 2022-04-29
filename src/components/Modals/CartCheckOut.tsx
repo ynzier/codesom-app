@@ -30,7 +30,7 @@ const Delivery = (props: {
   return (
     <Pressable
       w="100"
-      bg={props.isDelivery ? "emerald.500" : "#FFFDFA"}
+      bg={props.isDelivery ? "emerald.500" : "transparent"}
       h="100"
       _pressed={{
         bg: "emerald.600",
@@ -71,7 +71,7 @@ function TakeAway(props: {
   return (
     <Pressable
       w="100"
-      bg={props.isTakeAway ? "emerald.500" : "#FFFDFA"}
+      bg={props.isTakeAway ? "emerald.500" : "transparent"}
       _pressed={{
         bg: "emerald.600",
       }}
@@ -244,7 +244,7 @@ const CartCheckOut = ({
             <Divider my="4" />
             <Button
               isDisabled={!isDelivery && !isTakeAway}
-              colorScheme="success"
+              colorScheme="emerald"
               _disabled={{ backgroundColor: "gray.400" }}
               onPress={() => {
                 if (isTakeAway) {

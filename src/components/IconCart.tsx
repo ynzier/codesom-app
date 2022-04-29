@@ -4,7 +4,7 @@ import Svg, { Path } from "react-native-svg";
 
 export default function IconCart() {
   return (
-    <Svg width={39} height={36} fill="none">
+    <Svg width={14} height={14} fill="none">
       <Path
         fillRule="evenodd"
         clipRule="evenodd"

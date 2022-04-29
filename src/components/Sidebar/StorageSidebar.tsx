@@ -38,22 +38,21 @@ const StorageSidebarComponent = ({
       <HStack w="100%" flex="1" bg="#FFF0D9">
         <VStack w="100%" flex="1" justifyContent="center" alignItems="center">
           <Box
-            flex="9"
+            flex="11"
             w="95%"
             h="100%"
             justifyContent="center"
             shadow={3}
             style={styles.flatlist}
           >
-            <Text fontSize={{ md: 32, xl: 46 }} alignSelf="center">
+            <Text fontSize={"md"} fontWeight={600} alignSelf="center">
               ประวัติคำขอ
             </Text>
             <Divider
               alignSelf="center"
               thickness="1"
-              mb={4}
               width="90%"
-              bg="black"
+              bg="light.300"
             />
             <FlatList
               data={listData}
@@ -66,16 +65,12 @@ const StorageSidebarComponent = ({
                     <Box style={styles.container}>
                       <HStack>
                         <VStack flex="1">
-                          <Text fontSize={{ md: 12, xl: 16 }}>
-                            เลขที่ใบเบิกสินค้า: {item.requisitionId}
+                          <Text fontSize={12}>
+                            Req. ID #{item.requisitionId}
                           </Text>
                         </VStack>
-                        <VStack flex={{ md: 1, xl: 1 }}>
-                          <Text
-                            textAlign="right"
-                            flex="1"
-                            fontSize={{ md: 12, xl: 16 }}
-                          >
+                        <VStack>
+                          <Text textAlign="right" fontSize={12}>
                             สถานะ:{" "}
                             {item.requisitionStatus == 0
                               ? "รออนุมัติ"
@@ -90,14 +85,14 @@ const StorageSidebarComponent = ({
                         </VStack>
                       </HStack>
                       <HStack mt="1">
-                        <Text flex="1" fontSize={{ md: 12, xl: 16 }}>
+                        <Text flex="1" fontSize={12}>
                           {dayjs(item.createdAt)
                             .locale("th")
                             .format("D MMMM YYYY เวลา HH:mm")}
                         </Text>
                         <Text
-                          fontSize={{ md: 12, xl: 16 }}
                           style={styles.lookup}
+                          fontSize={12}
                           onPress={() => handleShowDetail(item.requisitionId)}
                         >
                           ดูรายการ
@@ -129,8 +124,7 @@ const StorageSidebarComponent = ({
               colorScheme="greenalt"
               mx="4"
               w="100%"
-              h="75%"
-              _text={{ fontSize: 20, color: "white" }}
+              mb="4"
               onPress={handleShowRequest}
             >
               สร้างคำขอ

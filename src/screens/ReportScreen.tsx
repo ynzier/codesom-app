@@ -126,15 +126,13 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              borderWidth={1}
-              w="95%"
-              borderRadius={5}
+              w="100%"
               flex="10"
               alignSelf="center"
               justifyContent={"center"}
               alignItems={"center"}
               mt="4"
-              mb={{ md: "10%", xl: "6%" }}
+              mb="82px"
             >
               <VStack
                 w={{ md: "750", xl: "1000" }}
@@ -144,14 +142,12 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                 space={3}
               >
                 <Box flexDir={"row"} alignItems="center" mb="3">
-                  <Text fontSize={"xl"} fontWeight={600}>
+                  <Text fontWeight={600}>
                     รายงานประจำวันที่{" "}
                     {dayjs().locale("th").format("D MMMM YYYY ")}
                   </Text>
                   <Ionicons
-                    onPress={() => {
-                      fetchReport();
-                    }}
+                    onPress={fetchReport}
                     name="reload-circle-sharp"
                     size={24}
                     color="gray"

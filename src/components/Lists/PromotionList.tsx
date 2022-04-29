@@ -8,6 +8,7 @@ import {
   Center,
   View,
   HStack,
+  Pressable,
 } from "native-base";
 import React, { useState, useCallback } from "react";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
@@ -19,7 +20,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/th"; // ES 2015
 import NumberFormat from "react-number-format";
 
-const numColumns = 2;
+const numColumns = 3;
 const PromotionList = ({
   cartData,
   setCartData,
@@ -124,76 +125,103 @@ const PromotionList = ({
       return <View style={[styles.item, styles.itemInvisible]} />;
     }
     return (
-      <HStack style={styles.item}>
-        <Button
-          colorScheme="greenalt"
-          position="absolute"
-          shadow={4}
-          zIndex={4}
-          right={{ md: "1", xl: 25 }}
-          top={{ md: 1, xl: 25 }}
-          alignSelf="center"
-          size={{ md: 10 }}
-          onPress={() => {
-            void addToCart(item);
-          }}
+      <HStack style={styles.item} borderColor="light.300">
+        <Image
+          width={"100%"}
+          h="100%"
+          position={"absolute"}
+          alt={item.promoName}
+          src={item.image?.imgObj != null ? item.image.imgObj : ErrorImg}
+        />
+
+        <NumberFormat
+          value={item.promoPrice}
+          displayType={"text"}
+          thousandSeparator={true}
+          decimalScale={0}
+          fixedDecimalScale
+          renderText={(formattedValue) => (
+            <Text
+              bg="red.700"
+              fontWeight={400}
+              numberOfLines={1}
+              paddingRight={2}
+              paddingTop={1}
+              marginRight={0.2}
+              marginBottom={"50%"}
+              paddingBottom={1}
+              color="light.100"
+              alignSelf="flex-end"
+            >
+              เหลือ {formattedValue}฿
+            </Text>
+          )}
+        />
+        <NumberFormat
+          value={item.promoCost}
+          displayType={"text"}
+          thousandSeparator={true}
+          decimalScale={0}
+          fixedDecimalScale
+          renderText={(formattedValue) => (
+            <Text
+              bg="red.700"
+              fontWeight={400}
+              numberOfLines={1}
+              paddingLeft={2}
+              paddingRight={1}
+              paddingTop={1}
+              paddingBottom={1}
+              marginBottom={"50%"}
+              textDecorationLine="line-through"
+              color="light.100"
+              alignSelf="flex-end"
+            >
+              จาก {formattedValue}฿
+            </Text>
+          )}
+        />
+        <VStack
+          w="100%"
+          position={"absolute"}
+          bottom={0.1}
+          bg="orange.100"
+          justifyContent="center"
         >
-          <Text fontSize={{ md: 24 }} color="white">
-            +
-          </Text>
-        </Button>
-        <Box style={styles.imageContainer}>
-          <Image
-            style={styles.itemImage}
-            alt={item.promoName}
-            src={item.image?.imgObj != null ? item.image.imgObj : ErrorImg}
-          />
-        </Box>
-        <Box style={styles.textBox}>
-          <Text fontWeight={700} ellipsizeMode="tail" numberOfLines={1}>
-            {item.promoName}
-          </Text>
-          <Text ellipsizeMode="tail" numberOfLines={2}>
-            {item.promoDetail}
-          </Text>
-          <Text color="light.500" fontSize={{ md: 12, xl: 16 }}>
-            เริ่มต้น:{" "}
-            {dayjs(item.promoStart).locale("th").format("D MMMM YYYY ")}
-          </Text>
-          <Text color="light.500" fontSize={{ md: 12, xl: 16 }}>
-            สิ้นสุด: {dayjs(item.promoEnd).locale("th").format("D MMMM YYYY ")}
-          </Text>
-          <Box style={styles.footerText}>
-            <Text fontSize={{ md: 14, xl: 18 }}>ราคา: </Text>
-            <NumberFormat
-              value={item.promoCost}
-              displayType={"text"}
-              thousandSeparator={true}
-              decimalScale={2}
-              fixedDecimalScale
-              renderText={(formattedValue) => (
+          <Box style={styles.textBox}>
+            <Text fontWeight={700} ellipsizeMode="tail" numberOfLines={1}>
+              {item.promoName}
+            </Text>
+            <Text ellipsizeMode="tail" fontSize={12} numberOfLines={2}>
+              {item.promoDetail}
+            </Text>
+            <Text color="light.500" fontSize={12}>
+              เริ่มต้น:{" "}
+              {dayjs(item.promoStart).locale("th").format("D MMMM YYYY ")}
+            </Text>
+            <HStack w="100%">
+              <Text color="light.500" fontSize={12} flex="1">
+                สิ้นสุด:{" "}
+                {dayjs(item.promoEnd).locale("th").format("D MMMM YYYY ")}
+              </Text>
+              <Pressable
+                _pressed={{ bg: "amber.400", borderRadius: 2 }}
+                onPress={() => {
+                  addToCart(item);
+                }}
+              >
                 <Text
-                  textDecorationLine="line-through"
-                  fontSize={{ md: 14, xl: 18 }}
+                  fontWeight={300}
+                  fontSize={12}
+                  flexWrap="wrap"
+                  textDecorationLine="underline"
                 >
-                  {formattedValue}{" "}
+                  เลือก
                 </Text>
-              )}
-            />
-            <NumberFormat
-              value={item.promoPrice}
-              displayType={"text"}
-              thousandSeparator={true}
-              decimalScale={2}
-              fixedDecimalScale
-              renderText={(formattedValue) => (
-                <Text color="red.600" fontSize={{ md: 14, xl: 18 }}>
-                  {formattedValue} บาท
-                </Text>
-              )}
-            />
+              </Pressable>
+            </HStack>
           </Box>
-        </Box>
+        </VStack>
       </HStack>
     );
   };
@@ -205,6 +233,7 @@ const PromotionList = ({
           onRefresh={() => {
             void fetchPromo(true);
           }}
+          contentContainerStyle={{ padding: 1 }}
           refreshing={loadingPromo}
           data={formatData(promoData, numColumns)}
           keyExtractor={(item: any) => item.promoId}
@@ -223,12 +252,14 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   item: {
-    borderWidth: 1,
-    borderRadius: 8,
+    alignItems: "center",
+    flexDirection: "row-reverse",
     flex: 1,
-    margin: 16,
-    height: Dimensions.get("window").width / 6, // approximate a square
-    padding: Dimensions.get("window").width / 84,
+    aspectRatio: 0.85,
+    width: "100%",
+    height: "100%",
+    margin: 0.5,
+    borderWidth: 1,
   },
   itemInvisible: {
     backgroundColor: "transparent",
@@ -237,15 +268,17 @@ const styles = StyleSheet.create({
   itemText: {
     color: "#000",
   },
-  imageContainer: { flex: 3 },
+
   itemImage: {
     width: "100%",
+
+    position: "absolute",
     height: "100%",
     resizeMode: "contain",
   },
   textBox: {
-    flex: 4,
-    paddingVertical: 24,
+    flex: 1,
+    paddingVertical: 12,
     paddingHorizontal: 12,
   },
   footerText: {

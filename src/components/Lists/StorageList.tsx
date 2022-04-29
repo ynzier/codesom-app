@@ -99,54 +99,31 @@ const StorageList = ({ keyword }: { keyword: string }) => {
       px={4}
       py={2}
       mt="2"
-      borderWidth={1}
-      borderRadius={5}
+      borderTopWidth={1}
+      borderColor="light.300"
     >
       <HStack
         borderBottomWidth={1}
+        borderColor="light.300"
         h="12"
         justifyContent="center"
         alignItems="center"
         mb="4"
       >
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
           รหัสสินค้า
         </Text>
 
-        <Text
-          flex="2"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="2" textAlign="center" fontWeight={600} letterSpacing="xl">
           ชื่อสินค้า
         </Text>
 
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
           ราคา/หน่วย
         </Text>
 
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
-          คงเหลือ/ส่วนผสม
+        <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
+          คงเหลือ
         </Text>
       </HStack>
       <FlatList
@@ -165,21 +142,11 @@ const StorageList = ({ keyword }: { keyword: string }) => {
               alignItems="center"
               h="12"
             >
-              <Text
-                flex="1"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-                textDecorationLine="underline"
-                onPress={() => {}}
-              >
+              <Text flex="1" textAlign="center">
                 {item.product.productId}
               </Text>
 
-              <Text
-                flex="2"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-              >
+              <Text flex="2" textAlign="center">
                 {item.product.productName}
               </Text>
               <NumberFormat
@@ -189,11 +156,7 @@ const StorageList = ({ keyword }: { keyword: string }) => {
                 decimalScale={2}
                 fixedDecimalScale
                 renderText={(formattedValue) => (
-                  <Text
-                    flex="1"
-                    textAlign="center"
-                    fontSize={{ md: "md", xl: "xl" }}
-                  >
+                  <Text flex="1" textAlign="center">
                     {formattedValue}
                   </Text>
                 )}
@@ -203,7 +166,6 @@ const StorageList = ({ keyword }: { keyword: string }) => {
                   flex="1"
                   textAlign="center"
                   textDecorationLine="underline"
-                  fontSize={{ md: "md", xl: "xl" }}
                 >
                   ดูสูตรผสม
                 </Text>
@@ -211,7 +173,7 @@ const StorageList = ({ keyword }: { keyword: string }) => {
                 <Text
                   flex="1"
                   textAlign="center"
-                  fontSize={{ md: "md", xl: "xl" }}
+                  color={item.itemRemain < 20 ? "red.500" : "light.900"}
                 >
                   {item.itemRemain}
                 </Text>

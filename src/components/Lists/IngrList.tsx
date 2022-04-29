@@ -88,50 +88,27 @@ const IngrList = ({ keyword }: { keyword: string }) => {
       px={4}
       py={2}
       mt="2"
-      borderWidth={1}
-      borderRadius={5}
+      borderTopWidth={1}
+      borderColor="light.300"
     >
       <HStack
         borderBottomWidth={1}
+        borderColor="light.300"
         h="12"
         justifyContent="center"
         alignItems="center"
         mb="4"
       >
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
           รหัสวัตถุดิบ
         </Text>
-        <Text
-          flex="2"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="2" textAlign="center" fontWeight={600} letterSpacing="xl">
           ชื่อวัตถุดิบ
         </Text>
-        <Text
-          flex="1"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="1" textAlign="center" fontWeight={600} letterSpacing="xl">
           คงเหลือ
         </Text>
-        <Text
-          flex="2"
-          textAlign="center"
-          fontSize={{ md: "md", xl: "xl" }}
-          fontWeight={600}
-          letterSpacing="xl"
-        >
+        <Text flex="2" textAlign="center" fontWeight={600} letterSpacing="xl">
           อัพเดทล่าสุด
         </Text>
       </HStack>
@@ -152,13 +129,7 @@ const IngrList = ({ keyword }: { keyword: string }) => {
               h="12"
             >
               <HStack flex="1" justifyContent="center">
-                <Text
-                  textAlign="center"
-                  fontSize={{ md: "md", xl: "xl" }}
-                  style={{ flex: 1, marginLeft: 20 }}
-                  textDecorationLine="underline"
-                  onPress={() => {}}
-                >
+                <Text textAlign="center" style={{ flex: 1, marginLeft: 20 }}>
                   {item.ingrId}
                 </Text>
                 <Ionicons
@@ -168,25 +139,17 @@ const IngrList = ({ keyword }: { keyword: string }) => {
                   color="black"
                 />
               </HStack>
-              <Text
-                flex="2"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-              >
+              <Text flex="2" textAlign="center">
                 {item.ingredient.ingrName}
               </Text>
               <Text
                 flex="1"
                 textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
+                color={item.itemRemain < 20 ? "red.500" : "light.900"}
               >
                 {item.itemRemain} {item.ingredient.ingrUnit}
               </Text>
-              <Text
-                flex="2"
-                textAlign="center"
-                fontSize={{ md: "md", xl: "xl" }}
-              >
+              <Text flex="2" textAlign="center">
                 {dayjs(item.updatedAt)
                   .locale("th")
                   .format("D MMMM YYYY เวลา HH:mm")}

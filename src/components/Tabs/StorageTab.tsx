@@ -1,14 +1,4 @@
-import {
-  Box,
-  Icon,
-  Input,
-  Pressable,
-  ScrollView,
-  KeyboardAvoidingView,
-  HStack,
-  Text,
-  Spacer,
-} from "native-base";
+import { Box, Icon, Pressable, HStack, Text } from "native-base";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { TextInput } from "react-native-element-textinput";
@@ -36,21 +26,14 @@ const StorageTab = ({
   ];
 
   return (
-    <HStack borderColor="#B4B4B4" mb="2">
-      <Box
-        alignItems="center"
-        py="4"
-        zIndex={2}
-        flex="5"
-        justifyContent="center"
-      >
+    <HStack borderColor="#B4B4B4" mb="2" mx="4">
+      <Box alignItems="center" py="4" zIndex={2} justifyContent="center">
         <TextInput
           value={keyword}
           style={styles.input}
           inputStyle={styles.inputStyle}
           labelStyle={styles.labelStyle}
           placeholderStyle={styles.placeholderStyle}
-          textErrorStyle={styles.textErrorStyle}
           label="ค้นหา"
           placeholderTextColor="gray"
           onChangeText={setKeyword}
@@ -66,7 +49,7 @@ const StorageTab = ({
         />
       </Box>
       <Box
-        flex="10"
+        flex="1"
         alignItems="center"
         justifyContent="flex-end"
         flexDirection="row"
@@ -85,14 +68,13 @@ const StorageTab = ({
                 alignItems="center"
                 p="4"
                 zIndex={2}
-                width={{ md: 32, xl: 40 }}
+                width={24}
                 mx="1"
                 backgroundColor={borderColor}
                 borderRadius={12}
                 borderBottomColor={borderColor}
               >
                 <Text
-                  fontSize={{ md: "md", xl: "xl" }}
                   style={{
                     color: tabIndex == item.typeId ? "#fffdfa" : "#fffdfa",
                     fontFamily:
@@ -116,16 +98,15 @@ export default StorageTab;
 
 const styles = StyleSheet.create({
   input: {
-    height: 55,
-    width: "100%",
+    height: 40,
+    width: 500,
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 0.5,
     borderColor: "#d1d5db",
   },
-  inputStyle: { fontSize: 16, fontFamily: "Prompt-Regular", letterSpacing: 1 },
+  inputStyle: { fontFamily: "Prompt-Regular", letterSpacing: 1 },
   labelStyle: {
-    fontSize: 14,
     color: "#9ca3af",
     position: "absolute",
     top: -10,
@@ -135,10 +116,8 @@ const styles = StyleSheet.create({
     fontFamily: "Prompt-Regular",
   },
   placeholderStyle: {
-    fontSize: 16,
     color: "#9ca3af",
     fontFamily: "Prompt-Regular",
     letterSpacing: 1,
   },
-  textErrorStyle: { fontSize: 16 },
 });

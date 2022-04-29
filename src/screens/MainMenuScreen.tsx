@@ -42,17 +42,14 @@ const MainMenuScreen: React.FC<Props> = ({
           <VStack w="100%" flex={{ md: "3", xl: "4" }}>
             {children}
             <VStack
-              borderWidth={1}
-              w="95%"
-              borderRadius={5}
+              w="100%"
               flex="10"
               alignSelf="center"
               alignItems="center"
-              mt="4"
-              mb={{ md: "10%", xl: "6%" }}
+              marginBottom={"82px"}
               justifyContent="center"
             >
-              <HStack flex="1" alignItems="center">
+              <HStack mt="2" alignItems="center">
                 <MainMenuTab tabIndex={tabIndex} setTabIndex={setTabIndex} />
               </HStack>
               <VStack w="100%" flex="10">

@@ -50,12 +50,7 @@ const AlertToast = (
         >
           <HStack space={4} w="100%" pr="8" alignItems="center">
             {icon}
-            <Text
-              noOfLines={5}
-              fontWeight="light"
-              color={fontcolor}
-              fontSize="md"
-            >
+            <Text noOfLines={5} fontWeight="light" color={fontcolor}>
               {description}
             </Text>
           </HStack>
