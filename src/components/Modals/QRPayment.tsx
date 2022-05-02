@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Text,
-  Center,
-  Box,
-  Spinner,
-  Image,
-} from "native-base";
+import React, { useState, useEffect, memo } from "react";
+import { Modal, Text, Center, Box, Spinner, Image } from "native-base";
 
 import NumberFormat from "react-number-format";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
@@ -62,9 +55,7 @@ const QRPayment = ({
       void trackPromise(getQR());
     }
 
-    return () => {
-      setFetchQR(false);
-    };
+    return () => {};
   }, [fetchQR, finishState, orderTotal, preSendData]);
 
   useEffect(() => {
@@ -244,4 +235,4 @@ const QRPayment = ({
   );
 };
 
-export default QRPayment;
+export default memo(QRPayment);

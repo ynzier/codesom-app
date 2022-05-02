@@ -32,13 +32,16 @@ const RequisitionModal = ({
   const { promiseInProgress: loadingList } = usePromiseTracker({
     area: "loadingList",
   });
+  const { promiseInProgress: submitting } = usePromiseTracker({
+    area: "submitting",
+  });
   const [optionList, setOptionList] = useState<any>([]);
   const [empList, setEmpList] = useState([]);
   const [creator, setCreator] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
   const [itemList, setItemList] = useState<any>([]);
   const [selected, setSelected] = useState<any>([]);
-  const [fetched, setFetched] = useState(false);
+
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -46,7 +49,6 @@ const RequisitionModal = ({
       await trackPromise(
         new Promise((resolve, reject) => {
           setTimeout(() => {
-            setFetched(true);
             resolve(
               storageService
                 .getItemMakeRequest()
@@ -83,15 +85,15 @@ const RequisitionModal = ({
                   console.log(e);
                 })
             );
-          }, 2000);
+          }, 3000);
         }),
         "loadingList"
       );
     };
-    if (!fetched) void fetch();
+    void fetch();
 
     return () => {};
-  }, [fetched]);
+  }, []);
 
   const addItemToList = (item: any) => {
     const selectedArray: any = [];
@@ -122,9 +124,12 @@ const RequisitionModal = ({
     setSelected([]);
     setCreator(0);
   };
-  const getItemQuantity = (item: any): string => {
-    const index = itemList.findIndex((obj: any) => obj.key == item.key);
-    return itemList[index].quantity;
+  const getItemQuantity = (item: any) => {
+    if (itemList.length) {
+      const index = itemList.findIndex((obj: any) => obj.key == item.key);
+
+      return itemList[index].quantity;
+    }
   };
   const filterZeroQuantity = () => {
     if (itemList.length < 1) return setError("กรุณาเลือกสินค้าก่อนทำการยืนยัน");
@@ -177,7 +182,8 @@ const RequisitionModal = ({
               })
           );
         }, 2000);
-      })
+      }),
+      "submitting"
     );
   };
   const renderItem = (item: any) => {
@@ -202,6 +208,7 @@ const RequisitionModal = ({
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         postData={postData}
+        submitting={submitting}
       />
       <Modal
         isOpen={showRequest}
@@ -359,10 +366,12 @@ const ConfirmDialog = ({
   isOpen,
   setIsOpen,
   postData,
+  submitting,
 }: {
   isOpen: boolean;
   setIsOpen: (any: boolean) => void;
   postData: () => void;
+  submitting: boolean;
 }) => {
   const onClose = () => {
     setIsOpen(false);
@@ -394,7 +403,11 @@ const ConfirmDialog = ({
               >
                 ยกเลิก
               </Button>
-              <Button colorScheme="emerald" onPress={onConfirm}>
+              <Button
+                colorScheme="emerald"
+                onPress={onConfirm}
+                isLoading={submitting}
+              >
                 ยืนยัน
               </Button>
             </Button.Group>

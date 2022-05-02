@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import {
   Box,
@@ -6,7 +6,6 @@ import {
   HStack,
   Button,
   VStack,
-  Icon,
   Divider,
   Spinner,
 } from "native-base";
@@ -215,6 +214,17 @@ const CartSidebar: React.FC<Props> = ({
             <NumericInput
               value={data.item.quantity}
               onChange={(value) => {
+                if (value < 1 || !value) {
+                  return setCartData(
+                    Object.values({
+                      ...cartData,
+                      [data.index]: {
+                        ...cartData[data.index],
+                        quantity: 1,
+                      },
+                    })
+                  );
+                }
                 if (value > 99) {
                   setCartData(
                     Object.values({
@@ -231,7 +241,7 @@ const CartSidebar: React.FC<Props> = ({
                     textBody: "เกินจำนวนสูงสุดแล้ว",
                   });
                 }
-                setCartData(
+                return setCartData(
                   Object.values({
                     ...cartData,
                     [data.index]: {
@@ -241,9 +251,16 @@ const CartSidebar: React.FC<Props> = ({
                   })
                 );
               }}
-              onLimitReached={(isMax) => {
+              onLimitReached={(isMax, v) => {
+                if (v == "Reached Minimum Value!") {
+                  return Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "คำเตือน!",
+                    textBody: "จำนวนต้องมากกว่า 0",
+                  });
+                }
                 if (isMax)
-                  Toast.show({
+                  return Toast.show({
                     type: ALERT_TYPE.DANGER,
                     title: "คำเตือน!",
                     textBody: "ถึงจำนวนสูงสุดแล้ว",
@@ -562,4 +579,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CartSidebar;
+export default memo(CartSidebar);

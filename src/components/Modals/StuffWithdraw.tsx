@@ -15,8 +15,8 @@ import {
   Spacer,
 } from "native-base";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
-import { requisitionService, employeeService, storageService } from "services";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import { employeeService, storageService } from "services";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MultiSelect, Dropdown } from "ynzier-react-native-element-dropdown";
@@ -254,7 +254,7 @@ const StuffWithdraw = ({
                         color="black"
                       />
                     )}
-                    renderSelectedItem={(item, unSelect) => {
+                    renderSelectedItem={(item, unSelect): any => {
                       return (
                         <TouchableOpacity>
                           <View style={styles.selectedStyle}>
@@ -271,6 +271,11 @@ const StuffWithdraw = ({
                               placeholder="0"
                               onChangeText={(text) => {
                                 const count = parseInt(text);
+                                if (count > item.itemRemain)
+                                  handleQuantityChange(
+                                    item.itemRemain,
+                                    item.stuffId
+                                  );
                                 if (count <= item.itemRemain)
                                   handleQuantityChange(count, item.stuffId);
                               }}

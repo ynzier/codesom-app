@@ -142,7 +142,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                 space={3}
               >
                 <Box flexDir={"row"} alignItems="center" mb="3">
-                  <Text fontWeight={600}>
+                  <Text fontSize={"md"} fontWeight={600}>
                     รายงานประจำวันที่{" "}
                     {dayjs().locale("th").format("D MMMM YYYY ")}
                   </Text>
@@ -172,7 +172,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         borderBottomWidth={1}
                         borderColor={"light.300"}
                       >
-                        <Text fontWeight={500} fontSize="lg">
+                        <Text fontWeight={500} fontSize="md">
                           รายงานยอดขาย
                         </Text>
                       </VStack>
@@ -484,7 +484,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                         borderBottomWidth={1}
                         borderColor={"light.300"}
                       >
-                        <Text fontWeight={500} fontSize="lg">
+                        <Text fontWeight={500} fontSize="md">
                           สินค้าขายดี
                         </Text>
                       </VStack>

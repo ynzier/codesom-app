@@ -99,7 +99,7 @@ export default StorageTab;
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    width: 500,
+    width: 400,
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 0.5,

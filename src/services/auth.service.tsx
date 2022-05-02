@@ -30,12 +30,9 @@ const checkCurrentSession = async () => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
-const logoutApp = () => {
-  // localStorage.deleteJWT()
-};
 
 export default {
   signInApp,
-  logoutApp,
+
   checkCurrentSession,
 };

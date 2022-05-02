@@ -93,18 +93,9 @@ const StorageList = ({ keyword }: { keyword: string }) => {
   );
 
   return (
-    <VStack
-      w="100%"
-      flex="12"
-      px={4}
-      py={2}
-      mt="2"
-      borderTopWidth={1}
-      borderColor="light.300"
-    >
+    <VStack w="100%" flex="12" px={4} py={2} mt="2">
       <HStack
         borderBottomWidth={1}
-        borderColor="light.300"
         h="12"
         justifyContent="center"
         alignItems="center"

@@ -100,7 +100,10 @@ const ReceiptModal = ({
       );
     }
 
-    return () => {};
+    return () => {
+      setReceiptData({});
+      setOrderItems([]);
+    };
   }, [orderId]);
 
   return (

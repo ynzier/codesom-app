@@ -175,15 +175,14 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     setCashModal(true);
   };
   const postQROrder = () => {
-    console.log("first");
     const ordHeader: any = {
       orderItems: cartData && cartData.length,
       orderTotal: parseFloat(total).toFixed(2),
       orderDiscount: parseFloat(totalDiscount).toFixed(2),
       orderSubTotal: parseFloat(subTotal.toString()).toFixed(2),
       orderType: orderType,
-      platformId: platformId,
-      orderRefNo: orderRefNo,
+      platformId: null,
+      orderRefNo: null,
       orderStatus: "0",
     };
     const data = {
@@ -192,6 +191,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       totalIngr: totalIngr,
       orderPromo: promoCart,
     };
+
     setPreSendData(data);
     setShowQRModal(true);
   };
@@ -203,8 +203,8 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       orderDiscount: parseFloat(totalDiscount).toFixed(2),
       orderSubTotal: parseFloat(subTotal.toString()).toFixed(2),
       orderType: orderType,
-      platformId: platformId,
-      orderRefNo: orderRefNo,
+      platformId: null,
+      orderRefNo: null,
       orderStatus: "0",
     };
     const data = {
@@ -233,7 +233,6 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       totalIngr: totalIngr,
       orderPromo: promoCart,
     };
-    setPreSendData(data);
 
     const pushData = {
       total: parseFloat(total).toFixed(2),
@@ -242,7 +241,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
       net: (parseFloat(total) * 0.07).toFixed(2),
       change: "0.0",
     };
-    const sendData = { orderData: preSendData, receiptData: pushData };
+    const sendData = { orderData: data, receiptData: pushData };
     void trackPromise(
       new Promise((resolve) => {
         setTimeout(() => {
@@ -654,7 +653,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                   });
                 }
 
-                if (orderType == "delivery")
+                if (orderType == "delivery") {
                   if (
                     platformId == "0" ||
                     platformId == "1" ||
@@ -663,7 +662,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                     platformId == "4"
                   )
                     return createOrderDelivery();
-
+                }
                 if (!isQR && !isCash && !isWallet)
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,

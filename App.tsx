@@ -387,6 +387,7 @@ const App: React.FC<Props> = () => {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
         })
         .catch((error) => {
+          console.log(error);
           if (error) dispatch({ type: "SIGN_OUT", token: null });
         });
     };
