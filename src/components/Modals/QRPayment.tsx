@@ -1,13 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Button,
   Modal,
-  VStack,
-  HStack,
   Text,
   Center,
   Box,
-  AlertDialog,
   Spinner,
   Image,
 } from "native-base";

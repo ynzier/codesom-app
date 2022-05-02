@@ -15,7 +15,6 @@ import {
   Divider,
 } from "native-base";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import NumberFormat from "react-number-format";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";

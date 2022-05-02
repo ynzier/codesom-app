@@ -55,6 +55,12 @@ const createOrderEwallet = async (data: any) => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
+const createOrderDelivery = async (data: any) => {
+  const xToken = await authHeader();
+  return http.post(prefix + "/createOrderDelivery", data, {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 export default {
   createOrderApp,
   listOrderApp,
@@ -64,4 +70,5 @@ export default {
   checkCompleteCharge,
   createOrderOmise,
   createOrderEwallet,
+  createOrderDelivery,
 };

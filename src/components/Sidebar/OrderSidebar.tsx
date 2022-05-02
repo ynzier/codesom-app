@@ -8,14 +8,17 @@ import {
   VStack,
   Icon,
   Divider,
+  Spinner,
   FlatList,
 } from "native-base";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import CashPayment from "../Modals/CashPayment";
+import { orderService } from "services";
 import QRPayment from "../Modals/QRPayment";
 import WalletPayment from "../Modals/WalletPayment";
 
@@ -24,6 +27,9 @@ interface Props {
   route: any;
 }
 const OrderSidebar: React.FC<Props> = ({ route }) => {
+  const { promiseInProgress: createDelivery } = usePromiseTracker({
+    area: "createDelivery",
+  });
   const { orderType, orderRefNo, platformId } = route || "";
   const [isQR, setIsQR] = useState(false);
   const [isWallet, setIsWallet] = useState(false);
@@ -189,6 +195,7 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     setPreSendData(data);
     setShowQRModal(true);
   };
+
   const postWalletOrder = () => {
     const ordHeader: any = {
       orderItems: cartData && cartData.length,
@@ -208,6 +215,65 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
     };
     setPreSendData(data);
     setShowWalletModal(true);
+  };
+  const createOrderDelivery = () => {
+    const ordHeader: any = {
+      orderItems: cartData && cartData.length,
+      orderTotal: parseFloat(total).toFixed(2),
+      orderDiscount: parseFloat(totalDiscount).toFixed(2),
+      orderSubTotal: parseFloat(subTotal.toString()).toFixed(2),
+      orderType: orderType,
+      platformId: platformId,
+      orderRefNo: orderRefNo,
+      orderStatus: "0",
+    };
+    const data = {
+      ordHeader: ordHeader,
+      orderItems: preConfirm,
+      totalIngr: totalIngr,
+      orderPromo: promoCart,
+    };
+    setPreSendData(data);
+
+    const pushData = {
+      total: parseFloat(total).toFixed(2),
+      cash: parseFloat(total).toFixed(2),
+      tax: (parseFloat(total) * 0.07).toFixed(2),
+      net: (parseFloat(total) * 0.07).toFixed(2),
+      change: "0.0",
+    };
+    const sendData = { orderData: preSendData, receiptData: pushData };
+    void trackPromise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            orderService
+              .createOrderDelivery(sendData)
+              .then((res) => {
+                resetStorage();
+                Toast.show({
+                  type: ALERT_TYPE.SUCCESS,
+                  textBody: res.data.message,
+                });
+                setPreSendData([]);
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 2000);
+      }),
+      "createDelivery"
+    );
   };
   const handleCancel = async () => {
     setIsCash(false);
@@ -584,9 +650,20 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 ) {
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,
-                    textBody: "กรุณาทำรายการอีกครั้ง",
+                    textBody: "ข้อมูลเดลิเวอรีไม่ถูกต้อง กรุณาทำรายการอีกครั้ง",
                   });
                 }
+
+                if (orderType == "delivery")
+                  if (
+                    platformId == "0" ||
+                    platformId == "1" ||
+                    platformId == "2" ||
+                    platformId == "3" ||
+                    platformId == "4"
+                  )
+                    return createOrderDelivery();
+
                 if (!isQR && !isCash && !isWallet)
                   return Toast.show({
                     type: ALERT_TYPE.DANGER,
@@ -601,7 +678,11 @@ const OrderSidebar: React.FC<Props> = ({ route }) => {
                 if (isWallet) postWalletOrder();
               }}
             >
-              ชำระเงิน
+              {createDelivery ? (
+                <Spinner size="sm" color="altred.500" />
+              ) : (
+                "ชำระเงิน"
+              )}
             </Button>
           </Box>
         </VStack>
