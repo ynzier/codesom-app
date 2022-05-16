@@ -82,10 +82,11 @@ const RequisitionModal = ({
                   }
                 })
                 .catch((e) => {
+                  console.log("employeeError");
                   console.log(e);
                 })
             );
-          }, 3000);
+          }, 2000);
         }),
         "loadingList"
       );
@@ -211,6 +212,7 @@ const RequisitionModal = ({
         submitting={submitting}
       />
       <Modal
+        avoidKeyboard
         isOpen={showRequest}
         onClose={() => {
           setSelected([]);
@@ -315,7 +317,6 @@ const RequisitionModal = ({
                       fontFamily="Prompt-Regular"
                       iconStyle={styles.iconStyle}
                       data={empList}
-                      search
                       maxHeight={200}
                       labelField="label"
                       valueField="value"
@@ -339,6 +340,7 @@ const RequisitionModal = ({
                   <Spacer />
                   <Button
                     h="10"
+                    w={32}
                     justifyContent="center"
                     alignItems="center"
                     colorScheme="emerald"

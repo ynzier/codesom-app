@@ -49,7 +49,7 @@ const Delivery = (props: {
       {({ isPressed }) => (
         <>
           <Text color={isPressed || props.isDelivery ? "#fffdfa" : "black"}>
-            เดลิเวอรี่
+            เดลิเวอรี
           </Text>
           <MaterialCommunityIcons
             name="truck-outline"

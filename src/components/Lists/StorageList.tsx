@@ -42,27 +42,33 @@ const StorageList = ({ keyword }: { keyword: string }) => {
   const [filterData, setfilterData] = useState<productData[]>([]);
   const fetchProductData = async (isSubscribed: boolean) => {
     await trackPromise(
-      storageService
-        .getAllProductInStorage()
-        .then((res) => {
-          if (isSubscribed) {
-            const recData = res.data;
-            setFetched(true);
-            setProductArray(recData);
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          Toast.show({
-            type: ALERT_TYPE.DANGER,
-            textBody: resMessage,
-          });
-        }),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            storageService
+              .getAllProductInStorage()
+              .then((res) => {
+                if (isSubscribed) {
+                  const recData = res.data;
+                  setFetched(true);
+                  setProductArray(recData);
+                }
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 500);
+      }),
       "storageList"
     );
   };

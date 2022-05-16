@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, memo } from "react";
 import {
   Box,
   Center,
@@ -27,8 +27,8 @@ const RecipeModal = ({
     useCallback(() => {
       let isSubscribed = true;
 
-      const fetchRecipeData = () => {
-        productService
+      const fetchRecipeData = async () => {
+        await productService
           .getRecipeByIdIncStorage(recipeId)
           .then((res) => {
             if (isSubscribed) {
@@ -38,10 +38,11 @@ const RecipeModal = ({
           })
           .catch((err) => console.log(err));
       };
-      fetchRecipeData();
+      void fetchRecipeData();
 
       return () => {
         isSubscribed = false;
+        setIngrArray([]);
       };
     }, [recipeId])
   );
@@ -116,7 +117,7 @@ const RecipeModal = ({
   );
 };
 
-export default RecipeModal;
+export default memo(RecipeModal);
 
 const styles = StyleSheet.create({
   headerText: {

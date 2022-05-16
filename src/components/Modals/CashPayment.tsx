@@ -129,7 +129,7 @@ const CashPayment = ({
         size="lg"
       >
         <Modal.Content maxWidth="500">
-          {finishState && <Modal.CloseButton />}
+          {(finishState || !isConfirm) && <Modal.CloseButton />}
           <Modal.Header mx="4" borderBottomWidth={1} alignItems="center">
             <Text fontSize="lg">{!isConfirm ? "เงินสด" : "บันทึกยอด"}</Text>
           </Modal.Header>

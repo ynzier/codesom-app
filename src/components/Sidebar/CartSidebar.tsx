@@ -53,25 +53,28 @@ const CartSidebar: React.FC<Props> = ({
     try {
       await trackPromise(
         new Promise((resolve) => {
-          resolve(
-            storageService
-              .checkRecipeCartAvailable({ cartData, promoCart })
-              .then((res) => {
-                void AsyncStorage.setItem(
-                  "preConfirm",
-                  JSON.stringify(res.data.totalProductName)
-                );
-                void AsyncStorage.setItem(
-                  "totalIngr",
-                  JSON.stringify(res.data.totalIngr)
-                );
-              })
-          );
-          if (promoCart.length > 0)
+          setTimeout(() => {
             resolve(
-              AsyncStorage.setItem("promoCart", JSON.stringify(promoCart))
+              storageService
+                .checkRecipeCartAvailable({ cartData, promoCart })
+                .then((res) => {
+                  void AsyncStorage.setItem(
+                    "preConfirm",
+                    JSON.stringify(res.data.totalProductName)
+                  );
+                  void AsyncStorage.setItem(
+                    "totalIngr",
+                    JSON.stringify(res.data.totalIngr)
+                  );
+                })
             );
-          resolve(AsyncStorage.setItem("cartData", JSON.stringify(cart)));
+            if (promoCart.length > 0) {
+              resolve(
+                AsyncStorage.setItem("promoCart", JSON.stringify(promoCart))
+              );
+            } else resolve(AsyncStorage.setItem("promoCart", "[]"));
+            resolve(AsyncStorage.setItem("cartData", JSON.stringify(cart)));
+          }, 1000);
         }),
         "setCart"
       );
@@ -410,6 +413,17 @@ const CartSidebar: React.FC<Props> = ({
                           <NumericInput
                             value={item.promoCount}
                             onChange={(value) => {
+                              if (value < 1 || !value) {
+                                return setPromoCart(
+                                  Object.values({
+                                    ...promoCart,
+                                    [index]: {
+                                      ...promoCart[index],
+                                      promoCount: 1,
+                                    },
+                                  })
+                                );
+                              }
                               if (value > 99) {
                                 setPromoCart(
                                   Object.values({
@@ -426,7 +440,7 @@ const CartSidebar: React.FC<Props> = ({
                                   textBody: "เกินจำนวนสูงสุดแล้ว",
                                 });
                               }
-                              setPromoCart(
+                              return setPromoCart(
                                 Object.values({
                                   ...promoCart,
                                   [index]: {
@@ -436,9 +450,16 @@ const CartSidebar: React.FC<Props> = ({
                                 })
                               );
                             }}
-                            onLimitReached={(isMax) => {
+                            onLimitReached={(isMax, v) => {
+                              if (v == "Reached Minimum Value!") {
+                                return Toast.show({
+                                  type: ALERT_TYPE.DANGER,
+                                  title: "คำเตือน!",
+                                  textBody: "จำนวนต้องมากกว่า 0",
+                                });
+                              }
                               if (isMax)
-                                Toast.show({
+                                return Toast.show({
                                   type: ALERT_TYPE.DANGER,
                                   title: "คำเตือน!",
                                   textBody: "ถึงจำนวนสูงสุดแล้ว",

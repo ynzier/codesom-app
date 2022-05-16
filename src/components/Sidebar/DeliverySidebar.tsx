@@ -32,10 +32,16 @@ const DeliverySidebar = ({
   useEffect(() => {
     if (itemId) {
       void trackPromise(
-        lalamoveService
-          .getOrderItemApp(itemId)
-          .then((res) => setItemList(res.data.order_items))
-          .catch((err) => console.log(err)),
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(
+              lalamoveService
+                .getOrderItemApp(itemId)
+                .then((res) => setItemList(res.data.order_items))
+                .catch((err) => console.log(err))
+            );
+          }, 500);
+        }),
         "loadingDeliverySidebar"
       );
     }

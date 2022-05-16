@@ -13,7 +13,7 @@ import {
 import React, { useState, useCallback } from "react";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { Dimensions, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { promotionService } from "services";
 import dayjs from "dayjs";
@@ -22,8 +22,6 @@ import NumberFormat from "react-number-format";
 
 const numColumns = 3;
 const PromotionList = ({
-  cartData,
-  setCartData,
   promoCart,
   setPromoCart,
 }: {
@@ -70,27 +68,33 @@ const PromotionList = ({
   };
   const fetchPromo = async (isSubscribed: boolean) => {
     await trackPromise(
-      promotionService
-        .getCurrentPromotionBranch()
-        .then((res) => {
-          if (isSubscribed) {
-            const recData = res.data;
-            setFetched(true);
-            setPromoData(recData);
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          Toast.show({
-            type: ALERT_TYPE.DANGER,
-            textBody: resMessage,
-          });
-        }),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            promotionService
+              .getCurrentPromotionBranch()
+              .then((res) => {
+                if (isSubscribed) {
+                  const recData = res.data;
+                  setFetched(true);
+                  setPromoData(recData);
+                }
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 500);
+      }),
       "loadingPromo"
     );
   };

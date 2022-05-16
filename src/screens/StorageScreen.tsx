@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar, Box, Center, HStack, VStack } from "native-base";
-
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { Navigation } from "../hooks/navigation";
 import {
   StorageSidebar,
@@ -24,6 +24,9 @@ const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
   const [showRequest, setShowRequest] = useState(false);
   const [listData, setListData] = useState<any[]>([]);
   const [reqId, setReqId] = useState<number | undefined>(undefined);
+  const { promiseInProgress: fetchingHistory } = usePromiseTracker({
+    area: "fetchingHistory",
+  });
   const handleShowDetail = (id: number | undefined) => {
     setShowDetail((s) => !s);
     setReqId(id);
@@ -34,14 +37,23 @@ const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
   const handleFetch = () => {
     void fecthHistory(true);
   };
-  const fecthHistory = useCallback(async (isSubscribed?: boolean) => {
-    await requisitionService
-      .listReqApp()
-      .then((res) => {
-        const temp = res.data;
-        if (isSubscribed) setListData(temp);
-      })
-      .catch((error) => console.log(error));
+  const fecthHistory = useCallback((isSubscribed?: boolean) => {
+    void trackPromise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            requisitionService
+              .listReqApp()
+              .then((res) => {
+                const temp = res.data;
+                if (isSubscribed) setListData(temp);
+              })
+              .catch((error) => console.log(error))
+          );
+        }, 500);
+      }),
+      "fetchingHistory"
+    );
   }, []);
   useFocusEffect(
     useCallback(() => {
@@ -55,10 +67,24 @@ const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
   );
   useEffect(() => {
     const abortController = new AbortController();
-    void (async function fetchData() {
+    void (function fetchData() {
       try {
-        const response = await requisitionService.listReqApp();
-        setListData(response.data);
+        void trackPromise(
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(
+                requisitionService
+                  .listReqApp()
+                  .then((res) => {
+                    const temp = res.data;
+                    setListData(temp);
+                  })
+                  .catch((error) => console.log(error))
+              );
+            }, 500);
+          }),
+          "fetchingHistory"
+        );
       } catch (error) {
         console.log("error", error);
       }
@@ -125,6 +151,7 @@ const StorageScreen: React.FC<Props> = ({ navigation, children }) => {
             handleShowRequest={handleShowRequest}
             handleShowDetail={handleShowDetail}
             handleFetch={handleFetch}
+            fetchingHistory={fetchingHistory}
           />
           {/*Sidebar Component */}
         </HStack>

@@ -47,28 +47,34 @@ const DeliveryScreen: React.FC<Props> = ({ children }) => {
 
   const fetchOrderList = (isMounted: boolean) => {
     void trackPromise(
-      lalamoveService
-        .getDeliveryListApp()
-        .then((res) => {
-          if (isMounted) {
-            const recData = res.data;
-            setOrderData(recData);
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          // AlertToast(resMessage, "alert");
-          Toast.show({
-            type: ALERT_TYPE.DANGER,
-            title: "พบข้อผิดพลาด!",
-            textBody: resMessage,
-          });
-        }),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            lalamoveService
+              .getDeliveryListApp()
+              .then((res) => {
+                if (isMounted) {
+                  const recData = res.data;
+                  setOrderData(recData);
+                }
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                // AlertToast(resMessage, "alert");
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  title: "พบข้อผิดพลาด!",
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 500);
+      }),
       "loadingOrders"
     );
   };

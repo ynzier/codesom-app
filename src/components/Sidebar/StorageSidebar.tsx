@@ -1,6 +1,6 @@
 /* eslint-disable indent */
-import React, { useState, useCallback, memo } from "react";
-import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import React, { memo } from "react";
+
 import {
   Box,
   Text,
@@ -23,16 +23,14 @@ const StorageSidebarComponent = ({
   handleFetch,
   handleShowRequest,
   handleShowDetail,
+  fetchingHistory,
 }: {
   listData: any[];
   handleFetch: () => void;
   handleShowDetail: (s: number | undefined) => void;
   handleShowRequest: () => void;
+  fetchingHistory: boolean;
 }) => {
-  const { promiseInProgress: storageSidebar } = usePromiseTracker({
-    area: "sidebar",
-  });
-
   return (
     <>
       <HStack w="100%" flex="1" bg="#FFF0D9">
@@ -56,7 +54,7 @@ const StorageSidebarComponent = ({
             />
             <FlatList
               data={listData}
-              refreshing={storageSidebar}
+              refreshing={fetchingHistory}
               onRefresh={handleFetch}
               keyExtractor={(item: any) => item.requisitionId}
               renderItem={({ item }: any) => {

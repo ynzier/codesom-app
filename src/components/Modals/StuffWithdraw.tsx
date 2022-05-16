@@ -29,7 +29,12 @@ const StuffWithdraw = ({
   setShowRequest: (boolean: boolean) => void;
   props?: any;
 }) => {
-  const { promiseInProgress } = usePromiseTracker();
+  const { promiseInProgress: loadingList } = usePromiseTracker({
+    area: "loadingList",
+  });
+  const { promiseInProgress: submitting } = usePromiseTracker({
+    area: "submitting",
+  });
   const [optionList, setOptionList] = useState<any>([]);
   const [empList, setEmpList] = useState([]);
   const [creator, setCreator] = useState<number>(0);
@@ -79,7 +84,8 @@ const StuffWithdraw = ({
               })
           );
         }, 2000);
-      })
+      }),
+      "loadingList"
     );
 
     return () => {};
@@ -114,9 +120,13 @@ const StuffWithdraw = ({
     setSelected([]);
     setCreator(0);
   };
-  const getItemQuantity = (item: any): string => {
-    const index = itemList.findIndex((obj: any) => obj.stuffId == item.stuffId);
-    return itemList[index].quantity;
+  const getItemQuantity = (item: any): void => {
+    if (itemList.length) {
+      const index = itemList.findIndex(
+        (obj: any) => obj.stuffId == item.stuffId
+      );
+      return itemList[index].quantity;
+    }
   };
   const filterZeroQuantity = () => {
     if (itemList.length < 1) return setError("กรุณาเลือกสินค้าก่อนทำการยืนยัน");
@@ -169,7 +179,8 @@ const StuffWithdraw = ({
               })
           );
         }, 2000);
-      })
+      }),
+      "submitting"
     );
   };
   const renderEmpItem = (item: any) => {
@@ -186,53 +197,46 @@ const StuffWithdraw = ({
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         postData={postData}
+        submitting={submitting}
       />
       <Modal
         isOpen={showRequest}
+        avoidKeyboard
         onClose={() => {
           setSelected([]);
           setItemList([]);
           setShowRequest(false);
         }}
-        size="lg"
       >
         <Modal.Content h="700" maxWidth="600" borderRadius="40">
           <Modal.CloseButton mr="4" mt="2" />
           <VStack mt="8" mx="16">
             <Box h="16">
-              <Text
-                textAlign="center"
-                fontFamily="heading"
-                fontWeight={700}
-                fontSize="lg"
-              >
+              <Text textAlign="center" fontWeight={600} fontSize="md">
                 เบิกสินค้า
               </Text>
             </Box>
-            {promiseInProgress ? (
+            {loadingList ? (
               <Spinner size="lg" color="cream" />
             ) : (
               <>
                 <HStack mb="3">
-                  <Text flex="1" fontSize={16}>
+                  <Text flex="1" fontWeight={600}>
                     รายการที่ต้องการเบิก
                   </Text>
                   <Pressable onPress={cleanUp}>
                     <MaterialIcons
                       name="cleaning-services"
-                      size={24}
+                      size={18}
                       color="black"
                       style={{ transform: [{ rotate: "30deg" }] }}
                     />
                   </Pressable>
                 </HStack>
-                <ScrollView _ios={{ height: 380 }} _android={{ height: 300 }}>
+                <ScrollView _android={{ minH: 300 }} _ios={{ minH: 400 }}>
                   <MultiSelect
                     style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
                     fontFamily="Prompt-Regular"
-                    inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
                     data={optionList}
                     labelField="stuffName"
@@ -240,19 +244,12 @@ const StuffWithdraw = ({
                     valueField="stuffId"
                     placeholder="เลือกสินค้า..."
                     value={selected}
-                    search
-                    searchPlaceholder="Search..."
                     onChange={(item) => {
                       addItemToList(item);
                       setSelected(item);
                     }}
                     renderLeftIcon={() => (
-                      <Ionicons
-                        name="cube"
-                        style={styles.icon}
-                        size={24}
-                        color="black"
-                      />
+                      <Ionicons name="cube" style={styles.icon} color="black" />
                     )}
                     renderSelectedItem={(item, unSelect): any => {
                       return (
@@ -300,20 +297,15 @@ const StuffWithdraw = ({
                 </ScrollView>
                 <HStack w="100%" mt="3">
                   <VStack flex="3">
-                    <Text mb="3" fontSize={16}>
-                      ลงชื่อผู้ขอเบิกคลังสินค้า
-                    </Text>
+                    <Text mb="3">ลงชื่อผู้ขอเบิกคลังสินค้า</Text>
                     <Dropdown
                       style={styles.dropdown}
-                      placeholderStyle={styles.placeholderStyle}
-                      selectedTextStyle={styles.selectedTextStyle}
                       fontFamily="Prompt-Regular"
                       inputSearchStyle={styles.inputSearchStyle}
                       iconStyle={styles.iconStyle}
                       data={empList}
-                      search
                       dropdownPosition="top"
-                      maxHeight={300}
+                      maxHeight={200}
                       labelField="label"
                       valueField="value"
                       placeholder="ลงชื่อผู้เบิกคลังสินค้า"
@@ -335,16 +327,13 @@ const StuffWithdraw = ({
                   </VStack>
                   <Spacer />
                   <Button
-                    h="16"
-                    mt="4"
-                    flex="1"
+                    h="10"
+                    w={32}
                     justifyContent="center"
                     alignItems="center"
                     colorScheme="emerald"
-                    _text={{ fontSize: 24 }}
-                    onPress={() => {
-                      filterZeroQuantity();
-                    }}
+                    alignSelf={"flex-end"}
+                    onPress={filterZeroQuantity}
                   >
                     ยืนยัน
                   </Button>
@@ -367,10 +356,12 @@ const ConfirmDialog = ({
   isOpen,
   setIsOpen,
   postData,
+  submitting,
 }: {
   isOpen: boolean;
   setIsOpen: (any: boolean) => void;
   postData: () => void;
+  submitting: boolean;
 }) => {
   const onClose = () => {
     setIsOpen(false);
@@ -402,7 +393,11 @@ const ConfirmDialog = ({
               >
                 ยกเลิก
               </Button>
-              <Button colorScheme="emerald" onPress={onConfirm}>
+              <Button
+                isLoading={submitting}
+                colorScheme="emerald"
+                onPress={onConfirm}
+              >
                 ยืนยัน
               </Button>
             </Button.Group>
@@ -419,8 +414,8 @@ const styles = StyleSheet.create({
   dropdown: {
     borderWidth: 1,
     borderColor: "#f4f4f4",
-    height: 50,
-    marginBottom: 12,
+    height: 40,
+
     backgroundColor: "white",
     borderRadius: 12,
     padding: 12,
@@ -463,6 +458,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    height: 40,
     borderRadius: 14,
     backgroundColor: "white",
     shadowColor: "#000",

@@ -142,7 +142,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
                 space={3}
               >
                 <Box flexDir={"row"} alignItems="center" mb="3">
-                  <Text fontSize={"md"} fontWeight={600}>
+                  <Text fontSize="xl" fontWeight={500}>
                     รายงานประจำวันที่{" "}
                     {dayjs().locale("th").format("D MMMM YYYY ")}
                   </Text>

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useReducer, useMemo } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NativeBaseProvider, extendTheme, Badge, VStack } from "native-base";
 import { Root as AlertProvider } from "alert-toast-react-native";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { authService, lalamoveService, deviceStorage } from "services";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,14 +23,20 @@ import {
 } from "./src/screens";
 import AppLoading from "expo-app-loading";
 import useFonts from "./src/hooks/useFonts";
-import { useWindowDimensions } from "react-native";
+import { useWindowDimensions, Platform } from "react-native";
 import Topbar from "./src/components/Topbar";
 import http from "./src/http-common";
 import { AuthContext } from "./src/context/AuthContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 interface AccessToken {
   accessToken: string;
 }
@@ -130,18 +136,66 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
   const [cartData, setCartData] = useState<ICartArray[]>([]);
   const [promoCart, setPromoCart] = useState<any[]>([]);
   const [notifCount, setNotifCount] = useState(0);
-
+  const [notifId, setNotifId] = useState([]);
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Codesom POS",
+        body: "มีรายการเดลิเวอรีเข้ามาใหม่!",
+        sound: "default",
+      },
+      trigger: { seconds: 2 },
+    });
+  }
   useEffect(() => {
+    async function registerForPushNotificationsAsync() {
+      if (Constants.isDevice) {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== "granted") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          console.log("Failed to get push token for push notification!");
+          return;
+        }
+      } else {
+        console.log("Must use physical device for Push Notifications");
+      }
+
+      if (Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: "#FF231F7C",
+        });
+      }
+    }
     const notifCheck = setInterval(() => {
       void lalamoveService
         .getAppNotifCount()
-        .then((res) => setNotifCount(res.data.waitingCount))
+        .then((res) => {
+          setNotifCount(res.data.waitingCount);
+          const notif = res.data.notif;
+          notif.map(
+            (obj: number) =>
+              notifId.findIndex((item: number) => item === obj) === -1 &&
+              void schedulePushNotification()
+          );
+          setNotifId(res.data.notif);
+        })
         .catch((err) => console.log(err.message));
     }, 30000);
+
+    void registerForPushNotificationsAsync();
+
     return () => {
       clearInterval(notifCheck);
     };
-  }, []);
+  }, [notifId]);
 
   return (
     <Tab.Navigator
@@ -193,7 +247,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
       <Tab.Screen
         name="PromotionScreen"
         options={{
-          tabBarLabel: "โปรโมชั่น",
+          tabBarLabel: "โปรโมชัน",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="percent" color={color} size={size} />
           ),

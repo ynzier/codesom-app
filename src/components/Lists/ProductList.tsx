@@ -111,27 +111,33 @@ const ProductList = ({
   };
   const fetchProductData = (isSubscribed: boolean) => {
     void trackPromise(
-      storageService
-        .getAllProductInStorage()
-        .then((res) => {
-          if (isSubscribed) {
-            const recData = res.data;
-            setFetched(true);
-            setProductArray(recData);
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          Toast.show({
-            type: ALERT_TYPE.DANGER,
-            textBody: resMessage,
-          });
-        }),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            storageService
+              .getAllProductInStorage()
+              .then((res) => {
+                if (isSubscribed) {
+                  const recData = res.data;
+                  setFetched(true);
+                  setProductArray(recData);
+                }
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 500);
+      }),
       "loadingProduct"
     );
   };
@@ -149,7 +155,7 @@ const ProductList = ({
     const getFilter = (value: number) => {
       if (value && value != -1) {
         const filterTable = productArray.filter(
-          (productArray) => productArray.product.productType == value
+          (item) => item.product?.productType == value
         );
         setfilterData(filterTable);
       } else {

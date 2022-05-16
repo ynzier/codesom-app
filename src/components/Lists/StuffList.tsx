@@ -32,20 +32,26 @@ const StuffList = ({ keyword }: { keyword: string }) => {
   const [fetched, setFetched] = useState(false);
   const fetchProductData = async (isSubscribed: boolean) => {
     await trackPromise(
-      storageService
-        .getAllStuffInStorage()
-        .then((res) => {
-          if (isSubscribed) {
-            setFetched(true);
-            const recData = res.data;
-            setStuffData(recData);
-          }
-        })
-        .catch((err) => {
-          if (isSubscribed) {
-            console.log(err);
-          }
-        }),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            storageService
+              .getAllStuffInStorage()
+              .then((res) => {
+                if (isSubscribed) {
+                  setFetched(true);
+                  const recData = res.data;
+                  setStuffData(recData);
+                }
+              })
+              .catch((err) => {
+                if (isSubscribed) {
+                  console.log(err);
+                }
+              })
+          );
+        }, 500);
+      }),
       "stuffList"
     );
   };
@@ -83,18 +89,9 @@ const StuffList = ({ keyword }: { keyword: string }) => {
           setShowRequest={setShowRequest}
         />
       )}
-      <VStack
-        w="100%"
-        flex="12"
-        px={4}
-        py={2}
-        mt="2"
-        borderTopWidth={1}
-        borderColor="light.300"
-      >
+      <VStack w="100%" flex="12" px={4} py={2} mt="2">
         <HStack
           borderBottomWidth={1}
-          borderColor="light.300"
           h="12"
           justifyContent="center"
           alignItems="center"

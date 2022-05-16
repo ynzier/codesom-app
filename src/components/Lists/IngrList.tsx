@@ -31,27 +31,33 @@ const IngrList = ({ keyword }: { keyword: string }) => {
   const [fetched, setFetched] = useState(false);
   const fetchProductData = async (isSubscribed: boolean) => {
     await trackPromise(
-      storageService
-        .getAllIngrInStorage()
-        .then((res) => {
-          if (isSubscribed) {
-            setFetched(true);
-            const recData = res.data;
-            setIngrArray(recData);
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          Toast.show({
-            type: ALERT_TYPE.DANGER,
-            textBody: resMessage,
-          });
-        }),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            storageService
+              .getAllIngrInStorage()
+              .then((res) => {
+                if (isSubscribed) {
+                  setFetched(true);
+                  const recData = res.data;
+                  setIngrArray(recData);
+                }
+              })
+              .catch((error) => {
+                const resMessage =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+                Toast.show({
+                  type: ALERT_TYPE.DANGER,
+                  textBody: resMessage,
+                });
+              })
+          );
+        }, 500);
+      }),
       "loadingIngr"
     );
   };
@@ -82,18 +88,9 @@ const IngrList = ({ keyword }: { keyword: string }) => {
   );
 
   return (
-    <VStack
-      w="100%"
-      flex="12"
-      px={4}
-      py={2}
-      mt="2"
-      borderTopWidth={1}
-      borderColor="light.300"
-    >
+    <VStack w="100%" flex="12" px={4} py={2} mt="2">
       <HStack
         borderBottomWidth={1}
-        borderColor="light.300"
         h="12"
         justifyContent="center"
         alignItems="center"
@@ -129,15 +126,9 @@ const IngrList = ({ keyword }: { keyword: string }) => {
               h="12"
             >
               <HStack flex="1" justifyContent="center">
-                <Text textAlign="center" style={{ flex: 1, marginLeft: 20 }}>
+                <Text textAlign="center" flex="1">
                   {item.ingrId}
                 </Text>
-                <Ionicons
-                  name="cube"
-                  style={styles.icon}
-                  size={24}
-                  color="black"
-                />
               </HStack>
               <Text flex="2" textAlign="center">
                 {item.ingredient.ingrName}
