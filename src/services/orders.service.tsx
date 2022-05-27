@@ -61,6 +61,12 @@ const createOrderDelivery = async (data: any) => {
     headers: { "x-access-token": JSON.parse(xToken) as string },
   });
 };
+const cancelOrder = async (orderId: any) => {
+  const xToken = await authHeader();
+  return http.delete(prefix + "/cancelOrder/" + orderId, {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
 export default {
   createOrderApp,
   listOrderApp,
@@ -71,4 +77,5 @@ export default {
   createOrderOmise,
   createOrderEwallet,
   createOrderDelivery,
+  cancelOrder,
 };

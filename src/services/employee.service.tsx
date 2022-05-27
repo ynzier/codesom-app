@@ -9,6 +9,14 @@ const getAllEmployeeInBranch = async () => {
   });
 };
 
+const empSignCheck = async (empId: number) => {
+  const xToken = await authHeader();
+  return http.get(prefix + "/empSignCheck/" + empId, {
+    headers: { "x-access-token": JSON.parse(xToken) as string },
+  });
+};
+
 export default {
   getAllEmployeeInBranch,
+  empSignCheck,
 };

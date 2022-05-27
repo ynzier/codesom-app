@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { StatusBar, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StatusBar } from "react-native";
 import {
   Box,
   Text,
@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import "dayjs/locale/th"; // ES 2015
-import { DisabledSidebar } from "components";
+import { ReportSidebar } from "components";
 import NumberFormat from "react-number-format";
 import { reportService } from "services";
 dayjs.extend(localizedFormat);
@@ -508,7 +508,7 @@ const ReportScreen: React.FC<Props> = ({ children }) => {
           </VStack>
 
           {/*Sidebar Component */}
-          <DisabledSidebar />
+          <ReportSidebar />
           {/*Sidebar Component */}
         </HStack>
       </Center>

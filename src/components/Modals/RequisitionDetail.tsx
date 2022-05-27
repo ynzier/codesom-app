@@ -166,10 +166,10 @@ const RequisitionDetail = ({
                   <Box mx="4" w="80%" alignSelf="center" mb="4">
                     <VStack justifyContent="center" space={2} mt={6} mb="2">
                       <HStack>
-                        <Text fontSize="lg" flex="1">
+                        <Text fontSize="md" flex="1">
                           เลขที่ใบเบิกสินค้า: {reqId}
                         </Text>
-                        <Text fontSize="lg" flex="1" textAlign="right">
+                        <Text fontSize="md" flex="1" textAlign="right">
                           สถานะ:{" "}
                           {requisitData.requisitionStatus == 0
                             ? "รออนุมัติ"
@@ -306,10 +306,8 @@ const RequisitionDetail = ({
                           placeholderStyle={styles.placeholderStyle}
                           selectedTextStyle={styles.selectedTextStyle}
                           fontFamily="Prompt-Regular"
-                          inputSearchStyle={styles.inputSearchStyle}
                           iconStyle={styles.iconStyle}
                           data={empList}
-                          search
                           dropdownPosition={
                             Platform.OS === "ios" ? "auto" : "bottom"
                           }
@@ -317,7 +315,6 @@ const RequisitionDetail = ({
                           labelField="label"
                           valueField="value"
                           placeholder="ลงชื่อผู้ตรวจสอบสินค้า"
-                          searchPlaceholder="ค้นหา..."
                           value={validatorId}
                           onChange={(item) => {
                             setValidatorId(item.value);

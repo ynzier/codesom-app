@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { StatusBar, View } from "react-native";
+import React from "react";
+import { StatusBar } from "react-native";
 import { Box, Center, HStack, VStack, Text } from "native-base";
 import { Navigation } from "../hooks/navigation";
 import { CartSidebar, PromotionList } from "components";

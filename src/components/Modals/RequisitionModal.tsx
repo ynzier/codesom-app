@@ -225,7 +225,7 @@ const RequisitionModal = ({
           <VStack mt="8" mx="16">
             <Box h="16">
               <Text textAlign="center" fontWeight={600} fontSize="md">
-                เพิ่มวัตถุดิบ
+                ใบขอเบิกคลังสินค้า
               </Text>
             </Box>
             {loadingList ? (

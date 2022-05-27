@@ -13,7 +13,7 @@ import NumericInput from "react-native-numeric-input";
 import { FontAwesome } from "@expo/vector-icons";
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import Feather from "react-native-vector-icons/Feather";
 // import AlertToast from "../AlertToast";
@@ -298,19 +298,10 @@ const CartSidebar: React.FC<Props> = ({
       </TouchableOpacity>
     </View>
   );
+  const { promiseInProgress: settingCart } = usePromiseTracker({
+    area: "setCart",
+  });
 
-  const CartLoader = () => {
-    const { promiseInProgress: settingCart } = usePromiseTracker({
-      area: "setCart",
-    });
-    return settingCart ? (
-      <Spinner size="sm" color="cream" />
-    ) : (
-      <Text color="white" fontSize={"md"}>
-        ชำระเงิน
-      </Text>
-    );
-  };
   return (
     <>
       {showModal && (
@@ -569,7 +560,7 @@ const CartSidebar: React.FC<Props> = ({
                 void handleCompleteCart();
               }}
             >
-              <CartLoader />
+              {settingCart ? <Spinner size="sm" color="cream" /> : "ชำระเงิน"}
             </Button>
           </Box>
         </VStack>

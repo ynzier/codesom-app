@@ -119,7 +119,7 @@ const StorageSidebarComponent = ({
           >
             <Button
               borderRadius="xl"
-              colorScheme="greenalt"
+              colorScheme="emerald"
               mx="4"
               w="100%"
               mb="4"

@@ -11,7 +11,6 @@ import {
   Pressable,
   Divider,
   FormControl,
-  Input,
   NativeBaseProvider,
   Collapse,
 } from "native-base";

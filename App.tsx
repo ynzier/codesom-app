@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useReducer, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useMemo,
+  useContext,
+} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -137,6 +143,7 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
   const [promoCart, setPromoCart] = useState<any[]>([]);
   const [notifCount, setNotifCount] = useState(0);
   const [notifId, setNotifId] = useState([]);
+  const { signOut } = useContext(AuthContext);
   async function schedulePushNotification() {
     await Notifications.scheduleNotificationAsync({
       content: {
@@ -161,8 +168,6 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
           console.log("Failed to get push token for push notification!");
           return;
         }
-      } else {
-        console.log("Must use physical device for Push Notifications");
       }
 
       if (Platform.OS === "android") {
@@ -179,23 +184,26 @@ const HomeTabs: React.FC<Props> = ({ props }) => {
         .getAppNotifCount()
         .then((res) => {
           setNotifCount(res.data.waitingCount);
-          const notif = res.data.notif;
+          const notif = res.data.notif || [];
           notif.map(
             (obj: number) =>
               notifId.findIndex((item: number) => item === obj) === -1 &&
               void schedulePushNotification()
           );
-          setNotifId(res.data.notif);
+          setNotifId(notif);
         })
-        .catch((err) => console.log(err.message));
-    }, 30000);
+        .catch((err) => {
+          console.log(err);
+          if (err.response?.status == 401) signOut();
+        });
+    }, 15000);
 
     void registerForPushNotificationsAsync();
 
     return () => {
       clearInterval(notifCheck);
     };
-  }, [notifId]);
+  }, [notifId, signOut]);
 
   return (
     <Tab.Navigator
@@ -452,10 +460,6 @@ const App: React.FC<Props> = () => {
   const authContext = useMemo(
     () => ({
       signIn: async (userName: string, password: string) => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore`
-        // In the example, we'll use a dummy token
         let userToken;
         await http
           .post<AccessToken>("/auth/signinApp", {

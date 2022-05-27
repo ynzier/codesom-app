@@ -10,16 +10,13 @@ import {
 } from "native-base";
 import { Navigation } from "../hooks/navigation";
 import { lalamoveService } from "services";
-import { ListRenderItemInfo, StyleSheet } from "react-native";
+import { ListRenderItemInfo } from "react-native";
 import { ALERT_TYPE, Toast } from "alert-toast-react-native";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import "dayjs/locale/th"; // ES 2015
-import { Ionicons } from "@expo/vector-icons";
+import "dayjs/locale/th";
 import { DeliverySidebar, ReceiptModal } from "components";
-import NumberFormat from "react-number-format";
-import { Dropdown } from "ynzier-react-native-element-dropdown";
 
 dayjs.extend(localizedFormat);
 

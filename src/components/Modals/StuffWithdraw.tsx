@@ -213,7 +213,7 @@ const StuffWithdraw = ({
           <VStack mt="8" mx="16">
             <Box h="16">
               <Text textAlign="center" fontWeight={600} fontSize="md">
-                เบิกสินค้า
+                เบิกของใช้อื่นๆ
               </Text>
             </Box>
             {loadingList ? (

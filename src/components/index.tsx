@@ -3,6 +3,7 @@ export { default as OrderSidebar } from "./Sidebar/OrderSidebar";
 export { StorageSidebar } from "./Sidebar/StorageSidebar";
 export { default as DisabledSidebar } from "./Sidebar/DisabledSidebar";
 export { default as DeliverySidebar } from "./Sidebar/DeliverySidebar";
+export { default as ReportSidebar } from "./Sidebar/ReportSidebar";
 
 export { default as MainMenuTab } from "./Tabs/MainMenuTab";
 export { default as StorageTab } from "./Tabs/StorageTab";

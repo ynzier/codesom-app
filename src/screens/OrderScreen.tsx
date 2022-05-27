@@ -224,9 +224,7 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                         <Text
                           flex="1"
                           textAlign="center"
-                          textDecorationLine={
-                            item.orderStatus == "2" ? "none" : "underline"
-                          }
+                          textDecorationLine={"underline"}
                           onPress={() => {
                             setOrderId(item.orderId.toString());
                             setShowReceipt(true);
@@ -274,7 +272,8 @@ const OrderScreen: React.FC<Props> = ({ route, children }) => {
                             valueField="value"
                             value={item.orderStatus}
                             onChange={(e) => {
-                              updateOrderStatus(item.orderId, e.value);
+                              if (e.value != 2)
+                                updateOrderStatus(item.orderId, e.value);
                             }}
                           />
                         </Box>
