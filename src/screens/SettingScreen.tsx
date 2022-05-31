@@ -56,6 +56,10 @@ const SettingScreen: React.FC<Props> = ({ children }) => {
                     error.response.data.message) ||
                   error.message ||
                   error.toString();
+                if (error.response?.status == 404)
+                  return setCancelOrderErrorText(
+                    "รูปแบบหมายเลขออเดอร์ไม่ถูกต้อง"
+                  );
                 return setCancelOrderErrorText(resMessage);
               })
           );
